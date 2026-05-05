@@ -1,20 +1,25 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import PageLayout from '@/components/PageLayout'
 
 export default async function Tournaments(){
  const supabase=await createServerSupabaseClient()
  const {data}=await supabase.from('tournament_summary').select('*').order('created_at',{ascending:false})
  return(
-  <main className='p-4 space-y-4'>
-   <h1 className='text-xl font-bold'>Tournaments</h1>
-   {data?.map(t=>(
-    <Link key={t.id} href={`/tournaments/${t.id}/dashboard`}>
-     <div className='kaf-card p-3 rounded'>
-      <div className='font-semibold'>{t.title}</div>
-      <div className='text-xs text-slate-400'>{t.registration_count} players • {t.match_count} matches</div>
-     </div>
-    </Link>
-   ))}
-  </main>
+  <PageLayout>
+   <div className="space-y-6">
+    <h1 className="text-3xl font-bold">Tournaments</h1>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+     {data?.map(t=>(
+      <Link key={t.id} href={`/tournaments/${t.id}/dashboard`}>
+       <div className="kaf-card p-6 rounded-2xl hover:border-cyan-300/40 transition">
+        <div className="font-semibold text-lg">{t.title}</div>
+        <div className="text-sm text-slate-400 mt-2">{t.registration_count} players • {t.match_count} matches</div>
+       </div>
+      </Link>
+     ))}
+    </div>
+   </div>
+  </PageLayout>
  )
 }
