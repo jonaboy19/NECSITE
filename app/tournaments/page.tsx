@@ -1,19 +1,20 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
+import Link from 'next/link'
 
-export default async function Tournaments() {
-  const supabase = await createServerSupabaseClient()
-  const { data } = await supabase.from('tournaments').select('*')
-
-  return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Tournaments</h1>
-      <div className="grid grid-cols-3 gap-4">
-        {data?.map((t) => (
-          <div key={t.id} className="kaf-card p-4">
-            {t.title}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+export default async function Tournaments(){
+ const supabase=await createServerSupabaseClient()
+ const {data}=await supabase.from('tournament_summary').select('*').order('created_at',{ascending:false})
+ return(
+  <main className='p-4 space-y-4'>
+   <h1 className='text-xl font-bold'>Tournaments</h1>
+   {data?.map(t=>(
+    <Link key={t.id} href={`/tournaments/${t.id}/dashboard`}>
+     <div className='kaf-card p-3 rounded'>
+      <div className='font-semibold'>{t.title}</div>
+      <div className='text-xs text-slate-400'>{t.registration_count} players • {t.match_count} matches</div>
+     </div>
+    </Link>
+   ))}
+  </main>
+ )
 }
