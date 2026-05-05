@@ -1,3 +1,4 @@
+import './globals.css'
 import MobileNav from '@/components/MobileNav'
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
