@@ -6,6 +6,19 @@ export default function ReportScore({id}:{id:string}){
  const supabase=createClient()
  const [a,setA]=useState('')
  const [b,setB]=useState('')
- const save=async()=>{await supabase.from('matches').update({score_a:Number(a),score_b:Number(b),status:'reported'}).eq('id',id);alert('score saved')}
- return <div className='flex gap-1 mt-2'><input className='w-10 bg-black border' value={a} onChange={e=>setA(e.target.value)}/><input className='w-10 bg-black border' value={b} onChange={e=>setB(e.target.value)}/><button className='text-xs bg-cyan-500 px-2' onClick={save}>Report</button></div>
+ const [saving,setSaving]=useState(false)
+ const save=async()=>{
+  setSaving(true)
+  const {error}=await supabase.from('matches').update({score_a:Number(a),score_b:Number(b),status:'reported'}).eq('id',id)
+  setSaving(false)
+  if(error)return alert(error.message)
+  alert('score reported')
+ }
+ return(
+  <div className='mt-3 grid grid-cols-[1fr_1fr_auto] gap-2'>
+   <input className='min-w-0 rounded-lg border border-slate-700 bg-black/40 px-2 py-2 text-center text-sm' placeholder='A' value={a} onChange={e=>setA(e.target.value)}/>
+   <input className='min-w-0 rounded-lg border border-slate-700 bg-black/40 px-2 py-2 text-center text-sm' placeholder='B' value={b} onChange={e=>setB(e.target.value)}/>
+   <button disabled={saving} className='rounded-lg bg-cyan-400 px-3 py-2 text-xs font-black text-slate-950 disabled:opacity-60' onClick={save}>{saving?'...':'Report'}</button>
+  </div>
+ )
 }
