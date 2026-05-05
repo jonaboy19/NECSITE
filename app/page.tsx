@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import Header from '@/components/Header'
-import { createServerSupabaseClient } from '@/lib/supabase/server'
+import { Footer } from '@/components/Footer'
 import { Trophy, Users, Crown, Zap } from 'lucide-react'
+import { fetchTournaments, fetchClans, fetchRankings } from '@/lib/utils'
+import { REGIONS, PAGINATION } from '@/lib/constants'
 
 const flagshipSeries = [
   {
@@ -24,27 +26,14 @@ const flagshipSeries = [
   }
 ]
 
-const stats = [
-  ['0+', 'Ranked Players'],
-  ['3', 'Active Clans'],
-  ['1', 'Tournaments'],
-  ['5', 'Regions Worldwide']
-]
-
-const regions = ['Africa', 'Europe', 'Asia', 'MENA', 'Americas']
-
 async function getHomeData() {
-  const supabase = await createServerSupabaseClient()
-  const [tournaments, clans, rankings] = await Promise.all([
-    supabase.from('tournament_summary').select('*').order('created_at', { ascending: false }).limit(3),
-    supabase.from('clans').select('*').limit(3),
-    supabase.from('rankings').select('*').order('rating', { ascending: false }).limit(5)
-  ])
-  return { tournaments: tournaments.data || [], clans: clans.data || [], rankings: rankings.data || [] }
+  const tournaments = await fetchTournaments(PAGINATION.homeLimit)
+  const clans = await fetchClans(PAGINATION.homeLimit)
+  return { tournaments, clans }
 }
 
 export default async function Home() {
-  const { tournaments, clans, rankings } = await getHomeData()
+  const { tournaments, clans } = await getHomeData()
 
   return (
     <main className="min-h-screen bg-[#020617] text-white">
@@ -72,7 +61,12 @@ export default async function Home() {
               </Link>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-2xl mx-auto">
-              {stats.map(([value, label]) => (
+              {[
+                ['0+', 'Ranked Players'],
+                ['3', 'Active Clans'],
+                ['1', 'Tournaments'],
+                ['5', 'Regions Worldwide']
+              ].map(([value, label]) => (
                 <div key={label} className="text-center">
                   <div className="text-3xl font-black text-cyan-200">{value}</div>
                   <div className="text-sm text-slate-400 uppercase tracking-wide">{label}</div>
@@ -80,7 +74,7 @@ export default async function Home() {
               ))}
             </div>
             <div className="flex flex-wrap justify-center gap-4 text-sm text-slate-400">
-              {regions.map(region => (
+              {REGIONS.map(region => (
                 <span key={region} className="px-3 py-1 rounded-full bg-slate-800">{region}</span>
               ))}
             </div>
@@ -177,76 +171,11 @@ export default async function Home() {
         </section>
 
         {/* Footer */}
-        <footer className="py-16 border-t border-slate-800">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <h4 className="font-bold mb-4">Compete</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/tournaments" className="hover:text-cyan-200 transition">Tournaments</Link></li>
-                <li><Link href="/tournaments" className="hover:text-cyan-200 transition">KAF E-League</Link></li>
-                <li><Link href="/matches" className="hover:text-cyan-200 transition">Match Center</Link></li>
-                <li><Link href="/rankings" className="hover:text-cyan-200 transition">Rankings</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Community</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/clans" className="hover:text-cyan-200 transition">Clans</Link></li>
-                <li><Link href="/news" className="hover:text-cyan-200 transition">News</Link></li>
-                <li><Link href="/community" className="hover:text-cyan-200 transition">Community</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">Business</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/sponsors" className="hover:text-cyan-200 transition">Sponsors</Link></li>
-                <li><Link href="/admin" className="hover:text-cyan-200 transition">Admin Dashboard</Link></li>
-                <li><Link href="/contact" className="hover:text-cyan-200 transition">Contact</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-4">KAFConnect</h4>
-              <p className="text-sm text-slate-400 mb-4">
-                International esports hub for tournaments, clans, rankings and live match coverage. Powered by KAF E-League.
-              </p>
-              <p className="text-xs text-slate-500">© 2026 KAFCONNECT • ALL RIGHTS RESERVED</p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
-            {regions.join(' • ')}
-          </div>
-        </footer>
+        <Footer />
       </div>
     </main>
   )
 }
-
-        <div className="grid min-h-[78vh] items-center gap-10 py-14 lg:grid-cols-[1.15fr_.85fr]">
-          <div className="space-y-8">
-            <div className="inline-flex rounded-full border border-cyan-300/20 bg-cyan-300/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.25em] text-cyan-200">
-              KAF Esports Connect
-            </div>
-            <div className="space-y-5">
-              <h1 className="max-w-4xl text-5xl font-black leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
-                Run mobile esports tournaments like a real league.
-              </h1>
-              <p className="max-w-2xl text-base leading-7 text-slate-300 sm:text-lg">
-                A KAF tournament operating system for clans, players, hosts and admins. Create events, register competitors, generate matches, report scores and track rankings from one platform.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Link href="/tournaments/create" className="rounded-2xl bg-cyan-400 px-6 py-4 text-center font-black text-slate-950 shadow-[0_0_40px_rgba(34,211,238,.25)]">Create tournament</Link>
-              <Link href="/tournaments" className="rounded-2xl border border-white/10 bg-white/5 px-6 py-4 text-center font-bold text-white">Browse tournaments</Link>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {stats.map(([label, value]) => (
-                <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
-                  <div className="text-2xl font-black text-cyan-200">{value}</div>
-                  <div className="text-xs uppercase tracking-widest text-slate-400">{label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           <div className="rounded-[2rem] border border-cyan-300/20 bg-slate-950/80 p-4 shadow-[0_0_80px_rgba(34,211,238,.12)]">
             <div className="rounded-[1.5rem] bg-gradient-to-br from-cyan-400/20 via-slate-900 to-emerald-400/10 p-5">
