@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Trophy, Users, BarChart3, Home, User } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
+import ThemeToggle from './ThemeToggle'
 
 export default function Header() {
   const [user, setUser] = useState<any>(null)
@@ -14,7 +15,7 @@ export default function Header() {
 
   return (
     <nav className="flex items-center justify-between rounded-2xl border border-cyan-300/10 bg-slate-950/70 px-4 py-3 backdrop-blur">
-      <Link href="/" className="font-black tracking-[0.35em] text-cyan-200">KAF</Link>
+      <Link href="/" className="font-black tracking-[0.35em] text-cyan-200">KAFConnect</Link>
       <div className="hidden gap-6 text-sm text-slate-300 md:flex">
         <Link href="/tournaments" className="flex items-center gap-2 hover:text-cyan-200 transition">
           <Trophy size={16} />
@@ -36,6 +37,7 @@ export default function Header() {
         )}
       </div>
       <div className="flex items-center gap-4">
+        <ThemeToggle />
         {user ? (
           <Link href="/profile" className="flex items-center gap-2 text-sm text-slate-300 hover:text-cyan-200 transition">
             <User size={16} />
