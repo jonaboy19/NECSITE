@@ -1,9 +1,9 @@
 'use client'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { ChatWindow } from '@/components/ChatWindow'
 import { usePushNotifications } from '@/hooks/usePushNotifications'
-import { Search, MessageSquare, Edit2, Users, User } from 'lucide-react'
+import { Search, MessageSquare, Edit2, Users, User, X, Loader2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 type Thread = {
@@ -29,6 +29,11 @@ export default function MessagesPage() {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [mobileView, setMobileView] = useState<'list' | 'chat'>('list')
+  const [showNewDm, setShowNewDm] = useState(false)
+  const [userSearch, setUserSearch] = useState('')
+  const [userResults, setUserResults] = useState<any[]>([])
+  const [searching, setSearching] = useState(false)
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // ─── Load user ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -102,6 +107,43 @@ export default function MessagesPage() {
     setMobileView('chat')
   }
 
+  const searchUsers = useCallback(async (q: string) => {
+    if (!q || q.length < 2) { setUserResults([]); return }
+    setSearching(true)
+    const { data } = await supabase
+      .from('profiles')
+      .select('id,username,display_name,avatar_url')
+      .ilike('username', `%${q}%`)
+      .neq('id', me?.id)
+      .limit(8)
+    setUserResults(data ?? [])
+    setSearching(false)
+  }, [me])
+
+  useEffect(() => {
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => searchUsers(userSearch), 300)
+  }, [userSearch, searchUsers])
+
+  const startDm = (user: any) => {
+    setShowNewDm(false)
+    setUserSearch('')
+    setUserResults([])
+    const t: Thread = {
+      id: `dm:${user.id}`,
+      type: 'dm',
+      name: user.display_name || user.username,
+      avatar: user.avatar_url,
+      lastMsg: '',
+      lastTime: '',
+      unread: 0,
+      recipientId: user.id,
+    }
+    // Add to top of threads if not already there
+    setThreads(prev => prev.find(x => x.id === t.id) ? prev : [t, ...prev])
+    openThread(t)
+  }
+
   const filtered = threads.filter(t =>
     !search || t.name.toLowerCase().includes(search.toLowerCase())
   )
@@ -129,12 +171,15 @@ export default function MessagesPage() {
   return (
     <div className="flex h-[calc(100vh-3.5rem)] w-full overflow-hidden">
       {/* ── Conversation sidebar ── */}
-      <div className={`flex flex-col w-full md:w-80 lg:w-96 border-r border-kaf-border bg-kaf-panel shrink-0 ${mobileView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
+      <div className={`relative flex flex-col w-full md:w-80 lg:w-96 border-r border-kaf-border bg-kaf-panel shrink-0 ${mobileView === 'chat' ? 'hidden md:flex' : 'flex'}`}>
         {/* Header */}
         <div className="px-4 pt-5 pb-3 border-b border-kaf-border">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-xl font-display font-black text-white">Messages</h1>
-            <button className="p-2 rounded-xl hover:bg-white/10 text-slate-400 transition-colors">
+            <button
+              onClick={() => setShowNewDm(true)}
+              className="p-2 rounded-xl hover:bg-white/10 text-slate-400 hover:text-brand-cyan transition-colors"
+              title="New message">
               <Edit2 size={16} />
             </button>
           </div>
@@ -145,6 +190,47 @@ export default function MessagesPage() {
               className="w-full bg-slate-900 border border-kaf-border rounded-xl pl-9 pr-3 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-brand-cyan/50 transition-colors" />
           </div>
         </div>
+
+        {/* New DM modal */}
+        {showNewDm && (
+          <div className="absolute inset-0 z-50 flex items-start justify-center pt-16 px-4">
+            <div className="absolute inset-0 bg-kaf-bg/80 backdrop-blur-sm" onClick={() => setShowNewDm(false)} />
+            <div className="relative w-full max-w-sm bg-kaf-panel border border-kaf-border rounded-2xl shadow-2xl overflow-hidden">
+              <div className="flex items-center justify-between px-4 py-3 border-b border-kaf-border">
+                <span className="font-black text-white">New Message</span>
+                <button onClick={() => setShowNewDm(false)} className="text-slate-400 hover:text-white"><X size={16} /></button>
+              </div>
+              <div className="p-3">
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                  <input autoFocus value={userSearch} onChange={e => setUserSearch(e.target.value)}
+                    placeholder="Search by username..."
+                    className="w-full bg-slate-900 border border-kaf-border rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-brand-cyan/50 transition-colors" />
+                </div>
+              </div>
+              <div className="max-h-64 overflow-y-auto">
+                {searching && <div className="flex justify-center py-4"><Loader2 size={18} className="animate-spin text-brand-cyan" /></div>}
+                {!searching && userResults.length === 0 && userSearch.length > 1 && (
+                  <div className="text-center py-6 text-slate-500 text-sm">No players found</div>
+                )}
+                {userResults.map(u => (
+                  <button key={u.id} onClick={() => startDm(u)}
+                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-colors text-left border-b border-kaf-border/50 last:border-0">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 border border-kaf-border overflow-hidden flex items-center justify-center shrink-0">
+                      {u.avatar_url
+                        ? <img src={u.avatar_url} alt="" className="w-full h-full object-cover" />
+                        : <User size={18} className="text-slate-500" />}
+                    </div>
+                    <div>
+                      <div className="font-bold text-white text-sm">{u.display_name || u.username}</div>
+                      <div className="text-xs text-slate-500">@{u.username}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Thread list */}
         <div className="flex-1 overflow-y-auto">
