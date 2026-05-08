@@ -30,6 +30,24 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     username = profile?.username || ''
   }
 
+  // Get animation settings
+  const { data: animData } = await supabase.from('site_settings').select('value').eq('key', 'animations').maybeSingle()
+  const animations = animData?.value || {
+    page_transition: 'slide',
+    card_hover: true,
+    glow_effects: true,
+    speed: 'normal',
+    reduce_motion: false
+  }
+
+  const animClasses = `
+    ${animations.reduce_motion ? 'reduce-motion' : ''}
+    ${animations.card_hover ? 'enable-card-hover' : ''}
+    ${animations.glow_effects ? 'enable-glow-effects' : ''}
+    anim-speed-${animations.speed}
+    transition-${animations.page_transition}
+  `.replace(/\s+/g, ' ').trim()
+
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark`}>
       <head>
@@ -40,7 +58,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
-      <body className="font-sans antialiased bg-kaf-bg text-white selection:bg-brand-cyan/30">
+      <body className={`font-sans antialiased bg-kaf-bg text-white selection:bg-brand-cyan/30 ${animClasses}`} data-animations={JSON.stringify(animations)}>
         <ToastProvider>
           <AnnouncementBar />
           {isLoggedIn ? (

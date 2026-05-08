@@ -13,10 +13,12 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
   const [clan, setClan] = useState<any>(null)
   const [roster, setRoster] = useState<any[]>([])
   const [joinRequests, setJoinRequests] = useState<any[]>([])
+  const [clanWars, setClanWars] = useState<any[]>([])
+  const [applicationMessage, setApplicationMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('Overview')
 
-  const tabs = ['Overview', 'Roster', 'Matches', 'Trophies']
+  const tabs = ['Overview', 'Roster', 'Clan Wars', 'Matches', 'Trophies']
 
   const fetchData = async () => {
     setLoading(true)
@@ -46,6 +48,13 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
         setJoinRequests(reqData || [])
       }
     }
+    
+    const { data: cwData } = await supabase
+      .from('clan_wars')
+      .select('*, challenger:challenger_clan_id(name, tag, logo_url), challenged:challenged_clan_id(name, tag, logo_url)')
+      .or(`challenger_clan_id.eq.${id},challenged_clan_id.eq.${id}`)
+    setClanWars(cwData || [])
+    
     setLoading(false)
   }
 
@@ -64,10 +73,38 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     const { error } = await supabase.from('clan_applications').insert({
       clan_id: id,
       profile_id: currentUser.id,
-      status: 'pending'
+      status: 'pending',
+      message: applicationMessage
     })
     if (error) toastError(error.message)
-    else success('Application submitted! The captain will review it.')
+    else {
+      success('Application submitted! The captain will review it.')
+      setApplicationMessage('')
+    }
+  }
+
+  const toggleRecruitment = async () => {
+    const newStatus = !clan.is_recruiting
+    const { error } = await supabase.from('clans').update({ is_recruiting: newStatus, recruitment_status: newStatus ? 'open' : 'closed' }).eq('id', id)
+    if (error) toastError(error.message)
+    else {
+      success('Recruitment status updated')
+      fetchData()
+    }
+  }
+
+  const transferOwnership = async (newOwnerId: string) => {
+    if (!confirm("Transfer ownership? You will become a captain and cannot undo this.")) return
+    const { error } = await supabase.from('clans').update({ owner_id: newOwnerId }).eq('id', id)
+    if (error) return toastError(error.message)
+    
+    const myMemberId = userMember?.id
+    const newOwnerMember = roster.find(m => m.profile_id === newOwnerId)
+    if (myMemberId) await supabase.from('clan_members').update({ role: 'captain' }).eq('id', myMemberId)
+    if (newOwnerMember) await supabase.from('clan_members').update({ role: 'owner' }).eq('id', newOwnerMember.id)
+    
+    success('Ownership transferred successfully')
+    fetchData()
   }
 
   const handleRequest = async (reqId: string, status: 'accepted' | 'rejected', profileId: string) => {
@@ -203,8 +240,9 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
         </div>
 
         {/* Stats bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[
+            { label: 'ELO Rating', value: clan.elo || 1200, color: 'text-brand-gold' },
             { label: 'Wins', value: wins, color: 'text-green-400' },
             { label: 'Losses', value: losses, color: 'text-red-400' },
             { label: 'Win Rate', value: `${winRate}%`, color: 'text-brand-cyan' },
@@ -228,12 +266,15 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                 <div key={req.id} className="flex items-center justify-between p-3 bg-slate-900 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-9 h-9 rounded-full bg-slate-800 bg-cover bg-center"
+                      className="w-9 h-9 rounded-full bg-slate-800 bg-cover bg-center shrink-0"
                       style={{ backgroundImage: `url('${req.profiles?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${req.profiles?.username}`}')` }}
                     />
-                    <div className="font-bold text-white text-sm">{req.profiles?.username}</div>
+                    <div>
+                      <div className="font-bold text-white text-sm">{req.profiles?.username}</div>
+                      {req.message && <div className="text-xs text-slate-400 italic">"{req.message}"</div>}
+                    </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 shrink-0">
                     <button onClick={() => handleRequest(req.id, 'accepted', req.profile_id)}
                       className="px-3 py-1.5 rounded-lg bg-green-500/20 text-green-400 font-bold text-xs hover:bg-green-500 hover:text-white transition-colors">
                       Accept
@@ -269,6 +310,12 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             {/* OVERVIEW TAB */}
             {activeTab === 'Overview' && (
               <div className="space-y-6">
+                {(clan.motd || canEditClanDetails) && (
+                  <div className="kaf-card p-6 rounded-2xl border border-brand-cyan/30 mb-6 bg-brand-cyan/5">
+                    <h3 className="font-black text-brand-cyan text-sm mb-2 uppercase tracking-widest">Message of the Day</h3>
+                    <p className="text-white font-bold">{clan.motd || 'No message set.'}</p>
+                  </div>
+                )}
                 <div className="kaf-card p-6 rounded-2xl border border-kaf-border">
                   <h3 className="font-black text-white text-lg mb-3">About</h3>
                   <p className="text-slate-400 leading-relaxed">{clan.description || clan.bio || 'No description provided yet.'}</p>
@@ -319,6 +366,11 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                           {member.profiles?.region && (
                             <div className="text-xs text-slate-500">{member.profiles.region}</div>
                           )}
+                          {member.last_active && (
+                            <div className="text-[10px] text-slate-600 mt-0.5">
+                              Active: {new Date(member.last_active).toLocaleDateString()}
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -342,6 +394,44 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                             </button>
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* CLAN WARS TAB */}
+            {activeTab === 'Clan Wars' && (
+              <div className="space-y-4">
+                <h3 className="font-black text-white text-lg mb-2">Clan Wars</h3>
+                {clanWars.length === 0 ? (
+                  <div className="kaf-card p-6 rounded-2xl border border-kaf-border text-center py-8 text-slate-500">
+                    <Shield size={40} className="mx-auto mb-3 opacity-30" />
+                    No clan wars recorded yet.
+                  </div>
+                ) : clanWars.map(war => {
+                  const isChallenger = war.challenger_clan_id === id
+                  const opponent = isChallenger ? war.challenged : war.challenger
+                  const win = (isChallenger && war.challenger_score > war.challenged_score) || (!isChallenger && war.challenged_score > war.challenger_score)
+                  return (
+                    <div key={war.id} className="kaf-card p-4 rounded-xl border border-kaf-border flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-slate-800 rounded-full border border-kaf-border overflow-hidden bg-cover bg-center" style={{ backgroundImage: opponent?.logo_url ? `url(${opponent.logo_url})` : undefined }} />
+                        <div>
+                          <div className="font-bold text-white text-sm">vs {opponent?.name || 'Unknown Clan'}</div>
+                          <div className="text-xs text-slate-500">{new Date(war.scheduled_at || war.created_at).toLocaleDateString()}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <div className="text-xl font-black font-mono tracking-widest text-white">
+                          {isChallenger ? `${war.challenger_score} - ${war.challenged_score}` : `${war.challenged_score} - ${war.challenger_score}`}
+                        </div>
+                        <span className={`px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest ${
+                          win ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                        }`}>
+                          {win ? 'Victory' : 'Defeat'}
+                        </span>
                       </div>
                     </div>
                   )
@@ -374,17 +464,41 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             {activeTab === '⚙ HQ' && canManageRoster && (
               <div className="space-y-6">
                 <div className="kaf-card p-6 rounded-2xl border border-kaf-border">
-                  <h3 className="font-black text-white mb-4">Clan Settings</h3>
-                  <div className="grid sm:grid-cols-2 gap-4 text-sm text-slate-400">
-                    <div><span className="text-slate-500 font-bold block text-[10px] uppercase tracking-widest mb-1">Recruitment</span>
-                      <span className="text-white font-bold">{clan.recruitment_status || (clan.is_recruiting ? 'Open' : 'Closed')}</span>
+                  <h3 className="font-black text-white mb-4">Recruitment Settings</h3>
+                  <div className="flex items-center justify-between p-4 bg-slate-900 rounded-xl border border-kaf-border">
+                    <div>
+                      <div className="font-bold text-white text-sm">Recruitment Status</div>
+                      <div className="text-xs text-slate-400">Allow players to apply to join the clan.</div>
                     </div>
-                    <div><span className="text-slate-500 font-bold block text-[10px] uppercase tracking-widest mb-1">Region</span>
-                      <span className="text-white font-bold">{clan.region || 'Global'}</span>
+                    <button onClick={toggleRecruitment} className={`px-4 py-2 rounded-lg font-bold text-xs ${clan.is_recruiting ? 'bg-brand-cyan text-kaf-bg hover:bg-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'} transition-colors`}>
+                      {clan.is_recruiting ? 'Open' : 'Closed'}
+                    </button>
+                  </div>
+                </div>
+
+                {userRole === 'owner' && (
+                  <div className="kaf-card p-6 rounded-2xl border border-red-500/30 bg-red-500/5">
+                    <h3 className="font-black text-red-400 mb-4">Danger Zone</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Transfer Ownership</label>
+                        <select 
+                          className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white text-sm mb-2"
+                          onChange={(e) => {
+                            if (e.target.value) transferOwnership(e.target.value)
+                          }}
+                          value=""
+                        >
+                          <option value="" disabled>Select new owner...</option>
+                          {roster.filter(m => m.profile_id !== currentUser?.id).map(m => (
+                            <option key={m.id} value={m.profile_id}>{m.profiles?.username}</option>
+                          ))}
+                        </select>
+                        <p className="text-xs text-slate-500">This action cannot be undone. You will be demoted to Captain.</p>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-xs text-slate-600 mt-4">Full clan settings editor coming soon.</p>
-                </div>
+                )}
               </div>
             )}
           </div>
@@ -401,6 +515,12 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                     <p className="text-sm text-slate-300 leading-relaxed mb-4 relative z-10">
                       Submit your application to be reviewed by the clan captain.
                     </p>
+                    <textarea 
+                      placeholder="Why should we accept you?" 
+                      className="w-full bg-slate-900 border border-kaf-border rounded-xl px-3 py-2 text-white text-sm mb-3 relative z-10 focus:border-brand-cyan/50 focus:outline-none h-20 resize-none"
+                      value={applicationMessage}
+                      onChange={e => setApplicationMessage(e.target.value)}
+                    />
                     <button onClick={handleApply}
                       className="w-full bg-brand-cyan text-kaf-bg py-3 rounded-xl font-black hover:bg-white transition-all relative z-10">
                       Apply to Join

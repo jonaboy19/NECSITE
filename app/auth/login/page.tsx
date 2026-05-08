@@ -33,6 +33,16 @@ export default function Login() {
     setLoading(false)
   }
 
+  const handleGithubLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
+    })
+    if (error) setError(error.message)
+  }
+
   return (
     <div className="min-h-screen bg-kaf-bg text-white flex flex-col">
       {/* Nav */}
@@ -99,6 +109,23 @@ export default function Login() {
                   className="w-full rounded-xl bg-brand-cyan px-4 py-4 font-black text-kaf-bg hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-[0_0_20px_rgba(0,255,102,0.3)]"
                 >
                   {loading ? <><Loader2 size={18} className="animate-spin" /> Sending...</> : 'Send Magic Link'}
+                </button>
+
+                <div className="relative py-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-kaf-border/50"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-kaf-bg px-2 text-slate-500 uppercase font-bold tracking-widest">Or</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleGithubLogin}
+                  className="w-full rounded-xl bg-slate-800 border border-kaf-border px-4 py-4 font-black text-white hover:bg-slate-700 transition-all flex items-center justify-center gap-2 text-sm"
+                >
+                  Continue with GitHub
                 </button>
               </form>
 

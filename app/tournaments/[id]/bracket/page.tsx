@@ -14,30 +14,38 @@ export default async function BracketPage({ params }: { params: Promise<{ id: st
 
   const { data: matches } = await supabase
     .from('matches')
-    .select('id,round,match_index,participant_a_id,participant_b_id,score_a,score_b,winner_id,status,scheduled_at,clan_a_id,clan_b_id,winner_clan_id')
+    .select('id,round,match_number,player_a_id,player_b_id,score_a,score_b,winner_profile_id,status,scheduled_at,clan_a_id,clan_b_id,winner_clan_id')
     .eq('tournament_id', id)
-    .order('round').order('match_index')
+    .order('round').order('match_number')
 
-  // Build participant map from clan data
+  // Build participant map from clan data and player data
   const clanIds = [...new Set([
     ...(matches ?? []).map((m: any) => m.clan_a_id).filter(Boolean),
     ...(matches ?? []).map((m: any) => m.clan_b_id).filter(Boolean),
   ])]
+  const playerIds = [...new Set([
+    ...(matches ?? []).map((m: any) => m.player_a_id).filter(Boolean),
+    ...(matches ?? []).map((m: any) => m.player_b_id).filter(Boolean),
+  ])]
 
   const { data: clans } = clanIds.length
     ? await supabase.from('clans').select('id,name,tag,logo_url').in('id', clanIds)
+    : { data: [] }
+    
+  const { data: players } = playerIds.length
+    ? await supabase.from('profiles').select('id,username,avatar_url').in('id', playerIds)
     : { data: [] }
 
   // Map matches to BracketViewer format
   const bracketMatches = (matches ?? []).map((m: any) => ({
     id: m.id,
     round: m.round ?? 1,
-    match_index: m.match_index ?? 0,
-    participant_a_id: m.clan_a_id,
-    participant_b_id: m.clan_b_id,
+    match_index: m.match_number ?? 0,
+    participant_a_id: m.clan_a_id || m.player_a_id,
+    participant_b_id: m.clan_b_id || m.player_b_id,
     score_a: m.score_a,
     score_b: m.score_b,
-    winner_id: m.winner_clan_id,
+    winner_id: m.winner_clan_id || m.winner_profile_id,
     status: m.status,
     scheduled_at: m.scheduled_at,
   }))
@@ -45,6 +53,9 @@ export default async function BracketPage({ params }: { params: Promise<{ id: st
   const participants: Record<string, any> = {}
   ;(clans ?? []).forEach((c: any) => {
     participants[c.id] = { id: c.id, display_name: c.name, tag: c.tag, logo_url: c.logo_url }
+  })
+  ;(players ?? []).forEach((p: any) => {
+    participants[p.id] = { id: p.id, display_name: p.username, logo_url: p.avatar_url }
   })
 
   return (

@@ -41,17 +41,63 @@ a { color: inherit; text-decoration: none; }
   background-color: var(--kaf-card);
   border: 1px solid var(--kaf-border); 
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+body:not(.reduce-motion) .kaf-card {
   transition: all 0.2s ease-in-out;
 }
 
-.kaf-card:hover {
+body.enable-card-hover:not(.reduce-motion) .kaf-card:hover {
   border-color: rgba(0, 255, 102, 0.3);
   box-shadow: 0 4px 30px rgba(0, 255, 102, 0.1);
   transform: translateY(-2px);
 }
 
-.kaf-glow { 
+body.enable-glow-effects .kaf-glow { 
   box-shadow: 0 0 0 1px rgba(0,255,102,.2), 0 0 30px rgba(0,255,102,.1); 
+}
+
+body.reduce-motion * {
+  animation: none !important;
+  transition: none !important;
+  transform: none !important;
+}
+
+body.anim-speed-slow * {
+  animation-duration: 200%;
+  transition-duration: 200%;
+}
+
+body.anim-speed-fast * {
+  animation-duration: 50%;
+  transition-duration: 50%;
+}
+
+/* Page transitions */
+body.transition-slide:not(.reduce-motion) main > * {
+  animation: pageEnter 0.4s cubic-bezier(.22,1,.36,1);
+}
+
+body.transition-fade:not(.reduce-motion) main > * {
+  animation: fade-in 0.4s ease-out;
+}
+
+body.transition-scale:not(.reduce-motion) main > * {
+  animation: scale-in 0.4s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+body.transition-bounce:not(.reduce-motion) main > * {
+  animation: bounce-in 0.5s cubic-bezier(.175,.885,.32,1.275);
+}
+
+@keyframes bounce-in {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Micro animations */
