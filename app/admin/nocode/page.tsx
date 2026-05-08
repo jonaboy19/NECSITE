@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Save, Loader2, Palette, Megaphone, Wrench, Shield, Newspaper, Award, Star, Users, Globe } from 'lucide-react'
+import { Save, Loader2, Palette, Megaphone, Wrench, Shield, Award, Star, Globe, Sparkles } from 'lucide-react'
 import { clearSiteSettingsCache } from '@/hooks/useSiteSettings'
 
 const supabase = createClient()
@@ -262,14 +262,90 @@ function BadgesPanel() {
   )
 }
 
+// ─── Animations Panel ───────────────────────────────────────────────────────
+const TRANSITION_PRESETS = [
+  { id: 'none',    label: 'None',      desc: 'Instant, no motion' },
+  { id: 'slide',   label: 'Slide Up',  desc: 'Pages slide up on enter' },
+  { id: 'fade',    label: 'Fade',      desc: 'Smooth opacity transition' },
+  { id: 'scale',   label: 'Scale In',  desc: 'Cards pop into view' },
+  { id: 'bounce',  label: 'Bounce',    desc: 'Springy feel like mobile apps' },
+]
+
+function AnimationsPanel() {
+  const [data, setData] = useState<any>({
+    page_transition: 'slide',
+    card_hover: true,
+    live_ticker: true,
+    glow_effects: true,
+    particle_bg: false,
+    shimmer_skeletons: true,
+    confetti_on_win: true,
+    speed: 'normal',
+    reduce_motion: false,
+  })
+  const [saving, setSaving] = useState(false)
+  useEffect(() => { getSetting('animations').then(setData) }, [])
+  const save = async () => { setSaving(true); await saveSetting('animations', data); setSaving(false); alert('Animation settings saved! Reload the site to see changes.') }
+
+  return (
+    <div className="space-y-4">
+      <Section title="Page Transitions">
+        <p className="text-xs text-slate-500 mb-3">Choose how pages animate when navigating between them.</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          {TRANSITION_PRESETS.map(p => (
+            <button key={p.id} onClick={() => setData({ ...data, page_transition: p.id })}
+              className={`p-3 rounded-xl border text-left transition-all ${
+                data.page_transition === p.id
+                  ? 'border-brand-cyan bg-brand-cyan/10 text-brand-cyan'
+                  : 'border-kaf-border text-slate-400 hover:border-slate-600'
+              }`}>
+              <div className="font-bold text-sm">{p.label}</div>
+              <div className="text-[10px] mt-0.5 opacity-70">{p.desc}</div>
+            </button>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="Animation Speed">
+        <div className="flex gap-2">
+          {['slow','normal','fast'].map(s => (
+            <button key={s} onClick={() => setData({ ...data, speed: s })}
+              className={`flex-1 py-2 rounded-xl border font-bold text-sm capitalize transition-all ${
+                data.speed === s ? 'border-brand-cyan bg-brand-cyan/10 text-brand-cyan' : 'border-kaf-border text-slate-400'
+              }`}>{s}</button>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="UI Effects">
+        <Toggle label="Card hover lift" desc="Cards rise slightly on hover" checked={!!data.card_hover} onChange={v => setData({ ...data, card_hover: v })} />
+        <Toggle label="Glow / neon effects" desc="Cyan glow on active elements and buttons" checked={!!data.glow_effects} onChange={v => setData({ ...data, glow_effects: v })} />
+        <Toggle label="Shimmer skeletons" desc="Loading placeholders pulse with shimmer" checked={!!data.shimmer_skeletons} onChange={v => setData({ ...data, shimmer_skeletons: v })} />
+        <Toggle label="Live ticker animation" desc="Score/activity ticker scrolls across the top" checked={!!data.live_ticker} onChange={v => setData({ ...data, live_ticker: v })} />
+        <Toggle label="Confetti on win" desc="Confetti burst when match result is confirmed" checked={!!data.confetti_on_win} onChange={v => setData({ ...data, confetti_on_win: v })} />
+        <Toggle label="Particle background" desc="Subtle animated particles on hero sections" checked={!!data.particle_bg} onChange={v => setData({ ...data, particle_bg: v })} />
+      </Section>
+
+      <Section title="Accessibility">
+        <Toggle label="Reduce motion" desc="Disables all animations for users who prefer it. Also auto-applies if OS has 'reduce motion' enabled." checked={!!data.reduce_motion} onChange={v => setData({ ...data, reduce_motion: v })} />
+      </Section>
+
+      <button onClick={save} disabled={saving} className="px-6 py-2.5 bg-brand-cyan hover:bg-brand-cyan/80 text-slate-900 rounded-xl font-black text-sm flex items-center gap-2 disabled:opacity-40">
+        {saving ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />} Save Animations
+      </button>
+    </div>
+  )
+}
+
 // ─── Main Admin No-Code Page ─────────────────────────────────────────────────
 const TABS = [
-  { id: 'branding',     label: 'Branding & Hero', Icon: Palette },
-  { id: 'announcement', label: 'Announcement Bar', Icon: Megaphone },
-  { id: 'sitemode',     label: 'Site Mode',        Icon: Wrench },
-  { id: 'features',     label: 'Feature Toggles',  Icon: Globe },
-  { id: 'sponsors',     label: 'Sponsors',          Icon: Star },
-  { id: 'badges',       label: 'Badge Editor',      Icon: Award },
+  { id: 'branding',     label: 'Branding & Hero',  Icon: Palette },
+  { id: 'announcement', label: 'Announcement Bar',  Icon: Megaphone },
+  { id: 'sitemode',     label: 'Site Mode',         Icon: Wrench },
+  { id: 'features',     label: 'Feature Toggles',   Icon: Globe },
+  { id: 'animations',   label: 'Animations',         Icon: Sparkles },
+  { id: 'sponsors',     label: 'Sponsors',           Icon: Star },
+  { id: 'badges',       label: 'Badge Editor',       Icon: Award },
 ]
 
 export default function NoCodeAdminPage() {
@@ -303,12 +379,13 @@ export default function NoCodeAdminPage() {
 
         {/* Panel content */}
         <div className="flex-1 p-4 sm:p-6 max-w-3xl">
-          {tab === 'branding' && <BrandingPanel />}
+          {tab === 'branding'     && <BrandingPanel />}
           {tab === 'announcement' && <AnnouncementPanel />}
-          {tab === 'sitemode' && <SiteModePanel />}
-          {tab === 'features' && <FeaturesPanel />}
-          {tab === 'sponsors' && <SponsorsPanel />}
-          {tab === 'badges' && <BadgesPanel />}
+          {tab === 'sitemode'     && <SiteModePanel />}
+          {tab === 'features'     && <FeaturesPanel />}
+          {tab === 'animations'   && <AnimationsPanel />}
+          {tab === 'sponsors'     && <SponsorsPanel />}
+          {tab === 'badges'       && <BadgesPanel />}
         </div>
       </div>
     </div>

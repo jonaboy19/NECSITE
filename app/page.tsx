@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { Trophy, Users, BarChart3, Zap, Shield, ChevronRight, Play, Star, Flame, ArrowRight } from 'lucide-react'
+import { Trophy, Users, BarChart3, Zap, Shield, ChevronRight, Play, Star, Flame, ArrowRight, Bell, MessageSquareDot } from 'lucide-react'
 import LiveActivityTicker from '@/components/LiveActivityTicker'
 import RealtimeFeed from '@/components/RealtimeFeed'
 import { fetchLiveTickers, fetchFeedActivities, fetchTournaments, fetchRankings } from '@/lib/utils'
@@ -187,9 +187,23 @@ async function AuthenticatedFeed() {
 
   return (
     <div className="flex flex-col w-full h-full pb-24 lg:pb-0">
-      {/* Mobile Header */}
-      <div className="w-full bg-kaf-panel/80 border-b border-kaf-border/50 p-4 lg:hidden sticky top-0 z-40 backdrop-blur-md flex justify-between items-center">
-        <h1 className="font-display font-black text-xl text-white tracking-wide">KAF<span className="text-brand-cyan">CONNECT</span></h1>
+      {/* Mobile Header - Instagram style */}
+      <div className="w-full bg-kaf-bg/90 border-b border-kaf-border/50 px-4 py-3 lg:hidden sticky top-0 z-40 backdrop-blur-md flex justify-between items-center">
+        <Link href="/" className="flex items-center gap-2">
+          <img src="/kaf-logo.png" alt="KAF" className="w-7 h-7 object-contain" />
+          <h1 className="font-display font-black text-lg text-white tracking-wide">KAF<span className="text-brand-cyan">CONNECT</span></h1>
+        </Link>
+        <div className="flex items-center gap-1">
+          <Link href="/notifications"
+            className="relative w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+            <Bell size={20} />
+          </Link>
+          <Link href="/messages"
+            className="relative w-9 h-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+            <MessageSquareDot size={20} />
+            {/* Unread badge — populated client side via useUnreadCount */}
+          </Link>
+        </div>
       </div>
 
       <LiveActivityTicker items={liveTickers.map(t => t.message)} />
