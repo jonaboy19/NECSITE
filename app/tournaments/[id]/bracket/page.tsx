@@ -1,112 +1,79 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import BracketVisualizer from '@/components/BracketVisualizer'
+import { notFound } from 'next/navigation'
+import { BracketViewer } from '@/components/BracketViewer'
+import { StatusBadge } from '@/components/StatusBadge'
 import Link from 'next/link'
-import { ArrowLeft, Trophy, GitMerge, Users } from 'lucide-react'
-
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const supabase = await createServerSupabaseClient()
-  const { data: tournament } = await supabase.from('tournaments').select('title').eq('id', id).single()
-  return {
-    title: `${tournament?.title || 'Tournament'} Bracket — KAFConnect`,
-    description: `View the full bracket for ${tournament?.title || 'this tournament'} on KAFConnect.`,
-  }
-}
+import { ArrowLeft, Trophy } from 'lucide-react'
 
 export default async function BracketPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createServerSupabaseClient()
 
   const { data: tournament } = await supabase.from('tournaments').select('*').eq('id', id).single()
-  const { data: rawMatches } = await supabase
-    .from('match_details')
-    .select('*')
-    .eq('tournament_id', id)
-    .order('round')
-    .order('match_number')
+  if (!tournament) notFound()
 
-  const { data: players } = await supabase
-    .from('tournament_registrations')
-    .select('*, profiles(username, avatar_url)')
+  const { data: matches } = await supabase
+    .from('matches')
+    .select('id,round,match_index,participant_a_id,participant_b_id,score_a,score_b,winner_id,status,scheduled_at,clan_a_id,clan_b_id,winner_clan_id')
     .eq('tournament_id', id)
+    .order('round').order('match_index')
 
-  const completedCount = rawMatches?.filter(m => m.status === 'completed').length || 0
-  const liveCount = rawMatches?.filter(m => m.status === 'live').length || 0
+  // Build participant map from clan data
+  const clanIds = [...new Set([
+    ...(matches ?? []).map((m: any) => m.clan_a_id).filter(Boolean),
+    ...(matches ?? []).map((m: any) => m.clan_b_id).filter(Boolean),
+  ])]
+
+  const { data: clans } = clanIds.length
+    ? await supabase.from('clans').select('id,name,tag,logo_url').in('id', clanIds)
+    : { data: [] }
+
+  // Map matches to BracketViewer format
+  const bracketMatches = (matches ?? []).map((m: any) => ({
+    id: m.id,
+    round: m.round ?? 1,
+    match_index: m.match_index ?? 0,
+    participant_a_id: m.clan_a_id,
+    participant_b_id: m.clan_b_id,
+    score_a: m.score_a,
+    score_b: m.score_b,
+    winner_id: m.winner_clan_id,
+    status: m.status,
+    scheduled_at: m.scheduled_at,
+  }))
+
+  const participants: Record<string, any> = {}
+  ;(clans ?? []).forEach((c: any) => {
+    participants[c.id] = { id: c.id, display_name: c.name, tag: c.tag, logo_url: c.logo_url }
+  })
 
   return (
-    <div className="flex flex-col w-full pb-20">
+    <div className="flex flex-col w-full pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-kaf-panel/95 backdrop-blur-xl border-b border-kaf-border px-4 py-3 flex items-center gap-3">
-        <Link href={`/tournaments/${id}/dashboard`} className="p-2 -ml-1 rounded-full hover:bg-white/5 transition-colors">
-          <ArrowLeft size={20} className="text-white" />
+      <div className="border-b border-kaf-border px-4 sm:px-8 py-6 bg-kaf-panel">
+        <Link href={`/tournaments/${id}`} className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-brand-cyan mb-3 transition-colors font-mono uppercase tracking-widest">
+          <ArrowLeft size={12} /> {tournament.title}
         </Link>
-        <div className="flex-1 min-w-0">
-          <h1 className="font-black text-white text-sm truncate">{tournament?.title || 'Tournament'}</h1>
-          <p className="text-[10px] text-brand-cyan font-bold uppercase tracking-widest">Full Bracket</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-3xl font-display font-black text-white uppercase flex items-center gap-3">
+            <Trophy size={24} className="text-brand-gold" /> Tournament Bracket
+          </h1>
+          <StatusBadge status={tournament.status} />
         </div>
-        <div className="flex items-center gap-3">
-          {liveCount > 0 && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-status-live/10 border border-status-live/30 text-status-live text-[10px] font-black uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 bg-status-live rounded-full animate-pulse" />
-              {liveCount} Live
-            </div>
-          )}
-        </div>
+        <p className="text-slate-400 text-sm mt-1">{tournament.format || 'Single Elimination'} · {bracketMatches.length} matches</p>
       </div>
 
-      {/* Tournament Stats Bar */}
-      <div className="bg-kaf-panel border-b border-kaf-border px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-brand-gold/10 flex items-center justify-center border border-brand-gold/20">
-              <Trophy size={16} className="text-brand-gold" />
-            </div>
-            <div>
-              <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Prize</p>
-              <p className="text-sm font-black text-white">{tournament?.prize_pool || 'Glory'}</p>
-            </div>
+      <div className="p-4 sm:p-8">
+        <BracketViewer
+          matches={bracketMatches}
+          participants={participants}
+          label={tournament.title}
+        />
+        {bracketMatches.length === 0 && (
+          <div className="text-center py-16 text-slate-500 text-sm">
+            Bracket will appear here once the tournament has started.
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-brand-cyan/10 flex items-center justify-center border border-brand-cyan/20">
-              <Users size={16} className="text-brand-cyan" />
-            </div>
-            <div>
-              <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Players</p>
-              <p className="text-sm font-black text-white">{players?.length || 0}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
-              <GitMerge size={16} className="text-purple-400" />
-            </div>
-            <div>
-              <p className="text-[9px] text-slate-500 uppercase font-black tracking-widest">Matches</p>
-              <p className="text-sm font-black text-white">{completedCount}/{rawMatches?.length || 0} Complete</p>
-            </div>
-          </div>
-          <div className="ml-auto">
-            <span className={`px-3 py-1 rounded text-[10px] font-black uppercase tracking-widest ${
-              tournament?.status === 'live' ? 'bg-status-live text-white shadow-[0_0_10px_rgba(255,0,60,0.4)]' :
-              tournament?.status === 'registration_open' ? 'bg-brand-gold/20 text-brand-gold border border-brand-gold/30' :
-              tournament?.status === 'completed' ? 'bg-slate-600/20 text-slate-400 border border-slate-600/30' :
-              'bg-slate-700 text-white'
-            }`}>
-              {tournament?.status?.replace(/_/g, ' ') || 'Unknown'}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Bracket */}
-      <div className="p-6 max-w-full">
-        <div className="flex items-center gap-2 mb-6">
-          <span className="w-2 h-8 bg-brand-cyan rounded-full" />
-          <h2 className="text-2xl font-display font-black uppercase tracking-wider text-white">
-            Tournament Bracket
-          </h2>
-        </div>
-
-        <BracketVisualizer matches={rawMatches as any || []} tournamentId={id} />
+        )}
       </div>
     </div>
   )

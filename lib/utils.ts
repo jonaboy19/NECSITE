@@ -1,4 +1,10 @@
 import { createServerSupabaseClient } from './supabase/server'
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 // ─── SERVER-SIDE Data Fetching (for use in Server Components) ───────────────
 

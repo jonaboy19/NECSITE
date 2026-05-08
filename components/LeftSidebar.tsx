@@ -4,10 +4,11 @@ import { usePathname } from 'next/navigation'
 import {
   Home, Play, Trophy, BarChart3, Users, GitMerge, Video, MessageSquare,
   Bell, Settings, UserPlus, Film, Shield, AlertTriangle, Newspaper,
-  Star, Swords, ChevronDown, ChevronRight, Tv, Sliders, Users2
+  Star, Swords, ChevronDown, ChevronRight, Tv, Sliders, Users2, Search
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { GlobalSearch } from '@/components/GlobalSearch'
 
 type NavItem = { name: string; href: string; icon: any; badge?: string }
 type NavSection = { label: string; items: NavItem[]; collapsible?: boolean }
@@ -68,6 +69,7 @@ export default function LeftSidebar() {
   const pathname = usePathname()
   const [userProfile, setUserProfile] = useState<any>(null)
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({ Media: true })
+  const [searchOpen, setSearchOpen] = useState(false)
 
   useEffect(() => {
     async function loadUser() {
@@ -86,14 +88,22 @@ export default function LeftSidebar() {
 
   return (
     <aside className="sticky top-0 hidden h-screen w-64 flex-col overflow-y-auto border-r border-kaf-border bg-kaf-panel p-4 no-scrollbar lg:flex">
+      <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
       {/* Logo */}
-      <Link href="/" className="mb-6 px-2 flex items-center gap-3 group">
+      <Link href="/" className="mb-3 px-2 flex items-center gap-3 group">
         <img src="/kaf-logo.png" alt="KAF Connect Logo" className="w-12 h-12 object-contain group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(0,255,102,0.4)]" />
         <div>
           <span className="text-xl font-black tracking-widest text-brand-cyan block">KAFCONNECT</span>
           <span className="text-[9px] text-white uppercase tracking-[0.2em] font-bold block -mt-1">Arena Hub</span>
         </div>
       </Link>
+      {/* Search */}
+      <button onClick={() => setSearchOpen(true)}
+        className="mb-4 flex items-center gap-2 w-full px-3 py-2 rounded-xl bg-slate-900 border border-kaf-border text-slate-500 hover:text-slate-300 hover:border-slate-600 text-xs transition-all">
+        <Search size={12} />
+        <span className="flex-1 text-left">Search...</span>
+        <kbd className="text-[9px] border border-kaf-border rounded px-1 py-0.5">⌘K</kbd>
+      </button>
 
       <nav className="flex flex-1 flex-col gap-6 overflow-y-auto no-scrollbar">
         {NAV_SECTIONS.map((section) => {
