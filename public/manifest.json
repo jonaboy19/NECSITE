@@ -1,0 +1,26 @@
+{
+  "name": "KAFConnect",
+  "short_name": "KAFConnect",
+  "description": "The ultimate esports platform for competitive eFootball. Tournaments, clans, rankings, and live match coverage.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111418",
+  "theme_color": "#111418",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/kaf-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/kaf-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["games", "sports"],
+  "lang": "en"
+}

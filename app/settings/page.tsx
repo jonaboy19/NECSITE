@@ -1,17 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { User, Globe, MessageSquare, Save, LogOut, Loader2, Check, Camera } from 'lucide-react'
+import { useToast } from '@/components/Toast'
 
 export default function SettingsPage() {
   const supabase = createClient()
   const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploading, setUploading] = useState(false)
   const [saved, setSaved] = useState(false)
   const [profile, setProfile] = useState<any>(null)
+  const { success: toastSuccess, error: toastError } = useToast()
   const [form, setForm] = useState({
     username: '',
     display_name: '',
@@ -51,10 +55,32 @@ export default function SettingsPage() {
     setSaving(false)
     if (!error) {
       setSaved(true)
+      toastSuccess('Profile saved successfully!')
       setTimeout(() => setSaved(false), 3000)
     } else {
-      alert('Error saving: ' + error.message)
+      toastError('Error saving: ' + error.message)
     }
+  }
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !profile) return
+    setUploading(true)
+    const ext = file.name.split('.').pop()
+    const path = `avatars/${profile.id}.${ext}`
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(path, file, { upsert: true })
+    if (uploadError) {
+      toastError('Upload failed: ' + uploadError.message)
+      setUploading(false)
+      return
+    }
+    const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(path)
+    await supabase.from('profiles').update({ avatar_url: publicUrl }).eq('id', profile.id)
+    setProfile({ ...profile, avatar_url: publicUrl })
+    toastSuccess('Avatar updated!')
+    setUploading(false)
   }
 
   const handleLogout = async () => {
@@ -78,6 +104,40 @@ export default function SettingsPage() {
         <button onClick={handleLogout} className="flex items-center gap-2 text-sm text-slate-400 hover:text-red-400 transition-colors font-bold">
           <LogOut size={16} /> Sign Out
         </button>
+      </div>
+
+      {/* Avatar Upload */}
+      <div className="kaf-card rounded-2xl border border-kaf-border p-6">
+        <h2 className="text-lg font-black text-white flex items-center gap-2 mb-4">
+          <Camera size={20} className="text-brand-cyan" /> Profile Picture
+        </h2>
+        <div className="flex items-center gap-6">
+          <div className="relative shrink-0">
+            <div
+              className="w-20 h-20 rounded-2xl bg-slate-800 bg-cover bg-center border-2 border-kaf-border"
+              style={{ backgroundImage: `url('${profile?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username}`}')` }}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full bg-brand-cyan flex items-center justify-center hover:bg-white transition-colors shadow-lg disabled:opacity-50"
+            >
+              {uploading ? <Loader2 size={14} className="animate-spin text-kaf-bg" /> : <Camera size={14} className="text-kaf-bg" />}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarUpload}
+            />
+          </div>
+          <div>
+            <p className="text-white font-bold">{profile?.username || 'Player'}</p>
+            <p className="text-slate-400 text-sm mt-1">Click the camera icon to upload a new avatar.</p>
+            <p className="text-slate-500 text-xs mt-1">PNG, JPG up to 5MB</p>
+          </div>
+        </div>
       </div>
 
       {/* Profile Section */}
