@@ -2,18 +2,19 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Trophy, GitMerge, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 
-export default async function Bracket({ params }: { params: { id: string } }) {
+export default async function Bracket({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerSupabaseClient()
   
   // Fetch tournament details
-  const { data: tourney } = await supabase.from('tournaments').select('*').eq('id', params.id).single()
+  const { data: tourney } = await supabase.from('tournaments').select('*').eq('id', id).single()
 
   // Fetch matches with player info
   const { data } = await supabase.from('matches').select(`
     *,
     playerA:profiles!matches_player_a_id_fkey (username, avatar_url),
     playerB:profiles!matches_player_b_id_fkey (username, avatar_url)
-  `).eq('tournament_id', params.id).order('round')
+  `).eq('tournament_id', id).order('round')
 
   const rounds = {} as any
   data?.forEach((m: any) => {
@@ -26,7 +27,7 @@ export default async function Bracket({ params }: { params: { id: string } }) {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 p-6 lg:p-8 border-b border-kaf-border bg-kaf-panel">
         <div>
-          <Link href={`/tournaments/${params.id}/dashboard`} className="text-brand-cyan hover:underline flex items-center gap-2 mb-2 text-sm font-bold uppercase tracking-widest">
+          <Link href={`/tournaments/${id}/dashboard`} className="text-brand-cyan hover:underline flex items-center gap-2 mb-2 text-sm font-bold uppercase tracking-widest">
             <ChevronLeft size={16} /> Back to Dashboard
           </Link>
           <h1 className="text-3xl md:text-4xl font-display font-black text-white flex items-center gap-3 uppercase tracking-wide">

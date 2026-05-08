@@ -4,7 +4,8 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import DisputeUpload from '@/components/DisputeUpload'
 
-export default async function MatchPage({ params }: { params: { id: string } }) {
+export default async function MatchPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerSupabaseClient()
   
   // Fetch match details
@@ -18,7 +19,7 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
       clan_a:clans!matches_clan_a_id_fkey(*),
       clan_b:clans!matches_clan_b_id_fkey(*)
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (error || !match) {
@@ -147,7 +148,7 @@ export default async function MatchPage({ params }: { params: { id: string } }) 
             </div>
           </div>
 
-          <DisputeUpload matchId={params.id} />
+          <DisputeUpload matchId={id} />
 
           {/* INCIDENT TIMELINE */}
           <div className="kaf-card p-6 rounded-2xl border border-kaf-border">

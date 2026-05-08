@@ -3,23 +3,33 @@ import MatchCard from '@/components/MatchCard'
 import HostControlPanel from '@/components/HostControlPanel'
 import { Trophy, Users, GitMerge, ChevronLeft, Calendar, Shield, Map, Settings, Play, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
+import PublicHeader from '@/components/PublicHeader'
 
-export default async function Dashboard({ params }: { params: { id: string } }) {
+export default async function Dashboard({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createServerSupabaseClient()
 
-  const { data: tournament } = await supabase.from('tournaments').select('*').eq('id', params.id).single()
-  const { data: matches } = await supabase.from('match_details').select('*').eq('tournament_id', params.id).order('round')
+  const { data: tournament } = await supabase.from('tournaments').select('*').eq('id', id).single()
+  const { data: matches } = await supabase.from('match_details').select('*').eq('tournament_id', id).order('round')
   // Fetch profiles along with registrations
-  const { data: players } = await supabase.from('tournament_registrations').select('*, profiles(username, avatar_url), clans(name)').eq('tournament_id', params.id)
+  const { data: players } = await supabase.from('tournament_registrations').select('*, profiles(username, avatar_url), clans(name)').eq('tournament_id', id)
+
+  // Check if current user is the host
+  const { data: { user } } = await supabase.auth.getUser()
+  const isHost = user && (user.id === tournament?.creator_id)
+  
+  // Also check if admin
+  let isAdmin = false
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
+    isAdmin = ['admin', 'super_admin', 'moderator'].includes(profile?.role || '')
+  }
 
   const isLive = tournament?.status === 'live';
 
-  // For demonstration, we assume the viewer is the host if they are looking at the dashboard.
-  // In production, this would be `user.id === tournament.creator_id || user.role === 'admin'`
-  const isHost = true; 
-  
   return (
     <div className="flex flex-col w-full pb-20">
+      <PublicHeader />
       {/* Tournament Hero */}
       <section className="relative w-full h-[40vh] min-h-[350px] bg-kaf-panel overflow-hidden border-b border-kaf-border flex items-end">
         <div className="absolute inset-0 bg-[url('/kaf-eleague-s1-poster.png')] bg-cover bg-center opacity-40"></div>
@@ -85,11 +95,11 @@ export default async function Dashboard({ params }: { params: { id: string } }) 
           
           <div className="flex-shrink-0 flex flex-col gap-3 min-w-[200px]">
             {tournament?.status === 'registration_open' ? (
-              <button className="w-full rounded-xl bg-brand-cyan px-6 py-4 font-bold text-kaf-bg hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+              <Link href={`/tournaments/${id}/join`} className="w-full text-center rounded-xl bg-brand-cyan px-6 py-4 font-bold text-kaf-bg hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)]">
                 Register for Event
-              </button>
+              </Link>
             ) : null}
-            <Link href={`/tournaments/${params.id}/bracket`} className="w-full flex items-center justify-center gap-2 rounded-xl bg-kaf-card border border-kaf-border px-6 py-4 font-bold text-white hover:bg-white/10 transition-all">
+            <Link href={`/tournaments/${id}/bracket`} className="w-full flex items-center justify-center gap-2 rounded-xl bg-kaf-card border border-kaf-border px-6 py-4 font-bold text-white hover:bg-white/10 transition-all">
               <Map size={18} /> View Bracket
             </Link>
           </div>
@@ -102,8 +112,8 @@ export default async function Dashboard({ params }: { params: { id: string } }) 
         <div className="lg:col-span-2 space-y-8">
           
           {/* Host Control Panel */}
-          {isHost && (
-            <HostControlPanel tournamentId={params.id} initialStatus={tournament?.status || 'draft'} />
+          {(isHost || isAdmin) && (
+            <HostControlPanel tournamentId={id} initialStatus={tournament?.status || 'draft'} />
           )}
 
           <div className="flex items-center justify-between border-b border-kaf-border pb-4">
@@ -111,7 +121,7 @@ export default async function Dashboard({ params }: { params: { id: string } }) 
               <span className="w-2 h-8 bg-brand-cyan rounded-full"></span>
               Match Schedule
             </h2>
-            <Link href={`/tournaments/${params.id}/bracket`} className="text-brand-cyan text-sm font-bold hover:underline">
+            <Link href={`/tournaments/${id}/bracket`} className="text-brand-cyan text-sm font-bold hover:underline">
               Full Bracket
             </Link>
           </div>

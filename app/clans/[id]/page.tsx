@@ -1,10 +1,11 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, use } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Shield, Users, Medal, Star, Settings, CheckCircle, XCircle, UserPlus, GitMerge, RefreshCw, Trophy } from 'lucide-react'
 import Link from 'next/link'
 
-export default function ClanDashboard({ params }: { params: { id: string } }) {
+export default function ClanDashboard({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params)
   const supabase = createClient()
   const [currentUser, setCurrentUser] = useState<any>(null)
   const [clan, setClan] = useState<any>(null)
@@ -21,13 +22,13 @@ export default function ClanDashboard({ params }: { params: { id: string } }) {
     setCurrentUser(user)
 
     // Fetch Clan
-    const { data: cData } = await supabase.from('clans').select('*').eq('id', params.id).single()
+    const { data: cData } = await supabase.from('clans').select('*').eq('id', id).single()
     setClan(cData)
 
     // Fetch Roster with Profiles and Rankings
     const { data: rData } = await supabase.from('clan_members')
       .select('*, profiles(username, avatar_url, region), rankings(rating)')
-      .eq('clan_id', params.id)
+      .eq('clan_id', id)
     setRoster(rData || [])
 
     // Fetch Join Requests if user is owner/coach/captain/manager
@@ -36,7 +37,7 @@ export default function ClanDashboard({ params }: { params: { id: string } }) {
       if (userMember && ['owner', 'manager', 'captain'].includes(userMember.role)) {
         const { data: reqData } = await supabase.from('clan_applications')
           .select('*, profiles(username)')
-          .eq('clan_id', params.id)
+          .eq('clan_id', id)
           .eq('status', 'pending')
         setJoinRequests(reqData || [])
       }
@@ -46,7 +47,7 @@ export default function ClanDashboard({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     fetchData()
-  }, [params.id])
+  }, [id])
 
   const userRole = roster.find(m => m.profile_id === currentUser?.id)?.role || 'guest'
   const canManageRoster = ['owner', 'manager', 'captain'].includes(userRole)
@@ -56,7 +57,7 @@ export default function ClanDashboard({ params }: { params: { id: string } }) {
   const handleApply = async () => {
     if (!currentUser) return alert('You must be logged in to apply.')
     const { error } = await supabase.from('clan_applications').insert({
-      clan_id: params.id,
+      clan_id: id,
       profile_id: currentUser.id,
       status: 'pending'
     })
@@ -70,7 +71,7 @@ export default function ClanDashboard({ params }: { params: { id: string } }) {
     // If approved, insert into clan_members
     if (status === 'accepted') {
       await supabase.from('clan_members').insert({
-        clan_id: params.id,
+        clan_id: id,
         profile_id: profileId,
         role: 'player'
       })
