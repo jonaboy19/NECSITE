@@ -5,21 +5,21 @@ module.exports = {
     extend: {
       colors: {
         kaf: {
-          bg: '#111418',
-          panel: '#181c20',
-          card: '#1f2429',
-          border: 'rgba(255, 255, 255, 0.08)',
+          bg: '#050505',
+          panel: '#0a0a0c',
+          card: '#0f1014',
+          border: 'rgba(255, 255, 255, 0.05)',
         },
         brand: {
-          cyan: '#00ff66', // Keep the variable name 'cyan' so we don't break all the classes, but make it neon green
-          teal: '#2ecc71',
-          gold: '#ffd700',
+          cyan: '#008a38', // Darker, authentic tournament green
+          teal: '#1f8c4d',
+          gold: '#b39500',
         },
         status: {
-          win: '#10b981',
-          loss: '#ef4444',
-          live: '#ff003c',
-          draft: '#9333ea',
+          win: '#059669',
+          loss: '#dc2626',
+          live: '#b9002d',
+          draft: '#7e22ce',
         }
       },
       fontFamily: {

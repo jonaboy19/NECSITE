@@ -9,13 +9,13 @@ import HeroRemotionBackground from '@/components/HeroRemotionBackground'
 /* ─── Public Header for guests ─── */
 function PublicNav() {
   return (
-    <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-8 mix-blend-difference text-white pointer-events-auto">
+    <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-8 text-white pointer-events-auto border-b border-kaf-border/30 bg-black/50 backdrop-blur-md">
       <Link href="/" className="flex items-center gap-2 group">
-        <span className="text-2xl font-display font-black tracking-[0.2em] uppercase">KAF<span className="opacity-50">CONNECT</span></span>
+        <span className="text-2xl font-display font-black tracking-[0.2em] uppercase">KAF<span className="text-brand-cyan">CONNECT</span></span>
       </Link>
       <div className="flex items-center gap-4 sm:gap-8">
-        <Link href="/auth/login" className="text-xs font-bold uppercase tracking-[0.2em] hover:text-brand-cyan transition-colors">Login</Link>
-        <Link href="/auth/register" className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] px-6 py-3 sm:px-8 sm:py-4 border-2 border-white hover:bg-white hover:text-black transition-colors">Join Arena</Link>
+        <Link href="/auth/login" className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition-colors">Login</Link>
+        <Link href="/auth/register" className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] px-6 py-3 sm:px-8 sm:py-4 bg-brand-cyan text-white hover:bg-brand-teal transition-colors [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]">Join Arena</Link>
       </div>
     </nav>
   )
@@ -24,7 +24,7 @@ function PublicNav() {
 /* ─── Brutalist Unique Landing Page (for guests) ─── */
 function LandingPage() {
   return (
-    <div className="bg-[#111418] min-h-screen text-white font-sans selection:bg-brand-cyan/30 flex flex-col">
+    <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-brand-cyan/30 flex flex-col">
       <PublicNav />
       
       {/* Heavy Brutalist Hero with Remotion Video Background */}
@@ -34,27 +34,27 @@ function LandingPage() {
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-end justify-between gap-12 pointer-events-auto mt-32">
           
           <div className="w-full lg:w-2/3">
-            <div className="overflow-hidden mb-6">
-              <p className="text-brand-cyan font-mono text-xs md:text-sm tracking-[0.5em] uppercase animate-slideDown flex items-center gap-3">
-                <span className="w-2 h-2 bg-brand-cyan rounded-full animate-pulse"></span>
+            <div className="overflow-hidden mb-6 flex items-center gap-3 border-l-4 border-brand-cyan pl-3">
+              <span className="w-2 h-2 bg-brand-cyan animate-pulse"></span>
+              <p className="text-brand-cyan font-mono text-xs md:text-sm tracking-[0.4em] uppercase">
                 System Online • V2.0.4
               </p>
             </div>
-            <h1 className="text-[14vw] lg:text-[8vw] font-black leading-[0.8] tracking-tighter uppercase mix-blend-difference">
-              UNLEASH <br/> <span className="text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.3)' }}>THE</span> APEX
+            <h1 className="text-[14vw] lg:text-[8vw] font-black leading-[0.85] tracking-tighter uppercase drop-shadow-2xl">
+              UNLEASH <br/> <span className="text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.4)' }}>THE</span> APEX
             </h1>
           </div>
 
           <div className="w-full lg:w-1/3 flex flex-col gap-8">
-            <p className="text-base lg:text-lg text-slate-300 font-medium leading-relaxed border-l-2 border-brand-cyan pl-6 bg-black/20 backdrop-blur-sm p-4">
+            <p className="text-base lg:text-lg text-slate-400 font-medium leading-relaxed bg-black/60 border border-kaf-border p-6 [clip-path:polygon(0_0,100%_0,100%_calc(100%-15px),calc(100%-15px)_100%,0_100%)] backdrop-blur-sm">
               The premier eFootball architecture. Live highlights, absolute global rankings, and relentless tournament brackets. 
             </p>
             
             <div className="grid grid-cols-2 gap-4">
-              <Link href="/auth/register" className="flex items-center justify-center p-6 bg-brand-cyan text-black font-black uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform">
+              <Link href="/auth/register" className="flex items-center justify-center p-5 bg-brand-cyan text-white font-black uppercase tracking-widest text-xs sm:text-sm hover:bg-brand-teal transition-colors [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]">
                 Initiate
               </Link>
-              <Link href="/tournaments" className="flex items-center justify-center p-6 border border-kaf-border bg-black/50 backdrop-blur-md text-white font-black uppercase tracking-widest text-xs sm:text-sm hover:bg-white hover:text-black transition-colors">
+              <Link href="/tournaments" className="flex items-center justify-center p-5 border border-kaf-border bg-black text-white font-black uppercase tracking-widest text-xs sm:text-sm hover:bg-white hover:text-black transition-colors [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]">
                 Observe
               </Link>
             </div>
@@ -87,15 +87,15 @@ function LandingPage() {
 
       {/* Feature Section - Abstract Cards */}
       <section className="py-24 md:py-32 px-6 lg:px-12 w-full max-w-7xl mx-auto flex-1">
-        <h2 className="text-4xl md:text-6xl font-black mb-16 tracking-tighter uppercase mix-blend-difference">
+        <h2 className="text-4xl md:text-6xl font-black mb-16 tracking-tighter uppercase drop-shadow-lg">
           Core <br/><span className="text-slate-600">Architecture</span>
         </h2>
         
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {/* Card 1 */}
-          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-kaf-card overflow-hidden hover:border-brand-cyan transition-colors">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/10 blur-3xl rounded-full group-hover:bg-brand-cyan/30 transition-all"></div>
-            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter mix-blend-screen">01</div>
+          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-[#0a0a0c] hover:border-brand-cyan transition-colors [clip-path:polygon(0_0,100%_0,100%_calc(100%-20px),calc(100%-20px)_100%,0_100%)]">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 blur-3xl group-hover:bg-brand-cyan/10 transition-all"></div>
+            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter">01</div>
             <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Live Video Synthesis</h3>
             <p className="text-slate-400 leading-relaxed font-mono text-sm">
               Powered by Remotion. Real-time match data is compiled into cinematic MP4 highlights server-side instantly upon match resolution.
@@ -103,9 +103,9 @@ function LandingPage() {
           </div>
 
           {/* Card 2 */}
-          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-kaf-card overflow-hidden hover:border-brand-gold transition-colors">
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-gold/10 blur-3xl rounded-full group-hover:bg-brand-gold/30 transition-all"></div>
-            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter mix-blend-screen">02</div>
+          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-[#0a0a0c] hover:border-brand-gold transition-colors [clip-path:polygon(0_0,100%_0,100%_calc(100%-20px),calc(100%-20px)_100%,0_100%)]">
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-gold/5 blur-3xl group-hover:bg-brand-gold/10 transition-all"></div>
+            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter">02</div>
             <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Relentless Elo</h3>
             <p className="text-slate-400 leading-relaxed font-mono text-sm">
               Global rankings mathematically forged in the fire of competition. Every match dynamically shifts the balance of power.
@@ -113,17 +113,17 @@ function LandingPage() {
           </div>
           
           {/* Card 3 */}
-          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-kaf-card overflow-hidden hover:border-purple-500 transition-colors md:col-span-2 flex flex-col md:flex-row gap-8 items-center">
+          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-[#0a0a0c] hover:border-purple-500 transition-colors md:col-span-2 flex flex-col md:flex-row gap-8 items-center [clip-path:polygon(20px_0,100%_0,100%_100%,0_100%,0_20px)]">
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920')] bg-cover bg-center opacity-5 grayscale group-hover:grayscale-0 group-hover:opacity-10 transition-all"></div>
             <div className="flex-1 relative z-10">
-              <div className="text-7xl font-black text-white/5 mb-4 tracking-tighter mix-blend-screen">03</div>
+              <div className="text-7xl font-black text-white/5 mb-4 tracking-tighter">03</div>
               <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Clan Warfare Protocol</h3>
               <p className="text-slate-400 leading-relaxed font-mono text-sm max-w-lg">
                 Mobilize your organization. Issue direct challenges, manage your roster, and conquer the leaderboard as a unified front.
               </p>
             </div>
             <div className="shrink-0 relative z-10 hidden sm:block">
-              <Link href="/auth/register" className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-brand-cyan text-black font-black text-xs tracking-widest uppercase hover:scale-110 transition-transform shadow-[0_0_30px_rgba(0,255,102,0.3)]">
+              <Link href="/auth/register" className="inline-flex items-center justify-center w-32 h-32 bg-brand-cyan text-white font-black text-xs tracking-widest uppercase hover:bg-brand-teal transition-colors [clip-path:polygon(15px_0,100%_0,100%_calc(100%-15px),calc(100%-15px)_100%,0_100%,0_15px)]">
                 Enter
               </Link>
             </div>
@@ -132,8 +132,8 @@ function LandingPage() {
       </section>
 
       {/* Footer minimal */}
-      <footer className="border-t border-kaf-border px-6 lg:px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-6 bg-black">
-        <div className="text-xl md:text-2xl font-black tracking-[0.2em] uppercase">KAF<span className="opacity-50">CONNECT</span></div>
+      <footer className="border-t border-kaf-border px-6 lg:px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-6 bg-[#050505]">
+        <div className="text-xl md:text-2xl font-black tracking-[0.2em] uppercase">KAF<span className="text-brand-cyan">CONNECT</span></div>
         <div className="text-[10px] sm:text-xs font-mono text-slate-500 uppercase tracking-widest">© 2026 KAF E-League. Architecture v2.0</div>
       </footer>
     </div>

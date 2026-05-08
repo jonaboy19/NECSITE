@@ -4,9 +4,9 @@ import { MatchHighlight } from '@/components/remotion/MatchHighlight'
 
 export default function HeroRemotionBackground() {
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden bg-black pointer-events-none">
+    <div className="absolute inset-0 z-0 overflow-hidden bg-[#020202] pointer-events-none">
       {/* Remotion Player as a dynamic animated background */}
-      <div className="absolute inset-0 opacity-40 mix-blend-screen scale-110">
+      <div className="absolute inset-0 opacity-20 mix-blend-luminosity scale-110 grayscale">
         <Player
           component={MatchHighlight}
           durationInFrames={120}
@@ -27,11 +27,11 @@ export default function HeroRemotionBackground() {
       </div>
       
       {/* Heavy overlays to make text readable */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#111418_80%)]"></div>
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#111418]/60 to-[#111418]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#050505_90%)]"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-[#050505]/80 via-[#050505]/40 to-[#050505]"></div>
       
       {/* Noise / grid pattern */}
-      <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'linear-gradient(rgba(0,255,102,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,255,102,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+      <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
     </div>
   )
 }
