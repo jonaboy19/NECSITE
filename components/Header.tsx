@@ -4,6 +4,7 @@ import { Trophy, Users, BarChart3, Home, User } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState } from 'react'
 import ThemeToggle from './ThemeToggle'
+import NotificationBell from './NotificationBell'
 
 export default function Header() {
   const [user, setUser] = useState<any>(null)
@@ -37,6 +38,7 @@ export default function Header() {
         )}
       </div>
       <div className="flex items-center gap-4">
+        {user && <NotificationBell />}
         <ThemeToggle />
         {user ? (
           <Link href="/profile" className="flex items-center gap-2 text-sm text-slate-300 hover:text-cyan-200 transition">

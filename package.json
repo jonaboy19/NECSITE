@@ -1,1 +1,36 @@
-{"scripts":{"dev":"next dev","build":"next build","start":"next start","lint":"next lint"},"dependencies":{"@supabase/ssr":"latest","@supabase/supabase-js":"latest","clsx":"latest","lucide-react":"latest","next":"latest","react":"latest","react-dom":"latest","tailwind-merge":"latest"},"devDependencies":{"@tailwindcss/postcss":"latest","@types/node":"latest","@types/react":"latest","@types/react-dom":"latest","autoprefixer":"latest","eslint":"latest","eslint-config-next":"latest","postcss":"latest","tailwindcss":"latest","typescript":"latest"}}
+{
+  "name": "kafconnect-the-project",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.2",
+    "@remotion/player": "^4.0.458",
+    "@supabase/ssr": "latest",
+    "@supabase/supabase-js": "latest",
+    "clsx": "latest",
+    "lucide-react": "latest",
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "remotion": "^4.0.458",
+    "tailwind-merge": "latest",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "autoprefixer": "latest",
+    "eslint": "latest",
+    "eslint-config-next": "latest",
+    "postcss": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest"
+  }
+}

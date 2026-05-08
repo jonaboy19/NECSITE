@@ -30,6 +30,26 @@ export async function fetchRankings(limit?: number) {
   return data || []
 }
 
+export async function fetchFeedActivities(limit?: number) {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from('feed_activities')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit || 10)
+  return data || []
+}
+
+export async function fetchLiveTickers() {
+  const supabase = createClient()
+  const { data } = await supabase
+    .from('live_tickers')
+    .select('*')
+    .eq('is_active', true)
+    .order('created_at', { ascending: false })
+  return data || []
+}
+
 export async function fetchCurrentUser() {
   const supabase = createClient()
   const { data } = await supabase.auth.getUser()
