@@ -9,20 +9,31 @@ import HeroRemotionBackground from '@/components/HeroRemotionBackground'
 /* ─── Public Header for guests ─── */
 function PublicNav() {
   return (
-    <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-8 text-white pointer-events-auto border-b border-kaf-border/30 bg-black/50 backdrop-blur-md">
+    <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-6 text-white pointer-events-auto border-b border-kaf-border/30 bg-black/80 backdrop-blur-md">
       <Link href="/" className="flex items-center gap-2 group">
-        <span className="text-2xl font-display font-black tracking-[0.2em] uppercase">KAF<span className="text-brand-cyan">CONNECT</span></span>
+        <div className="w-8 h-8 rounded-full bg-brand-cyan flex items-center justify-center text-black font-black text-xs shadow-[0_0_15px_rgba(25,133,59,0.5)]">K</div>
+        <span className="text-xl font-display font-black tracking-[0.2em] uppercase hidden sm:block">KAF<span className="text-brand-cyan">CONNECT</span></span>
       </Link>
-      <div className="flex items-center gap-4 sm:gap-8">
+      <div className="hidden lg:flex items-center gap-8 font-bold text-xs uppercase tracking-widest text-slate-400">
+        <Link href="/news" className="hover:text-brand-cyan transition-colors">News</Link>
+        <Link href="/e-league" className="hover:text-brand-cyan transition-colors">KAF E-League</Link>
+        <Link href="/tournaments" className="hover:text-brand-cyan transition-colors">Tournaments</Link>
+        <Link href="/clans" className="hover:text-brand-cyan transition-colors">Clans</Link>
+        <Link href="/forum" className="hover:text-brand-cyan transition-colors">Forum</Link>
+      </div>
+      <div className="flex items-center gap-4 sm:gap-6">
         <Link href="/auth/login" className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 hover:text-white transition-colors">Login</Link>
-        <Link href="/auth/register" className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] px-6 py-3 sm:px-8 sm:py-4 bg-brand-cyan text-white hover:bg-brand-teal transition-colors [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)]">Join Arena</Link>
+        <Link href="/auth/register" className="text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] px-5 py-3 bg-brand-cyan text-white hover:bg-brand-teal transition-colors shadow-[inset_0_-2px_0_rgba(0,0,0,0.3)] border-b-2 border-brand-cyan [clip-path:polygon(8px_0,100%_0,100%_calc(100%-8px),calc(100%-8px)_100%,0_100%,0_8px)]">Join Arena</Link>
       </div>
     </nav>
   )
 }
 
 /* ─── Brutalist Unique Landing Page (for guests) ─── */
-function LandingPage() {
+async function LandingPage() {
+  const supabase = await createServerSupabaseClient()
+  const { data: news } = await supabase.from('news_articles').select('*').order('published_at', { ascending: false }).limit(3)
+  
   return (
     <div className="bg-[#050505] min-h-screen text-white font-sans selection:bg-brand-cyan/30 flex flex-col">
       <PublicNav />
@@ -85,46 +96,55 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* Feature Section - Abstract Cards */}
-      <section className="py-24 md:py-32 px-6 lg:px-12 w-full max-w-7xl mx-auto flex-1">
-        <h2 className="text-4xl md:text-6xl font-black mb-16 tracking-tighter uppercase drop-shadow-lg">
-          Core <br/><span className="text-slate-600">Architecture</span>
+      {/* Feature Section - FM26 Style Architecture Cards */}
+      <section className="py-16 md:py-24 px-6 lg:px-12 w-full max-w-7xl mx-auto flex-1">
+        <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase drop-shadow-lg mb-8 flex items-center gap-4">
+          <span className="w-1.5 h-10 bg-brand-cyan shadow-[0_0_10px_rgba(25,133,59,0.8)]"></span> Core Architecture
         </h2>
         
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+        <div className="grid md:grid-cols-2 gap-1 border border-kaf-border bg-kaf-border p-1">
           {/* Card 1 */}
-          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-[#0a0a0c] hover:border-brand-cyan transition-colors [clip-path:polygon(0_0,100%_0,100%_calc(100%-20px),calc(100%-20px)_100%,0_100%)]">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 blur-3xl group-hover:bg-brand-cyan/10 transition-all"></div>
-            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter">01</div>
-            <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Live Video Synthesis</h3>
-            <p className="text-slate-400 leading-relaxed font-mono text-sm">
-              Powered by Remotion. Real-time match data is compiled into cinematic MP4 highlights server-side instantly upon match resolution.
-            </p>
+          <div className="group relative p-8 lg:p-12 bg-[#0a0a0c] hover:bg-[#0f1014] transition-colors flex flex-col justify-between h-full min-h-[300px]">
+            <div>
+              <div className="text-brand-cyan font-mono text-xs mb-4 uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-brand-cyan rounded-sm"></span> System 01
+              </div>
+              <h3 className="text-2xl font-black uppercase tracking-widest mb-4 border-b border-kaf-border pb-4">Live Video Synthesis</h3>
+              <p className="text-slate-400 leading-relaxed font-mono text-sm">
+                Powered by Remotion. Real-time match data is compiled into cinematic MP4 highlights server-side instantly upon match resolution.
+              </p>
+            </div>
+            <div className="text-7xl font-black text-white/5 tracking-tighter self-end mt-8 font-mono">01</div>
           </div>
 
           {/* Card 2 */}
-          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-[#0a0a0c] hover:border-brand-gold transition-colors [clip-path:polygon(0_0,100%_0,100%_calc(100%-20px),calc(100%-20px)_100%,0_100%)]">
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-gold/5 blur-3xl group-hover:bg-brand-gold/10 transition-all"></div>
-            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter">02</div>
-            <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Relentless Elo</h3>
-            <p className="text-slate-400 leading-relaxed font-mono text-sm">
-              Global rankings mathematically forged in the fire of competition. Every match dynamically shifts the balance of power.
-            </p>
+          <div className="group relative p-8 lg:p-12 bg-[#0a0a0c] hover:bg-[#0f1014] transition-colors flex flex-col justify-between h-full min-h-[300px]">
+            <div>
+              <div className="text-brand-gold font-mono text-xs mb-4 uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-brand-gold rounded-sm"></span> System 02
+              </div>
+              <h3 className="text-2xl font-black uppercase tracking-widest mb-4 border-b border-kaf-border pb-4">Relentless Elo</h3>
+              <p className="text-slate-400 leading-relaxed font-mono text-sm">
+                Global rankings mathematically forged in the fire of competition. Every match dynamically shifts the balance of power.
+              </p>
+            </div>
+            <div className="text-7xl font-black text-white/5 tracking-tighter self-end mt-8 font-mono">02</div>
           </div>
           
           {/* Card 3 */}
-          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-[#0a0a0c] hover:border-purple-500 transition-colors md:col-span-2 flex flex-col md:flex-row gap-8 items-center [clip-path:polygon(20px_0,100%_0,100%_100%,0_100%,0_20px)]">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920')] bg-cover bg-center opacity-5 grayscale group-hover:grayscale-0 group-hover:opacity-10 transition-all"></div>
+          <div className="group relative p-8 lg:p-12 bg-[#0a0a0c] hover:bg-[#0f1014] transition-colors md:col-span-2 flex flex-col md:flex-row gap-8 items-center border-t-2 border-brand-cyan shadow-[inset_0_5px_15px_rgba(25,133,59,0.05)]">
             <div className="flex-1 relative z-10">
-              <div className="text-7xl font-black text-white/5 mb-4 tracking-tighter">03</div>
-              <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Clan Warfare Protocol</h3>
+              <div className="text-purple-400 font-mono text-xs mb-4 uppercase tracking-widest flex items-center gap-2">
+                <span className="w-2 h-2 bg-purple-400 rounded-sm"></span> System 03
+              </div>
+              <h3 className="text-2xl font-black uppercase tracking-widest mb-4 border-b border-kaf-border pb-4">Clan Warfare Protocol</h3>
               <p className="text-slate-400 leading-relaxed font-mono text-sm max-w-lg">
                 Mobilize your organization. Issue direct challenges, manage your roster, and conquer the leaderboard as a unified front.
               </p>
             </div>
-            <div className="shrink-0 relative z-10 hidden sm:block">
-              <Link href="/auth/register" className="inline-flex items-center justify-center w-32 h-32 bg-brand-cyan text-white font-black text-xs tracking-widest uppercase hover:bg-brand-teal transition-colors [clip-path:polygon(15px_0,100%_0,100%_calc(100%-15px),calc(100%-15px)_100%,0_100%,0_15px)]">
-                Enter
+            <div className="shrink-0 relative z-10 w-full sm:w-auto">
+              <Link href="/auth/register" className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-5 bg-brand-cyan text-white font-black text-xs tracking-widest uppercase hover:bg-brand-teal transition-colors shadow-[0_0_15px_rgba(25,133,59,0.3)] border-b-4 border-brand-teal">
+                Enter Protocol
               </Link>
             </div>
           </div>

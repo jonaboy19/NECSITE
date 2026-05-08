@@ -11,8 +11,8 @@ module.exports = {
           border: 'rgba(255, 255, 255, 0.05)',
         },
         brand: {
-          cyan: '#008a38', // Darker, authentic tournament green
-          teal: '#1f8c4d',
+          cyan: '#19853B', // Exact KAF Logo Green
+          teal: '#126A2D', // Darker KAF Green
           gold: '#b39500',
         },
         status: {
