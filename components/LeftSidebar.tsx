@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import {
   Home, Play, Trophy, BarChart3, Users, GitMerge, Video, MessageSquare,
   Bell, Settings, UserPlus, Film, Shield, AlertTriangle, Newspaper,
-  Star, Swords, ChevronDown, ChevronRight
+  Star, Swords, ChevronDown, ChevronRight, Tv, Sliders, Users2
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -18,6 +18,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { name: 'Home', href: '/', icon: Home },
       { name: 'Tournaments', href: '/tournaments', icon: Trophy },
+      { name: 'E-League', href: '/e-league', icon: Tv },
       { name: 'Match Center', href: '/matches/report', icon: Play },
       { name: 'Scrims', href: '/scrims', icon: Swords },
       { name: 'Draft Room', href: '/drafts', icon: GitMerge },
@@ -30,6 +31,7 @@ const NAV_SECTIONS: NavSection[] = [
       { name: 'Players', href: '/players', icon: Users },
       { name: 'Clans', href: '/clans', icon: Shield },
       { name: 'Free Agents', href: '/free-agents', icon: UserPlus },
+      { name: 'Friends', href: '/friends', icon: Users2 },
       { name: 'Community', href: '/community', icon: Star },
       { name: 'News', href: '/news', icon: Newspaper },
     ],
@@ -50,6 +52,14 @@ const NAV_SECTIONS: NavSection[] = [
       { name: 'Messages', href: '/messages', icon: MessageSquare },
       { name: 'Notifications', href: '/notifications', icon: Bell },
       { name: 'Settings', href: '/settings', icon: Settings },
+    ],
+  },
+  {
+    label: 'Admin',
+    items: [
+      { name: 'Admin Panel', href: '/admin', icon: Shield },
+      { name: 'No-Code Controls', href: '/admin/nocode', icon: Sliders },
+      { name: 'Appeals', href: '/appeals', icon: AlertTriangle },
     ],
   },
 ]
