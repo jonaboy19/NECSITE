@@ -17,6 +17,9 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
   const [applicationMessage, setApplicationMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('Overview')
+  
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [editForm, setEditForm] = useState({ motd: '', bio: '', logo_url: '', banner_url: '', coach_name: '', tag: '' })
 
   const tabs = ['Overview', 'Roster', 'Clan Wars', 'Matches', 'Trophies']
 
@@ -59,6 +62,10 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
   }
 
   useEffect(() => { fetchData() }, [id])
+  
+  useEffect(() => {
+    if (clan) setEditForm({ motd: clan.motd || '', bio: clan.bio || '', logo_url: clan.logo_url || '', banner_url: clan.banner_url || '', coach_name: clan.coach_name || '', tag: clan.tag || '' })
+  }, [clan])
 
   // Support both role column names
   const getMemberRole = (member: any) => member?.role || member?.member_role || 'player'
@@ -138,6 +145,30 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     fetchData()
   }
 
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const { error } = await supabase.from('clans').update(editForm).eq('id', id)
+    if (error) toastError(error.message)
+    else {
+      success('Clan details updated!')
+      setIsEditModalOpen(false)
+      fetchData()
+    }
+  }
+
+  const handleLeaveClan = async () => {
+    if (userRole === 'owner') {
+      return toastError('Owners must transfer ownership before leaving the clan.')
+    }
+    if (!confirm('Are you sure you want to leave this clan?')) return
+    const { error } = await supabase.from('clan_members').delete().eq('id', userMember.id)
+    if (error) toastError(error.message)
+    else {
+      success('You have left the clan.')
+      fetchData()
+    }
+  }
+
   const roleColors: Record<string, string> = {
     owner: 'text-brand-gold border-brand-gold/30 bg-brand-gold/10',
     manager: 'text-purple-400 border-purple-400/30 bg-purple-400/10',
@@ -182,7 +213,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
           <ArrowLeft size={16} /> All Clans
         </Link>
         {canEditClanDetails && (
-          <button className="absolute top-6 right-6 bg-kaf-panel/80 backdrop-blur border border-kaf-border text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-white/10 transition-colors z-10">
+          <button onClick={() => setIsEditModalOpen(true)} className="absolute top-6 right-6 bg-kaf-panel/80 backdrop-blur border border-kaf-border text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-white/10 transition-colors z-10">
             <Settings size={16} /> Edit Clan
           </button>
         )}
@@ -544,10 +575,58 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
               <Link href="/free-agents" className="flex items-center gap-2 text-sm text-slate-300 hover:text-brand-cyan transition-colors font-bold py-1">
                 <UserPlus size={14} className="text-brand-cyan" /> Browse Free Agents
               </Link>
+              {isMember && (
+                <button onClick={handleLeaveClan} className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors font-bold py-1 w-full text-left">
+                  <ArrowLeft size={14} className="text-red-400" /> Leave Clan
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
+      
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="kaf-card p-6 rounded-2xl w-full max-w-lg border border-kaf-border relative">
+            <h2 className="text-2xl font-black text-white mb-4">Edit Clan Details</h2>
+            <form onSubmit={handleEditSubmit} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Tag (2-5 Chars)</label>
+                  <input value={editForm.tag} onChange={e => setEditForm({...editForm, tag: e.target.value.toUpperCase()})} className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white" maxLength={5} />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Coach Name</label>
+                  <input value={editForm.coach_name} onChange={e => setEditForm({...editForm, coach_name: e.target.value})} className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Message of the Day</label>
+                <input value={editForm.motd} onChange={e => setEditForm({...editForm, motd: e.target.value})} className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white" placeholder="Visible to visitors on your overview" />
+              </div>
+              <div>
+                <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Bio</label>
+                <textarea value={editForm.bio} onChange={e => setEditForm({...editForm, bio: e.target.value})} className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white h-20 resize-none" />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Logo URL</label>
+                  <input value={editForm.logo_url} onChange={e => setEditForm({...editForm, logo_url: e.target.value})} className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white" />
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-400 uppercase mb-1 block">Banner URL</label>
+                  <input value={editForm.banner_url} onChange={e => setEditForm({...editForm, banner_url: e.target.value})} className="w-full bg-slate-900 border border-kaf-border rounded-lg px-3 py-2 text-white" />
+                </div>
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button type="button" onClick={() => setIsEditModalOpen(false)} className="px-4 py-2 text-slate-400 hover:text-white font-bold transition-colors">Cancel</button>
+                <button type="submit" className="px-6 py-2 bg-brand-cyan text-kaf-bg rounded-xl font-bold hover:bg-white transition-colors">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

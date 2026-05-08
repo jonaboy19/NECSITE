@@ -10,6 +10,7 @@ export default function CreateClan() {
   const router = useRouter()
   
   const [name, setName] = useState('')
+  const [tag, setTag] = useState('')
   const [bio, setBio] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -32,6 +33,7 @@ export default function CreateClan() {
       const { data: clan, error: clanError } = await supabase.from('clans').insert({
         name,
         slug: slugify(name),
+        tag: tag.toUpperCase(),
         bio,
         owner_id: user.id,
       }).select().single()
@@ -85,6 +87,19 @@ export default function CreateClan() {
                 placeholder='e.g., KAF Esports'
                 required
                 maxLength={30}
+                className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-4 text-white font-bold placeholder-slate-600 focus:border-purple-400 focus:outline-none transition-colors"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Clan Tag (2-5 Chars)</label>
+              <input
+                value={tag}
+                onChange={e => setTag(e.target.value.toUpperCase())}
+                placeholder='KAF'
+                required
+                minLength={2}
+                maxLength={5}
                 className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-4 text-white font-bold placeholder-slate-600 focus:border-purple-400 focus:outline-none transition-colors"
               />
             </div>
