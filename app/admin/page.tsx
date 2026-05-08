@@ -46,17 +46,22 @@ export default function AdminPanel() {
         return
       }
 
-      // Check role
-      const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
-      const allowedRoles = ['super_admin', 'admin', 'moderator', 'tournament_staff', 'community_admin']
+      // Check role in BOTH tables for full compatibility
+      const [{ data: profile }, { data: roleRow }] = await Promise.all([
+        supabase.from('profiles').select('role').eq('id', user.id).single(),
+        supabase.from('user_roles').select('role').eq('user_id', user.id).in('role', ['super_admin','tournament_admin','moderator','admin']).maybeSingle(),
+      ])
+
+      const allowedRoles = ['super_admin', 'admin', 'moderator', 'tournament_admin', 'tournament_staff', 'community_admin']
+      const hasAccess = (profile?.role && allowedRoles.includes(profile.role)) || !!roleRow
       
-      if (!profile?.role || !allowedRoles.includes(profile.role)) {
+      if (!hasAccess) {
         setIsAuthorized(false)
         return
       }
       
       setIsAuthorized(true)
-      setUserRole(profile.role)
+      setUserRole(profile?.role || roleRow?.role || 'admin')
       fetchEcosystemData()
     }
     
@@ -68,12 +73,14 @@ export default function AdminPanel() {
       alert('You do not have permission to change user roles.')
       return
     }
-    const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId)
-    if (!error) {
-      fetchEcosystemData()
-    } else {
-      alert('Error updating role: ' + error.message)
-    }
+    // Update in both tables
+    await supabase.from('profiles').update({ role: newRole }).eq('id', userId)
+    // Upsert into user_roles for the new role system
+    await supabase.from('user_roles').upsert(
+      { user_id: userId, role: newRole },
+      { onConflict: 'user_id,role' }
+    )
+    fetchEcosystemData()
   }
 
   const handleVerifyClan = async (clanId: string, verifyStatus: boolean) => {
@@ -102,8 +109,8 @@ export default function AdminPanel() {
   }
 
   const roles = [
-    'player', 'clan_owner', 'tournament_host', 'tournament_staff', 
-    'community_staff', 'community_admin', 'moderator', 'admin', 'super_admin'
+    'user', 'player', 'clan_admin', 'tournament_admin',
+    'moderator', 'admin', 'super_admin'
   ]
 
   return (
