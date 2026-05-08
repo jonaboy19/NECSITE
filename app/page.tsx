@@ -4,177 +4,139 @@ import { Trophy, Users, BarChart3, Zap, Shield, ChevronRight, Play, Star, Flame,
 import LiveActivityTicker from '@/components/LiveActivityTicker'
 import RealtimeFeed from '@/components/RealtimeFeed'
 import { fetchLiveTickers, fetchFeedActivities, fetchTournaments, fetchRankings } from '@/lib/utils'
-import AnimatedStats from '@/components/AnimatedStats'
+import HeroRemotionBackground from '@/components/HeroRemotionBackground'
 
 /* ─── Public Header for guests ─── */
 function PublicNav() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-4 bg-kaf-bg/80 backdrop-blur-xl border-b border-kaf-border/50">
-      <Link href="/" className="flex items-center gap-3 group">
-        <img src="/kaf-logo.png" alt="KAFConnect" className="w-10 h-10 object-contain group-hover:scale-110 transition-transform" />
-        <span className="text-xl font-black tracking-widest text-brand-cyan">KAFCONNECT</span>
+    <nav className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 lg:px-12 py-8 mix-blend-difference text-white pointer-events-auto">
+      <Link href="/" className="flex items-center gap-2 group">
+        <span className="text-2xl font-display font-black tracking-[0.2em] uppercase">KAF<span className="opacity-50">CONNECT</span></span>
       </Link>
-      <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-400">
-        <Link href="/tournaments" className="hover:text-white transition-colors">Tournaments</Link>
-        <Link href="/clans" className="hover:text-white transition-colors">Clans</Link>
-        <Link href="/rankings" className="hover:text-white transition-colors">Rankings</Link>
-        <Link href="/news" className="hover:text-white transition-colors">News</Link>
-      </div>
-      <div className="flex items-center gap-3">
-        <Link href="/auth/login" className="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-300 border border-kaf-border hover:text-white hover:border-white/20 transition-all">
-          Sign In
-        </Link>
-        <Link href="/auth/register" className="px-5 py-2.5 rounded-xl text-sm font-black bg-brand-cyan text-kaf-bg hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,102,0.3)]">
-          Join Now
-        </Link>
+      <div className="flex items-center gap-4 sm:gap-8">
+        <Link href="/auth/login" className="text-xs font-bold uppercase tracking-[0.2em] hover:text-brand-cyan transition-colors">Login</Link>
+        <Link href="/auth/register" className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] px-6 py-3 sm:px-8 sm:py-4 border-2 border-white hover:bg-white hover:text-black transition-colors">Join Arena</Link>
       </div>
     </nav>
   )
 }
 
-/* ─── Public Landing Page (for guests) ─── */
+/* ─── Brutalist Unique Landing Page (for guests) ─── */
 function LandingPage() {
   return (
-    <>
+    <div className="bg-[#111418] min-h-screen text-white font-sans selection:bg-brand-cyan/30 flex flex-col">
       <PublicNav />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-        {/* Background layers */}
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920')] bg-cover bg-center opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-kaf-bg via-kaf-bg/95 to-kaf-bg"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,102,0.08)_0%,transparent_70%)]"></div>
+      {/* Heavy Brutalist Hero with Remotion Video Background */}
+      <section className="relative min-h-[90vh] flex flex-col justify-end px-6 lg:px-12 pb-24 overflow-hidden border-b border-kaf-border">
+        <HeroRemotionBackground />
         
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }}></div>
-
-        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-cyan/10 border border-brand-cyan/20 text-brand-cyan text-xs font-black uppercase tracking-[0.2em] mb-8 backdrop-blur-sm">
-            <Zap size={14} /> Season 2 Now Live
-          </div>
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-start lg:items-end justify-between gap-12 pointer-events-auto mt-32">
           
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-white mb-6 leading-[0.9]">
-            YOUR <span className="text-brand-cyan drop-shadow-[0_0_30px_rgba(0,255,102,0.4)]">ARENA</span>
-            <br />
-            <span className="text-slate-400">AWAITS</span>
-          </h1>
-          
-          <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 font-medium leading-relaxed">
-            The ultimate esports operating system. Compete in tournaments, build your clan, climb the global rankings, and prove you're the best.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/auth/register" className="group px-10 py-4 rounded-xl bg-brand-cyan text-kaf-bg font-black text-lg hover:bg-white hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,255,102,0.3)] flex items-center gap-3">
-              Enter the Arena <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link href="/tournaments" className="px-10 py-4 rounded-xl border border-kaf-border text-slate-300 font-bold text-lg hover:border-white/30 hover:text-white transition-all">
-              Browse Events
-            </Link>
+          <div className="w-full lg:w-2/3">
+            <div className="overflow-hidden mb-6">
+              <p className="text-brand-cyan font-mono text-xs md:text-sm tracking-[0.5em] uppercase animate-slideDown flex items-center gap-3">
+                <span className="w-2 h-2 bg-brand-cyan rounded-full animate-pulse"></span>
+                System Online • V2.0.4
+              </p>
+            </div>
+            <h1 className="text-[14vw] lg:text-[8vw] font-black leading-[0.8] tracking-tighter uppercase mix-blend-difference">
+              UNLEASH <br/> <span className="text-transparent" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.3)' }}>THE</span> APEX
+            </h1>
           </div>
 
-          <AnimatedStats stats={[
-            { end: 1000, suffix: '+', label: 'Players', color: '' },
-            { end: 50, suffix: '+', label: 'Tournaments', color: 'text-brand-cyan' },
-            { end: 5, prefix: '€', suffix: 'K+', label: 'Prize Pools', color: 'text-brand-gold' },
-          ]} />
+          <div className="w-full lg:w-1/3 flex flex-col gap-8">
+            <p className="text-base lg:text-lg text-slate-300 font-medium leading-relaxed border-l-2 border-brand-cyan pl-6 bg-black/20 backdrop-blur-sm p-4">
+              The premier eFootball architecture. Live highlights, absolute global rankings, and relentless tournament brackets. 
+            </p>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <Link href="/auth/register" className="flex items-center justify-center p-6 bg-brand-cyan text-black font-black uppercase tracking-widest text-xs sm:text-sm hover:scale-105 transition-transform">
+                Initiate
+              </Link>
+              <Link href="/tournaments" className="flex items-center justify-center p-6 border border-kaf-border bg-black/50 backdrop-blur-md text-white font-black uppercase tracking-widest text-xs sm:text-sm hover:bg-white hover:text-black transition-colors">
+                Observe
+              </Link>
+            </div>
+          </div>
+          
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-          <div className="w-6 h-10 rounded-full border-2 border-slate-600 flex items-start justify-center p-1">
-            <div className="w-1.5 h-3 rounded-full bg-brand-cyan"></div>
+        {/* Marquee Ticker at the bottom */}
+        <div className="absolute bottom-0 left-0 right-0 border-t border-kaf-border/50 bg-black/50 backdrop-blur-xl overflow-hidden py-4 flex z-20 pointer-events-none">
+          <div className="animate-marquee whitespace-nowrap flex gap-12 text-[10px] sm:text-xs font-mono tracking-[0.3em] text-brand-cyan opacity-80 uppercase">
+            <span>• Global Matchmaking</span>
+            <span>• Remotion Engine</span>
+            <span>• Clan Wars Active</span>
+            <span>• E-League Season 2</span>
+            <span>• Global Matchmaking</span>
+            <span>• Remotion Engine</span>
+            <span>• Clan Wars Active</span>
+            <span>• E-League Season 2</span>
+            <span>• Global Matchmaking</span>
+            <span>• Remotion Engine</span>
+            <span>• Clan Wars Active</span>
+            <span>• E-League Season 2</span>
+            <span>• Global Matchmaking</span>
+            <span>• Remotion Engine</span>
+            <span>• Clan Wars Active</span>
+            <span>• E-League Season 2</span>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="relative py-24 px-6 bg-kaf-panel border-y border-kaf-border">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">
-              EVERYTHING YOU NEED TO <span className="text-brand-cyan">COMPETE</span>
-            </h2>
-            <p className="text-slate-400 max-w-xl mx-auto">One platform. Every tool. Built for competitive gamers who take their craft seriously.</p>
+      {/* Feature Section - Abstract Cards */}
+      <section className="py-24 md:py-32 px-6 lg:px-12 w-full max-w-7xl mx-auto flex-1">
+        <h2 className="text-4xl md:text-6xl font-black mb-16 tracking-tighter uppercase mix-blend-difference">
+          Core <br/><span className="text-slate-600">Architecture</span>
+        </h2>
+        
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+          {/* Card 1 */}
+          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-kaf-card overflow-hidden hover:border-brand-cyan transition-colors">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/10 blur-3xl rounded-full group-hover:bg-brand-cyan/30 transition-all"></div>
+            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter mix-blend-screen">01</div>
+            <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Live Video Synthesis</h3>
+            <p className="text-slate-400 leading-relaxed font-mono text-sm">
+              Powered by Remotion. Real-time match data is compiled into cinematic MP4 highlights server-side instantly upon match resolution.
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[
-              { icon: Trophy, title: 'Tournaments', desc: 'Single elimination, double elimination, leagues, and custom brackets with automated seeding.', color: 'text-brand-gold' },
-              { icon: Shield, title: 'Clan System', desc: 'Build your organization, recruit players, manage lineups, and compete as a team.', color: 'text-purple-400' },
-              { icon: BarChart3, title: 'Rankings & MMR', desc: 'Global leaderboards powered by Elo-based matchmaking and performance tracking.', color: 'text-brand-cyan' },
-              { icon: Users, title: 'Scrims & Drafts', desc: 'Find opponents, organize practice matches, and draft dream teams.', color: 'text-blue-400' },
-              { icon: Play, title: 'Live Broadcasts', desc: 'Integrated live streaming and real-time match ticker for spectators.', color: 'text-status-live' },
-              { icon: Star, title: 'Player Profiles', desc: 'Detailed stats, match history, and social connections all in one place.', color: 'text-amber-400' },
-            ].map((feature, i) => (
-              <div key={i} className="group p-6 rounded-2xl bg-kaf-card/50 border border-kaf-border hover:border-white/10 transition-all hover:-translate-y-1 cursor-default">
-                <div className={`w-12 h-12 rounded-xl bg-kaf-bg border border-kaf-border flex items-center justify-center mb-4 ${feature.color} group-hover:scale-110 transition-transform`}>
-                  <feature.icon size={24} />
-                </div>
-                <h3 className="text-lg font-black text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed">{feature.desc}</p>
-              </div>
-            ))}
+          {/* Card 2 */}
+          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-kaf-card overflow-hidden hover:border-brand-gold transition-colors">
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-gold/10 blur-3xl rounded-full group-hover:bg-brand-gold/30 transition-all"></div>
+            <div className="text-7xl font-black text-white/5 mb-8 tracking-tighter mix-blend-screen">02</div>
+            <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Relentless Elo</h3>
+            <p className="text-slate-400 leading-relaxed font-mono text-sm">
+              Global rankings mathematically forged in the fire of competition. Every match dynamically shifts the balance of power.
+            </p>
+          </div>
+          
+          {/* Card 3 */}
+          <div className="group relative p-8 lg:p-12 border border-kaf-border bg-kaf-card overflow-hidden hover:border-purple-500 transition-colors md:col-span-2 flex flex-col md:flex-row gap-8 items-center">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=1920')] bg-cover bg-center opacity-5 grayscale group-hover:grayscale-0 group-hover:opacity-10 transition-all"></div>
+            <div className="flex-1 relative z-10">
+              <div className="text-7xl font-black text-white/5 mb-4 tracking-tighter mix-blend-screen">03</div>
+              <h3 className="text-2xl font-black uppercase tracking-widest mb-4">Clan Warfare Protocol</h3>
+              <p className="text-slate-400 leading-relaxed font-mono text-sm max-w-lg">
+                Mobilize your organization. Issue direct challenges, manage your roster, and conquer the leaderboard as a unified front.
+              </p>
+            </div>
+            <div className="shrink-0 relative z-10 hidden sm:block">
+              <Link href="/auth/register" className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-brand-cyan text-black font-black text-xs tracking-widest uppercase hover:scale-110 transition-transform shadow-[0_0_30px_rgba(0,255,102,0.3)]">
+                Enter
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-24 px-6">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,102,0.05)_0%,transparent_60%)]"></div>
-        <div className="relative max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-6 tracking-tight">
-            READY TO <span className="text-brand-cyan">DOMINATE</span>?
-          </h2>
-          <p className="text-slate-400 mb-10 text-lg">
-            Join the fastest growing eFootball esports community. Create your account in seconds.
-          </p>
-          <Link href="/auth/register" className="inline-flex items-center gap-3 px-10 py-5 rounded-xl bg-brand-cyan text-kaf-bg font-black text-lg hover:bg-white hover:scale-105 transition-all shadow-[0_0_40px_rgba(0,255,102,0.3)]">
-            Create Free Account <ArrowRight size={20} />
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-kaf-border bg-kaf-panel px-6 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <img src="/kaf-logo.png" alt="KAF" className="w-8 h-8" />
-                <span className="font-black text-brand-cyan tracking-widest">KAFCONNECT</span>
-              </div>
-              <p className="text-sm text-slate-500 leading-relaxed">The home of competitive eFootball esports. Powered by KAF E-League.</p>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Platform</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/tournaments" className="hover:text-white transition-colors">Tournaments</Link></li>
-                <li><Link href="/clans" className="hover:text-white transition-colors">Clans</Link></li>
-                <li><Link href="/rankings" className="hover:text-white transition-colors">Rankings</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Community</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="/news" className="hover:text-white transition-colors">News</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><Link href="/sponsors" className="hover:text-white transition-colors">Partners</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4 text-sm uppercase tracking-wider">Legal</h4>
-              <ul className="space-y-2 text-sm text-slate-400">
-                <li><Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-kaf-border pt-8 text-center text-xs text-slate-600 uppercase tracking-widest">
-            © 2026 KAFConnect • All Rights Reserved
-          </div>
-        </div>
+      {/* Footer minimal */}
+      <footer className="border-t border-kaf-border px-6 lg:px-12 py-12 flex flex-col md:flex-row justify-between items-center gap-6 bg-black">
+        <div className="text-xl md:text-2xl font-black tracking-[0.2em] uppercase">KAF<span className="opacity-50">CONNECT</span></div>
+        <div className="text-[10px] sm:text-xs font-mono text-slate-500 uppercase tracking-widest">© 2026 KAF E-League. Architecture v2.0</div>
       </footer>
-    </>
+    </div>
   )
 }
 
