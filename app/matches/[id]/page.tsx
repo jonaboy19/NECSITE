@@ -23,13 +23,12 @@ export default async function MatchPage({ params }: { params: Promise<{ id: stri
     .single()
 
   if (error || !match) {
-    // For preview purposes, if the match doesn't exist, we will show a mock "Live Match"
-    // Since the database might not have populated matches yet.
+    notFound()
   }
 
-  const isLive = match?.status === 'live' || true; // Mock true for testing
-  const scoreA = match?.score_a ?? 2;
-  const scoreB = match?.score_b ?? 1;
+  const isLive = match?.status === 'live'
+  const scoreA = match?.score_a ?? 0
+  const scoreB = match?.score_b ?? 0
 
   const teamA = match?.clan_a || { name: 'HYDRØX', logo_url: 'https://api.dicebear.com/7.x/shapes/svg?seed=hydrox' };
   const teamB = match?.clan_b || { name: 'NOVA', logo_url: 'https://api.dicebear.com/7.x/shapes/svg?seed=nova' };

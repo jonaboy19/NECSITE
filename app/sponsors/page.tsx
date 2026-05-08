@@ -1,43 +1,80 @@
-import Link from 'next/link'
-import PageLayout from '@/components/PageLayout'
-import { Tv, Image, Users, MessageCircle } from 'lucide-react'
+import { Star, ExternalLink } from 'lucide-react'
+
+const sponsors = [
+  {
+    name: 'KAF E-League',
+    tier: 'Title Sponsor',
+    tierColor: 'text-brand-gold border-brand-gold/40 bg-brand-gold/10',
+    description: 'Official organizer of KAFConnect competitive events and tournaments across all regions.',
+    logo: null,
+  },
+  {
+    name: 'Arena Sports Media',
+    tier: 'Gold Partner',
+    tierColor: 'text-amber-400 border-amber-400/40 bg-amber-400/10',
+    description: 'Providing live broadcast infrastructure and streaming technology for all KAFConnect events.',
+    logo: null,
+  },
+  {
+    name: 'GG Gaming Gear',
+    tier: 'Official Equipment Partner',
+    tierColor: 'text-brand-cyan border-brand-cyan/40 bg-brand-cyan/10',
+    description: 'Supplying premium gaming peripherals to KAFConnect tournament champions.',
+    logo: null,
+  },
+]
 
 export default function Sponsors() {
-  const benefits = [
-    { icon: Tv, title: 'Live Coverage', description: 'Twitch + YouTube broadcasts' },
-    { icon: Image, title: '5 Regions', description: 'Africa, EU, Asia, MENA, AM' },
-    { icon: Image, title: 'Branded Overlays', description: 'Logo on every match' },
-    { icon: Users, title: 'Engaged Community', description: 'TikTok / Discord / WhatsApp' }
-  ]
-
   return (
-    <PageLayout>
-      <div className="space-y-12">
-        <div className="text-center space-y-6">
-          <h1 className="text-4xl font-black">Become a Sponsor</h1>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
-            Reach a fast-growing international esports community. KAFConnect connects players across Africa, Europe, Asia and MENA — with live-streamed tournaments, branded overlays and growing social reach.
-          </p>
-        </div>
+    <div className="flex flex-col w-full pb-20">
+      {/* Header */}
+      <div className="sticky top-0 z-30 bg-kaf-panel/95 backdrop-blur-xl border-b border-kaf-border px-6 py-4">
+        <h1 className="text-2xl font-display font-black text-white uppercase tracking-wide flex items-center gap-3">
+          <Star className="text-brand-gold" size={26} />
+          Partners & Sponsors
+        </h1>
+        <p className="text-slate-400 text-sm mt-0.5">The organizations powering KAFConnect</p>
+      </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {benefits.map(({ icon: Icon, title, description }) => (
-            <div key={title} className="kaf-card p-6 rounded-2xl text-center">
-              <Icon size={48} className="text-cyan-200 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">{title}</h3>
-              <p className="text-sm text-slate-400">{description}</p>
+      <div className="p-6 max-w-4xl mx-auto w-full space-y-8">
+        {/* Sponsor Cards */}
+        <div className="space-y-4">
+          {sponsors.map((s) => (
+            <div key={s.name} className="kaf-card rounded-2xl border border-kaf-border p-6 flex flex-col sm:flex-row items-start sm:items-center gap-5 group hover:border-white/10 transition-all">
+              {/* Logo Placeholder */}
+              <div className="w-20 h-20 rounded-xl bg-kaf-bg border border-kaf-border flex items-center justify-center shrink-0">
+                <Star size={28} className="text-slate-600" />
+              </div>
+              <div className="flex-1">
+                <div className="flex flex-wrap items-center gap-3 mb-2">
+                  <h2 className="text-xl font-black text-white">{s.name}</h2>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border ${s.tierColor}`}>
+                    {s.tier}
+                  </span>
+                </div>
+                <p className="text-slate-400 text-sm leading-relaxed">{s.description}</p>
+              </div>
+              <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-kaf-bg border border-kaf-border text-sm font-bold text-slate-300 hover:text-white hover:border-white/20 transition-all shrink-0">
+                Visit <ExternalLink size={14} />
+              </button>
             </div>
           ))}
         </div>
 
-        <div className="kaf-card p-8 rounded-2xl text-center">
-          <h2 className="text-2xl font-bold mb-4">Ready to Partner?</h2>
-          <p className="text-slate-400 mb-6">Contact us to discuss sponsorship opportunities and get your brand in front of thousands of esports enthusiasts.</p>
-          <Link href="/contact" className="rounded-2xl bg-cyan-400 px-8 py-4 font-bold text-slate-950 hover:bg-cyan-300 transition">
-            Contact Us
-          </Link>
+        {/* Become a Partner CTA */}
+        <div className="relative overflow-hidden rounded-2xl border border-brand-cyan/20 bg-gradient-to-br from-brand-cyan/5 to-transparent p-8 text-center">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,102,0.06)_0%,transparent_70%)]"></div>
+          <div className="relative z-10">
+            <h2 className="text-2xl font-black text-white mb-3">Become a Partner</h2>
+            <p className="text-slate-400 mb-6 max-w-md mx-auto">
+              Interested in sponsoring KAFConnect events and reaching thousands of competitive eFootball players?
+            </p>
+            <a href="/contact" className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-brand-cyan text-kaf-bg font-black hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,102,0.3)]">
+              Get in Touch
+            </a>
+          </div>
         </div>
       </div>
-    </PageLayout>
+    </div>
   )
 }

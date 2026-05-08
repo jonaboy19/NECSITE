@@ -1,8 +1,9 @@
-import { createClient } from './supabase/client'
+import { createServerSupabaseClient } from './supabase/server'
 
-// Data fetching utilities
+// ─── SERVER-SIDE Data Fetching (for use in Server Components) ───────────────
+
 export async function fetchTournaments(limit?: number) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('tournament_summary')
     .select('*')
@@ -12,7 +13,7 @@ export async function fetchTournaments(limit?: number) {
 }
 
 export async function fetchClans(limit?: number) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('clans')
     .select('*')
@@ -21,17 +22,17 @@ export async function fetchClans(limit?: number) {
 }
 
 export async function fetchRankings(limit?: number) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('rankings')
-    .select('*')
+    .select('*, profiles(username, avatar_url)')
     .order('rating', { ascending: false })
     .limit(limit || 50)
   return data || []
 }
 
 export async function fetchFeedActivities(limit?: number) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('feed_activities')
     .select('*')
@@ -41,7 +42,7 @@ export async function fetchFeedActivities(limit?: number) {
 }
 
 export async function fetchLiveTickers() {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('live_tickers')
     .select('*')
@@ -51,13 +52,13 @@ export async function fetchLiveTickers() {
 }
 
 export async function fetchCurrentUser() {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase.auth.getUser()
   return data.user
 }
 
 export async function fetchUserProfile(userId: string) {
-  const supabase = createClient()
+  const supabase = await createServerSupabaseClient()
   const { data } = await supabase
     .from('profiles')
     .select('*')
@@ -66,7 +67,8 @@ export async function fetchUserProfile(userId: string) {
   return data
 }
 
-// Formatting utilities
+// ─── Formatting Utilities ───────────────────────────────────────────────────
+
 export function formatPlayerCount(count: number): string {
   if (count === 0) return 'No players'
   if (count === 1) return '1 player'
@@ -92,7 +94,8 @@ export function formatRating(rating: number): string {
   return rating.toLocaleString()
 }
 
-// Status utilities
+// ─── Status Utilities ───────────────────────────────────────────────────────
+
 export function getStatusColor(status: string): string {
   const statusColors: { [key: string]: string } = {
     'registration_open': 'bg-cyan-400 text-slate-950',
@@ -115,7 +118,8 @@ export function getStatusLabel(status: string): string {
   return labels[status.toLowerCase()] || status
 }
 
-// URL utilities
+// ─── URL Utilities ──────────────────────────────────────────────────────────
+
 export function getTournamentUrl(tournamentId: string): string {
   return `/tournaments/${tournamentId}/dashboard`
 }
@@ -124,7 +128,8 @@ export function getClanUrl(clanId: string): string {
   return `/clans/${clanId}`
 }
 
-// Validation utilities
+// ─── Validation Utilities ───────────────────────────────────────────────────
+
 export function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
@@ -133,7 +138,8 @@ export function isValidUsername(username: string): boolean {
   return username.length >= 3 && username.length <= 20 && /^[a-zA-Z0-9_-]+$/.test(username)
 }
 
-// Error handling
+// ─── Error Handling ─────────────────────────────────────────────────────────
+
 export function handleError(error: any): string {
   if (error?.message) return error.message
   if (typeof error === 'string') return error

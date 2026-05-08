@@ -44,7 +44,7 @@ export default function LeftSidebar() {
       <Link href="/" className="mb-8 px-2 flex items-center gap-3 group">
         <img src="/kaf-logo.png" alt="KAF Connect Logo" className="w-12 h-12 object-contain group-hover:scale-110 transition-transform drop-shadow-[0_0_10px_rgba(0,255,102,0.4)]" />
         <div>
-          <span className="text-xl font-black tracking-widest text-brand-green block">KAFCONNECT</span>
+          <span className="text-xl font-black tracking-widest text-brand-cyan block">KAFCONNECT</span>
           <span className="text-[9px] text-white uppercase tracking-[0.2em] font-bold block -mt-1">Arena Hub</span>
         </div>
       </Link>
