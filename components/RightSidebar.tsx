@@ -1,7 +1,14 @@
 import Link from 'next/link'
-import { TrendingUp, Bell, MessageSquare } from 'lucide-react'
+import { Award, Bell, CalendarDays, Eye, MessageSquare, TrendingUp } from 'lucide-react'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { StatusBadge } from '@/components/StatusBadge'
+
+const operationsLinks = [
+  { href: '/calendar', label: 'Operations Calendar', detail: 'Deadlines, fixtures, media windows', Icon: CalendarDays },
+  { href: '/scouting', label: 'Scouting Board', detail: 'Filters, shortlists, recruitment notes', Icon: Eye },
+  { href: '/seasons', label: 'Season Control', detail: 'Transfer windows, awards, resets', Icon: TrendingUp },
+  { href: '/awards', label: 'Awards Room', detail: 'MVPs, rookies, clan trophies', Icon: Award },
+]
 
 export default async function RightSidebar() {
   const supabase = await createServerSupabaseClient()
@@ -10,7 +17,7 @@ export default async function RightSidebar() {
   const [{ data: upcomingMatches }, { data: matchRooms }, { data: notifications }] = await Promise.all([
     supabase
     .from('matches')
-      .select('id, tournament_id, round, status, scheduled_at, score_1, score_2, tournaments(title)')
+      .select('id, tournament_id, round, status, scheduled_at, clan_a:clan_a_id(name,tag), clan_b:clan_b_id(name,tag), tournaments(title)')
     .eq('status', 'scheduled')
       .order('scheduled_at', { ascending: true })
       .limit(5),
@@ -69,10 +76,30 @@ export default async function RightSidebar() {
                 <span>{match.scheduled_at ? new Date(match.scheduled_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : 'TBD'}</span>
               </div>
               <div className="flex items-center justify-between font-black text-sm mt-1">
-                <span className="group-hover:text-brand-cyan transition-colors">{match.team1_id || 'TBD'}</span>
+                <span className="group-hover:text-brand-cyan transition-colors">{match.clan_a?.tag || match.clan_a?.name || 'TBD'}</span>
                 <span className="text-slate-500 text-[10px] px-2 py-0.5 rounded bg-kaf-bg border border-kaf-border">VS</span>
-                <span className="group-hover:text-brand-cyan transition-colors">{match.team2_id || 'TBD'}</span>
+                <span className="group-hover:text-brand-cyan transition-colors">{match.clan_b?.tag || match.clan_b?.name || 'TBD'}</span>
               </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
+          <CalendarDays size={16} />
+          Operations
+        </h3>
+        <div className="flex flex-col gap-2">
+          {operationsLinks.map(({ href, label, detail, Icon }) => (
+            <Link key={href} href={href} className="group flex gap-3 kaf-cut-sm border border-white/[0.06] bg-white/[0.025] p-3 transition-colors hover:border-brand-cyan/40 hover:bg-brand-cyan/10">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center border border-brand-cyan/20 bg-brand-cyan/10 text-brand-lime">
+                <Icon size={16} />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-xs font-black uppercase tracking-wider text-white group-hover:text-brand-cyan">{label}</span>
+                <span className="mt-1 block text-[11px] leading-snug text-slate-500">{detail}</span>
+              </span>
             </Link>
           ))}
         </div>

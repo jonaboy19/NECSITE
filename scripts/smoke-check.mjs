@@ -27,6 +27,8 @@ const requiredPaths = [
   'app/privacy/page.tsx',
   'app/terms/page.tsx',
   'components/FeatureHub.tsx',
+  'components/MobileTabBar.tsx',
+  'components/RightSidebar.tsx',
   'components/EmptyState.tsx',
   'lib/auth-redirect.ts',
   'proxy.ts',
@@ -37,6 +39,7 @@ const requiredPaths = [
   'supabase/migrations/20260509090000_esports_os_foundation.sql',
   'docs/manual-flow-test-checklist.md',
   'docs/ESPORTS_OPERATING_SYSTEM_AUDIT.md',
+  'docs/SUPABASE_TARGET.md',
 ]
 
 const missing = requiredPaths.filter((path) => !existsSync(join(root, path)))

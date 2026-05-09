@@ -17,14 +17,14 @@ export default function NotificationBell() {
 
       const { data } = await supabase
         .from('notifications')
-        .select('*')
-        .eq('profile_id', user.id)
+        .select('id,type,title,body,link,read,created_at')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10)
 
       if (data) {
         setNotifications(data)
-        setUnreadCount(data.filter(n => !n.is_read).length)
+        setUnreadCount(data.filter(n => !n.read).length)
       }
     }
 
@@ -48,9 +48,9 @@ export default function NotificationBell() {
   }, [])
 
   const handleMarkAsRead = async (id: string) => {
-    await supabase.from('notifications').update({ is_read: true }).eq('id', id)
+    await supabase.from('notifications').update({ read: true, read_at: new Date().toISOString() }).eq('id', id)
     setUnreadCount(prev => Math.max(0, prev - 1))
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n))
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
   }
 
   return (
@@ -74,11 +74,11 @@ export default function NotificationBell() {
             {unreadCount > 0 && (
               <button 
                 onClick={async () => {
-                  const unreadIds = notifications.filter(n => !n.is_read).map(n => n.id)
+                  const unreadIds = notifications.filter(n => !n.read).map(n => n.id)
                   if (unreadIds.length > 0) {
-                    await supabase.from('notifications').update({ is_read: true }).in('id', unreadIds)
+                    await supabase.from('notifications').update({ read: true, read_at: new Date().toISOString() }).in('id', unreadIds)
                     setUnreadCount(0)
-                    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })))
+                    setNotifications(prev => prev.map(n => ({ ...n, read: true })))
                   }
                 }}
                 className="text-[10px] text-brand-cyan hover:underline uppercase"
@@ -96,16 +96,16 @@ export default function NotificationBell() {
               notifications.map((n) => (
                 <div 
                   key={n.id} 
-                  className={`p-3 border-b border-kaf-border/50 hover:bg-white/5 transition-colors cursor-pointer ${!n.is_read ? 'bg-brand-cyan/5' : ''}`}
+                  className={`p-3 border-b border-kaf-border/50 hover:bg-white/5 transition-colors cursor-pointer ${!n.read ? 'bg-brand-cyan/5' : ''}`}
                   onClick={() => {
-                    if (!n.is_read) handleMarkAsRead(n.id)
-                    if (n.action_url) window.location.href = n.action_url
+                    if (!n.read) handleMarkAsRead(n.id)
+                    if (n.link) window.location.href = n.link
                   }}
                 >
-                  <h4 className={`text-sm ${!n.is_read ? 'font-bold text-white' : 'font-medium text-slate-300'}`}>
+                  <h4 className={`text-sm ${!n.read ? 'font-bold text-white' : 'font-medium text-slate-300'}`}>
                     {n.title}
                   </h4>
-                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">{n.message}</p>
+                  <p className="text-xs text-slate-400 mt-1 line-clamp-2">{n.body}</p>
                 </div>
               ))
             )}

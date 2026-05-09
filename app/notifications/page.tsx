@@ -16,7 +16,7 @@ export default function Notifications() {
   const supabase = createClient()
   const [notifications, setNotifications] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const unreadCount = notifications.filter(n => !n.is_read).length
+  const unreadCount = notifications.filter(n => !n.read).length
 
   useEffect(() => {
     let ignore = false
@@ -28,7 +28,7 @@ export default function Notifications() {
       }
       const { data } = await supabase
         .from('notifications')
-        .select('id,type,title,body,link,is_read,created_at')
+        .select('id,type,title,body,link,read,created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(50)
@@ -48,18 +48,18 @@ export default function Notifications() {
   }, [supabase])
 
   async function markAllRead() {
-    const ids = notifications.filter(n => !n.is_read).map(n => n.id)
+    const ids = notifications.filter(n => !n.read).map(n => n.id)
     if (ids.length) {
-      await supabase.from('notifications').update({ is_read: true }).in('id', ids)
-      setNotifications(prev => prev.map(item => ({ ...item, is_read: true })))
+      await supabase.from('notifications').update({ read: true, read_at: new Date().toISOString() }).in('id', ids)
+      setNotifications(prev => prev.map(item => ({ ...item, read: true })))
     }
     toast.success('All notifications marked as read.')
   }
 
   async function openNotification(item: any) {
-    if (!item.is_read) {
-      await supabase.from('notifications').update({ is_read: true }).eq('id', item.id)
-      setNotifications(prev => prev.map(n => n.id === item.id ? { ...n, is_read: true } : n))
+    if (!item.read) {
+      await supabase.from('notifications').update({ read: true, read_at: new Date().toISOString() }).eq('id', item.id)
+      setNotifications(prev => prev.map(n => n.id === item.id ? { ...n, read: true } : n))
     }
     if (item.link) window.location.href = item.link
   }
@@ -97,7 +97,7 @@ export default function Notifications() {
               key={n.id}
               onClick={() => openNotification(n)}
               className={`kaf-cut flex cursor-pointer items-start gap-4 border p-4 transition-all hover:-translate-y-0.5 ${
-                !n.is_read
+                !n.read
                   ? 'bg-kaf-card border-kaf-border hover:border-brand-cyan/30'
                   : 'bg-kaf-panel border-kaf-border/50 opacity-60 hover:opacity-80'
               }`}
@@ -108,7 +108,7 @@ export default function Notifications() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-black text-white text-sm">{n.title}</h3>
-                  {!n.is_read && <span className="w-2 h-2 rounded-full bg-brand-cyan shrink-0"></span>}
+                  {!n.read && <span className="w-2 h-2 rounded-full bg-brand-cyan shrink-0"></span>}
                 </div>
                 <p className="text-slate-400 text-sm mt-0.5 leading-snug">{n.body}</p>
                 <p className="text-slate-600 text-xs font-bold uppercase tracking-widest mt-2">{new Date(n.created_at).toLocaleString()}</p>
