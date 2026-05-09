@@ -2,26 +2,40 @@
 import { useState } from 'react'
 import { Upload, AlertOctagon, Loader2, CheckCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useToast } from '@/components/Toast'
 
 export default function DisputeUpload({ matchId }: { matchId: string }) {
   const [file, setFile] = useState<File | null>(null)
+  const [reason, setReason] = useState('')
   const [uploading, setUploading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
   const supabase = createClient()
+  const toast = useToast()
 
   const handleUpload = async () => {
     if (!file) return
+    if (!reason.trim()) {
+      setError('Describe the dispute reason first.')
+      return
+    }
 
     setUploading(true)
     setError('')
 
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setError('Sign in to submit evidence.')
+      setUploading(false)
+      return
+    }
+
     const fileExt = file.name.split('.').pop()
     const fileName = `${matchId}_${Math.random()}.${fileExt}`
-    const filePath = `${fileName}`
+    const filePath = `${matchId}/${fileName}`
 
     const { error: uploadError } = await supabase.storage
-      .from('match_evidence')
+      .from('match-evidence')
       .upload(filePath, file)
 
     if (uploadError) {
@@ -30,15 +44,54 @@ export default function DisputeUpload({ matchId }: { matchId: string }) {
       return
     }
 
-    // Now update the match status to disputed
-    const { error: matchError } = await supabase
+    const { data: signedUrl } = await supabase.storage
+      .from('match-evidence')
+      .createSignedUrl(filePath, 60 * 60 * 24 * 7)
+
+    const { data: dispute, error: disputeError } = await supabase
+      .from('disputes')
+      .insert({
+        match_id: matchId,
+        opened_by: user.id,
+        reason,
+        evidence_url: signedUrl?.signedUrl || filePath,
+        status: 'open',
+      })
+      .select('id')
+      .single()
+
+    if (disputeError) {
+      setError(disputeError.message)
+      setUploading(false)
+      return
+    }
+
+    const [{ error: evidenceError }, { error: matchError }] = await Promise.all([
+      supabase.from('evidence_items').insert({
+        dispute_id: dispute?.id,
+        match_id: matchId,
+        uploaded_by: user.id,
+        evidence_type: file.type.startsWith('video/') ? 'clip' : 'screenshot',
+        file_url: signedUrl?.signedUrl || filePath,
+        notes: reason,
+      }),
+      supabase
       .from('matches')
       .update({ status: 'disputed' })
-      .eq('id', matchId)
+        .eq('id', matchId),
+      supabase.from('platform_audit_events').insert({
+        actor_id: user.id,
+        action: 'match.dispute.opened',
+        entity_type: 'dispute',
+        entity_id: dispute?.id,
+        match_id: matchId,
+      }),
+    ])
 
-    if (matchError) {
-      setError(matchError.message)
+    if (evidenceError || matchError) {
+      setError(evidenceError?.message || matchError?.message || 'Evidence submitted but follow-up update failed.')
     } else {
+      toast.success('Dispute opened and evidence uploaded.')
       setSuccess(true)
     }
     setUploading(false)
@@ -61,6 +114,12 @@ export default function DisputeUpload({ matchId }: { matchId: string }) {
       <p className="text-xs text-slate-400 mb-4">
         If the reported score is incorrect, upload video/screenshot evidence here. This will pause the bracket and alert moderators.
       </p>
+      <textarea
+        value={reason}
+        onChange={e => setReason(e.target.value)}
+        placeholder="Explain the dispute..."
+        className="mb-3 h-20 w-full resize-none rounded-lg border border-kaf-border bg-slate-900 px-3 py-2 text-sm text-white placeholder-slate-600 outline-none focus:border-status-live"
+      />
       
       <div className="flex items-center gap-3">
         <input 

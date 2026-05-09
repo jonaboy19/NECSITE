@@ -15,6 +15,8 @@ const requiredPaths = [
   'app/tournaments/page.tsx',
   'app/clans/page.tsx',
   'app/players/page.tsx',
+  'app/transfers/page.tsx',
+  'app/moderation/page.tsx',
   'app/matches/report/page.tsx',
   'app/how-it-works/page.tsx',
   'app/rules/page.tsx',
@@ -28,7 +30,9 @@ const requiredPaths = [
   'supabase/migrations/flow_rls_hardening.sql',
   'supabase/migrations/20260509023500_analytics_events.sql',
   'supabase/migrations/20260509023600_flow_rls_hardening.sql',
+  'supabase/migrations/20260509090000_esports_os_foundation.sql',
   'docs/manual-flow-test-checklist.md',
+  'docs/ESPORTS_OPERATING_SYSTEM_AUDIT.md',
 ]
 
 const missing = requiredPaths.filter((path) => !existsSync(join(root, path)))

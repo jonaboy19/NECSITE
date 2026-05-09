@@ -2,6 +2,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Handshake, Search, Shield, Star, UserPlus, WalletCards } from 'lucide-react'
 import { StatusBadge } from '@/components/StatusBadge'
+import { TransferOfferButton } from '@/components/TransferOfferButton'
 
 export const metadata = {
   title: 'Transfer Market | KAFConnect',
@@ -90,9 +91,10 @@ export default async function TransferMarketPage({ searchParams }: { searchParam
           ) : (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
               {agents.map((player: any) => {
-                const rep = player.player_reputation?.[0]
+                const rep = Array.isArray(player.player_reputation) ? player.player_reputation[0] : player.player_reputation
                 return (
-                  <Link key={player.id} href={`/profile/${player.profiles?.username || player.gamertag}`} className="kaf-frame kaf-cut depth-hover p-5 group">
+                  <div key={player.id} className="kaf-frame kaf-cut depth-hover p-5 group">
+                    <Link href={`/profile/${player.profiles?.username || player.gamertag}`} className="block">
                     <div className="flex items-start gap-4">
                       <div
                         className="h-14 w-14 shrink-0 border border-white/10 bg-slate-800 bg-cover bg-center kaf-cut-sm"
@@ -120,7 +122,9 @@ export default async function TransferMarketPage({ searchParams }: { searchParam
                         </div>
                       ))}
                     </div>
-                  </Link>
+                    </Link>
+                    <TransferOfferButton playerId={player.id} playerName={player.gamertag} />
+                  </div>
                 )
               })}
             </div>

@@ -4,6 +4,7 @@ import { StatusBadge } from '@/components/StatusBadge'
 import Link from 'next/link'
 import { ArrowLeft, Trophy, Users, Calendar, Globe, Shield, ChevronRight, Swords, Radio, AlertTriangle, Tv } from 'lucide-react'
 import { Metadata } from 'next'
+import { TournamentCheckInButton } from '@/components/TournamentCheckInButton'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -265,6 +266,9 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               className="block w-full py-3 bg-brand-cyan hover:bg-brand-lime text-white rounded-xl font-black text-sm text-center transition-all shadow-glow-green hover:scale-[1.02]">
               Register Your Clan
             </Link>
+          )}
+          {['registration_open', 'active', 'live'].includes(t.status) && (
+            <TournamentCheckInButton tournamentId={id} />
           )}
         </div>
       </div>

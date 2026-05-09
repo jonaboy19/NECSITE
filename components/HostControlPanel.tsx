@@ -17,7 +17,7 @@ export default function HostControlPanel({ tournamentId, initialStatus }: { tour
     setLoading(true)
     
     // Auto-generate matches via Edge Function if starting the tournament
-    if (newStatus === 'live' && status !== 'live') {
+    if (newStatus === 'active' && status !== 'active') {
       const { data: { session } } = await supabase.auth.getSession()
       if (session) {
         const response = await fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/generate-bracket`, {
@@ -70,7 +70,7 @@ export default function HostControlPanel({ tournamentId, initialStatus }: { tour
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <button 
           onClick={() => handleUpdateStatus('registration_open')}
-          disabled={status === 'registration_open' || status === 'live' || status === 'completed'}
+          disabled={status === 'registration_open' || status === 'active' || status === 'completed'}
           className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all group ${
             status === 'registration_open' 
             ? 'bg-brand-gold/20 border-brand-gold/50 text-brand-gold' 
@@ -84,17 +84,17 @@ export default function HostControlPanel({ tournamentId, initialStatus }: { tour
         <button 
           onClick={() => {
             if(confirm('Are you sure you want to start the tournament? This will generate the bracket.')) {
-              handleUpdateStatus('live')
+              handleUpdateStatus('active')
             }
           }}
-          disabled={status === 'live' || status === 'completed'}
+          disabled={status === 'active' || status === 'completed'}
           className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all group ${
-            status === 'live' 
+            status === 'active'
             ? 'bg-status-live/20 border-status-live/50 text-status-live' 
             : 'bg-slate-900 border-slate-700 hover:border-status-live/50 hover:bg-status-live/10'
           }`}
         >
-          <Play size={24} className={`${status === 'live' ? 'text-status-live' : 'text-slate-400 group-hover:text-status-live'} mb-2 transition-transform group-hover:scale-110`} />
+          <Play size={24} className={`${status === 'active' ? 'text-status-live' : 'text-slate-400 group-hover:text-status-live'} mb-2 transition-transform group-hover:scale-110`} />
           <span className="font-bold text-white text-sm">Start Tournament</span>
         </button>
         

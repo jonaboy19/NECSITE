@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { StatusBadge } from '@/components/StatusBadge'
 import Link from 'next/link'
 import { ArrowLeft, Swords, Clock, Upload, Trophy } from 'lucide-react'
+import DisputeUpload from '@/components/DisputeUpload'
 
 export default async function MatchDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -96,6 +97,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
             Submit Match Result
           </Link>
         )}
+        {!isDone && <DisputeUpload matchId={id} />}
       </div>
     </div>
   )

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { AlertTriangle, Ban, FileWarning, Gavel, ShieldAlert } from 'lucide-react'
 import { StatusBadge } from '@/components/StatusBadge'
 import { isAdmin } from '@/lib/auth-helpers'
+import { ModerationActionButton } from '@/components/ModerationActionButton'
 
 export const metadata = {
   title: 'Moderation Queue | KAFConnect',
@@ -99,6 +100,9 @@ export default async function ModerationQueuePage() {
                     <div className="mt-3 flex flex-wrap gap-2">
                       {d.match_id && <Link href={`/matches/${d.match_id}`} className="text-xs font-black uppercase tracking-wider text-brand-lime hover:underline">Open match</Link>}
                       <Link href={`/appeals`} className="text-xs font-black uppercase tracking-wider text-orange-400 hover:underline">Appeal center</Link>
+                      <ModerationActionButton disputeId={d.id} status="reviewing" label="Reviewing" />
+                      <ModerationActionButton disputeId={d.id} status="resolved" label="Resolve" />
+                      <ModerationActionButton disputeId={d.id} status="rejected" label="Reject" />
                     </div>
                   </div>
                 ))}
