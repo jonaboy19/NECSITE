@@ -2,6 +2,11 @@
 -- Adds real data contracts for clan management, transfers, tactics, check-ins,
 -- evidence, penalties, activity, and audit logging.
 
+alter table public.tournaments
+  add column if not exists platform text default 'Mobile',
+  add column if not exists language text default 'English',
+  add column if not exists visibility text default 'public';
+
 create table if not exists public.platform_audit_events (
   id uuid primary key default gen_random_uuid(),
   actor_id uuid references public.profiles(id) on delete set null,
@@ -266,6 +271,20 @@ alter table public.evidence_items enable row level security;
 create policy "evidence authed read" on public.evidence_items for select using (auth.uid() is not null or public.is_admin(auth.uid()));
 create policy "evidence authed insert" on public.evidence_items for insert to authenticated with check (auth.uid() = uploaded_by);
 create policy "evidence admin update" on public.evidence_items for update using (public.is_admin(auth.uid()));
+
+create table if not exists public.match_room_messages (
+  id uuid primary key default gen_random_uuid(),
+  match_id uuid not null references public.matches(id) on delete cascade,
+  sender_id uuid not null references public.profiles(id) on delete cascade,
+  message text not null,
+  attachment_url text,
+  message_type text not null default 'chat',
+  created_at timestamptz not null default now()
+);
+create index if not exists idx_match_room_messages_match on public.match_room_messages(match_id, created_at asc);
+alter table public.match_room_messages enable row level security;
+create policy "match room authed read" on public.match_room_messages for select using (auth.uid() is not null);
+create policy "match room authed insert" on public.match_room_messages for insert to authenticated with check (auth.uid() = sender_id);
 
 create table if not exists public.penalties (
   id uuid primary key default gen_random_uuid(),

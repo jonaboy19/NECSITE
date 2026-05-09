@@ -1,25 +1,25 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Trophy, Check, AlertCircle, Sword } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { Trophy, Check, AlertCircle, Sword, Upload } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function ReportMatch() {
   const supabase = createClient()
   const router = useRouter()
+  const searchParams = useSearchParams()
   
   const [matches, setMatches] = useState<any[]>([])
   const [selectedMatch, setSelectedMatch] = useState<any>(null)
   const [scoreA, setScoreA] = useState(0)
   const [scoreB, setScoreB] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [proof, setProof] = useState<File | null>(null)
   const [status, setStatus] = useState<'idle'|'success'|'error'>('idle')
   const [userId, setUserId] = useState<string | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
-    // Fetch pending matches for this user. 
-    // For demo purposes, we will fetch any scheduled matches.
     const fetchMatches = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
@@ -28,7 +28,11 @@ export default function ReportMatch() {
       }
       setUserId(user.id)
 
-      const { data } = await supabase.from('matches').select('*, tournaments(title)').in('status', ['scheduled', 'live']).limit(10)
+      const matchId = searchParams.get('match')
+      const query = supabase.from('matches').select('*, tournaments(title)').in('status', ['scheduled', 'live', 'active'])
+      const { data } = matchId
+        ? await query.eq('id', matchId).limit(1)
+        : await query.limit(10)
       if (data && data.length > 0) {
         setMatches(data)
         setSelectedMatch(data[0])
@@ -38,25 +42,98 @@ export default function ReportMatch() {
       }
     }
     fetchMatches()
-  }, [supabase])
+  }, [supabase, searchParams, router])
 
   const report = async () => {
     setIsSubmitting(true)
     setErrorMessage('')
     try {
-      if (selectedMatch.id !== 'demo-match-id') {
-        const { error } = await supabase.from('match_results').insert({
-          match_id: selectedMatch.id,
-          submitted_by: userId,
-          score_1: scoreA,
-          score_2: scoreB,
-          notes: 'Submitted from KAFConnect match report page',
-          status: 'pending',
-        })
-        if (error) throw error
+      if (!selectedMatch || !userId) throw new Error('No match selected.')
+
+      let proofUrl: string | null = null
+      if (proof) {
+        const ext = proof.name.split('.').pop()
+        const path = `${selectedMatch.id}/result_${userId}_${Date.now()}.${ext}`
+        const { error: uploadError } = await supabase.storage.from('match-evidence').upload(path, proof)
+        if (uploadError) throw uploadError
+        const { data: signed } = await supabase.storage.from('match-evidence').createSignedUrl(path, 60 * 60 * 24 * 7)
+        proofUrl = signed?.signedUrl || path
       }
 
-      // Trigger the Realtime feed by inserting!
+      const { data: insertedResult, error } = await supabase.from('match_results').insert({
+        match_id: selectedMatch.id,
+        submitted_by: userId,
+        score_1: scoreA,
+        score_2: scoreB,
+        screenshot_url: proofUrl,
+        notes: 'Submitted from KAFConnect match report page',
+        status: 'pending',
+      }).select('id').single()
+      if (error) throw error
+
+      if (proofUrl) {
+        await supabase.from('evidence_items').insert({
+          match_id: selectedMatch.id,
+          uploaded_by: userId,
+          evidence_type: proof?.type.startsWith('video/') ? 'clip' : 'screenshot',
+          file_url: proofUrl,
+          notes: `Result proof ${scoreA}-${scoreB}`,
+        })
+      }
+
+      const { data: existingResults } = await supabase
+        .from('match_results')
+        .select('id,score_1,score_2,submitted_by')
+        .eq('match_id', selectedMatch.id)
+        .neq('id', insertedResult.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+
+      const previous = existingResults?.[0]
+      if (previous) {
+        const sameScore = previous.score_1 === scoreA && previous.score_2 === scoreB
+        if (sameScore) {
+          await Promise.all([
+            supabase.from('matches').update({
+              status: 'completed',
+              score_1: scoreA,
+              score_2: scoreB,
+              score_a: scoreA,
+              score_b: scoreB,
+            }).eq('id', selectedMatch.id),
+            supabase.from('match_results').update({ status: 'approved' }).eq('match_id', selectedMatch.id),
+            supabase.from('platform_audit_events').insert({
+              actor_id: userId,
+              action: 'match.result.auto_finalized',
+              entity_type: 'match',
+              entity_id: selectedMatch.id,
+              match_id: selectedMatch.id,
+              tournament_id: selectedMatch.tournament_id,
+              metadata: { score_1: scoreA, score_2: scoreB },
+            }),
+          ])
+        } else {
+          const { data: dispute } = await supabase.from('disputes').insert({
+            match_id: selectedMatch.id,
+            opened_by: userId,
+            reason: `Score mismatch: submitted ${scoreA}-${scoreB}, previous ${previous.score_1}-${previous.score_2}`,
+            evidence_url: proofUrl,
+            status: 'open',
+          }).select('id').single()
+          await Promise.all([
+            supabase.from('matches').update({ status: 'disputed' }).eq('id', selectedMatch.id),
+            supabase.from('platform_audit_events').insert({
+              actor_id: userId,
+              action: 'match.result.dispute_auto_opened',
+              entity_type: 'dispute',
+              entity_id: dispute?.id,
+              match_id: selectedMatch.id,
+              tournament_id: selectedMatch.tournament_id,
+            }),
+          ])
+        }
+      }
+
       const isWin = scoreA > scoreB;
       const resultText = isWin ? 'defeated' : scoreA === scoreB ? 'drew against' : 'lost to';
       const tickerMessage = `Match Result: Player A ${resultText} Player B (${scoreA}-${scoreB}) in ${selectedMatch.tournaments?.title || 'a Tournament'}!`
@@ -70,6 +147,16 @@ export default function ReportMatch() {
         title: `Match Result: ${scoreA} - ${scoreB}`,
         description: `An intense matchup in ${selectedMatch.tournaments?.title || 'the arena'} just concluded.`,
         activity_type: 'tournament'
+      })
+
+      await supabase.from('platform_audit_events').insert({
+        actor_id: userId,
+        action: 'match.result.submitted',
+        entity_type: 'match_result',
+        entity_id: insertedResult.id,
+        match_id: selectedMatch.id,
+        tournament_id: selectedMatch.tournament_id,
+        metadata: { score_1: scoreA, score_2: scoreB, proof: !!proofUrl },
       })
 
       setStatus('success')
@@ -150,6 +237,20 @@ export default function ReportMatch() {
         {status === 'error' && (
           <div className="mb-6 p-4 rounded-xl bg-status-live/10 border border-status-live/30 flex items-center gap-3 text-status-live text-sm font-bold">
             <AlertCircle size={18} /> {errorMessage || 'Failed to submit report.'}
+          </div>
+        )}
+
+        {selectedMatch && (
+          <div className="mb-6 rounded-2xl border border-kaf-border bg-kaf-panel p-4">
+            <label className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400">
+              <Upload size={13} className="text-brand-cyan" /> Proof screenshot/video
+            </label>
+            <input
+              type="file"
+              accept="image/*,video/*"
+              onChange={e => setProof(e.target.files?.[0] || null)}
+              className="w-full text-xs text-slate-300 file:mr-4 file:border-0 file:bg-slate-800 file:px-4 file:py-2 file:text-xs file:font-bold file:text-white hover:file:bg-slate-700"
+            />
           </div>
         )}
 
