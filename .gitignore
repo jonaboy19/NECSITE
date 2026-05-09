@@ -1,11 +1,1 @@
-node_modules
-.vercel
-.next
-*.tsbuildinfo
-next-env.d.ts
-.env
-.env.local
-.env.*.local
-.env.local.vercel
-.env.production.vercel
-.env.production.local
+@.gitignore

@@ -1,0 +1,1 @@
+@supabase/migrations/20260509023500_analytics_events.sql
