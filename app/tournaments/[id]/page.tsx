@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { StatusBadge } from '@/components/StatusBadge'
 import Link from 'next/link'
-import { ArrowLeft, Trophy, Users, Calendar, Globe, Shield, ChevronRight, Swords } from 'lucide-react'
+import { ArrowLeft, Trophy, Users, Calendar, Globe, Shield, ChevronRight, Swords, Radio, AlertTriangle, Tv } from 'lucide-react'
 import { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -19,10 +19,17 @@ export default async function TournamentDetailPage({ params }: { params: Promise
   const { data: t } = await supabase.from('tournaments').select('*').eq('id', id).single()
   if (!t) notFound()
 
-  const [{ data: regs }, { data: matches }] = await Promise.all([
+  const [{ data: regs }, { data: matches }, { data: checkins }, { data: broadcasts }, { data: admins }] = await Promise.all([
     supabase.from('tournament_registrations').select('id,clan_id,profile_id,status,clans:clan_id(name,tag,logo_url)').eq('tournament_id', id),
     supabase.from('matches').select('id,round,status,score_a,score_b,clan_a_id,clan_b_id').eq('tournament_id', id).order('round').limit(10),
+    supabase.from('tournament_checkins').select('id,status,clan_id,player_id,checked_in_at,missing_players,clans:clan_id(name,tag)').eq('tournament_id', id).limit(25),
+    supabase.from('broadcast_slots').select('id,title,provider,stream_url,scheduled_at,status').eq('tournament_id', id).order('scheduled_at', { ascending: true }).limit(6),
+    supabase.from('tournament_admins').select('role,profiles:profile_id(username,avatar_url)').eq('tournament_id', id).limit(8),
   ])
+  const matchIds = (matches || []).map((m: any) => m.id)
+  const { data: disputes } = matchIds.length > 0
+    ? await supabase.from('disputes').select('id,status,reason,match_id,created_at').in('match_id', matchIds).limit(10)
+    : { data: [] }
 
   const tabs = [
     { label: 'Overview', href: `/tournaments/${id}` },
@@ -54,6 +61,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             {[
               { label: 'Teams', value: regs?.length ?? 0 },
               { label: 'Matches', value: matches?.length ?? 0 },
+              { label: 'Ready', value: checkins?.filter((c: any) => ['ready', 'locked'].includes(c.status)).length ?? 0 },
               { label: 'Prize', value: t.prize_pool || 'Glory' },
             ].map(item => (
               <div key={item.label} className="rounded-xl border border-white/10 bg-black/35 px-4 py-2 backdrop-blur">
@@ -116,6 +124,47 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             </div>
           )}
 
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="depth-panel rounded-2xl p-5">
+              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
+                <Radio size={14} className="text-brand-lime" /> Check-In Status
+              </h2>
+              {(checkins || []).length === 0 ? (
+                <p className="text-sm text-slate-500">No check-ins recorded yet.</p>
+              ) : (
+                <div className="space-y-2">
+                  {(checkins || []).slice(0, 6).map((item: any) => (
+                    <div key={item.id} className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-bold text-white">{item.clans?.name || 'Player check-in'}</div>
+                        <div className="text-[10px] text-slate-500">{item.checked_in_at ? new Date(item.checked_in_at).toLocaleString() : 'Not checked in'}</div>
+                      </div>
+                      <StatusBadge status={item.status} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="depth-panel rounded-2xl p-5">
+              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
+                <AlertTriangle size={14} className="text-red-400" /> Disputes
+              </h2>
+              {(disputes || []).length === 0 ? (
+                <p className="text-sm text-slate-500">No disputes connected to this tournament yet.</p>
+              ) : (
+                <div className="space-y-2">
+                  {(disputes || []).map((item: any) => (
+                    <div key={item.id} className="rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                      <div className="line-clamp-2 text-sm font-bold text-white">{item.reason}</div>
+                      <div className="mt-2"><StatusBadge status={item.status} /></div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
           {/* Registrations */}
           {regs && regs.length > 0 && (
             <div className="depth-panel rounded-2xl p-5">
@@ -145,6 +194,54 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
         {/* Sidebar */}
         <div className="space-y-4">
+          <div className="depth-panel rounded-2xl p-5 space-y-3">
+            <h2 className="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2">
+              <Tv size={14} className="text-brand-gold" /> Broadcasts
+            </h2>
+            {(broadcasts || []).length === 0 ? (
+              <p className="text-sm text-slate-500">No broadcasts scheduled.</p>
+            ) : (
+              <div className="space-y-3">
+                {(broadcasts || []).map((slot: any) => {
+                  const content = (
+                    <>
+                    <div className="text-sm font-bold text-white">{slot.title}</div>
+                    <div className="mt-1 text-[10px] font-black uppercase tracking-wider text-slate-500">
+                      {slot.provider} {slot.scheduled_at ? `- ${new Date(slot.scheduled_at).toLocaleString()}` : ''}
+                    </div>
+                    <div className="mt-2"><StatusBadge status={slot.status} /></div>
+                    </>
+                  )
+                  return slot.stream_url ? (
+                    <a key={slot.id} href={slot.stream_url} className="block rounded-xl border border-white/5 bg-black/20 p-3 transition-colors hover:border-brand-gold/30">
+                      {content}
+                    </a>
+                  ) : (
+                    <div key={slot.id} className="rounded-xl border border-white/5 bg-black/20 p-3">
+                      {content}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          <div className="depth-panel rounded-2xl p-5 space-y-3">
+            <h2 className="text-sm font-black text-white uppercase tracking-wide">Admins</h2>
+            {(admins || []).length === 0 ? (
+              <p className="text-sm text-slate-500">No tournament admins assigned.</p>
+            ) : (
+              <div className="space-y-2">
+                {(admins || []).map((admin: any, i: number) => (
+                  <div key={`${admin.profiles?.username || i}-${admin.role}`} className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                    <span className="text-sm font-bold text-white">{admin.profiles?.username || 'Admin'}</span>
+                    <span className="text-[10px] font-black uppercase tracking-wider text-brand-lime">{admin.role}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="depth-panel rounded-2xl p-5 space-y-3">
             <h2 className="text-sm font-black text-white uppercase tracking-wide">Details</h2>
             {[

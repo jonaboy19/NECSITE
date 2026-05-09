@@ -13,6 +13,8 @@ const ACTIONS: Hit[] = [
   { id: 'messages', type: 'action', label: 'Open messages', sub: 'Communication hub', href: '/messages' },
   { id: 'notifications', type: 'action', label: 'Open notifications', sub: 'Command queue', href: '/notifications' },
   { id: 'free-agents', type: 'action', label: 'Scout free agents', sub: 'Transfer market', href: '/free-agents' },
+  { id: 'transfers', type: 'action', label: 'Open transfer market', sub: 'Contracts and negotiations', href: '/transfers' },
+  { id: 'moderation', type: 'action', label: 'Open moderation queue', sub: 'Disputes evidence penalties', href: '/moderation' },
   { id: 'admin', type: 'action', label: 'Open admin panel', sub: 'Moderation and operations', href: '/admin' },
 ]
 

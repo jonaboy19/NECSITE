@@ -6,7 +6,7 @@ import {
   Home, Play, Trophy, BarChart3, Users, GitMerge, Video, MessageSquare,
   Bell, Settings, UserPlus, Film, Shield, AlertTriangle, Newspaper,
   Star, Swords, ChevronDown, ChevronRight, Tv, Sliders, Users2, Search, Zap, Compass,
-  PanelLeftClose, PanelLeftOpen
+  PanelLeftClose, PanelLeftOpen, Handshake, Gavel
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -35,6 +35,7 @@ const NAV_SECTIONS: NavSection[] = [
       { name: 'Players',      href: '/players',        icon: Users },
       { name: 'Clans',        href: '/clans',          icon: Shield },
       { name: 'Free Agents',  href: '/free-agents',    icon: UserPlus },
+      { name: 'Transfers',    href: '/transfers',      icon: Handshake, accent: '#f59e0b' },
       { name: 'Friends',      href: '/friends',        icon: Users2 },
       { name: 'Community',    href: '/community',      icon: Star },
       { name: 'News',         href: '/news',           icon: Newspaper },
@@ -63,6 +64,7 @@ const NAV_SECTIONS: NavSection[] = [
     items: [
       { name: 'Admin Panel',  href: '/admin',          icon: Shield,         accent: '#7c3aed' },
       { name: 'No-Code',      href: '/admin/nocode',   icon: Sliders,        accent: '#7c3aed' },
+      { name: 'Moderation',   href: '/moderation',     icon: Gavel,          accent: '#ef4444' },
       { name: 'Appeals',      href: '/appeals',        icon: AlertTriangle,  accent: '#ef4444' },
     ],
   },
