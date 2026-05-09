@@ -32,15 +32,13 @@ export default async function TournamentMatchesPage({ params }: { params: Promis
   ;(matches ?? []).forEach((m: any) => { (byRound[m.round] ||= []).push(m) })
 
   return (
-    <div className="flex flex-col w-full pb-24">
-      <div className="relative overflow-hidden border-b border-kaf-border px-4 sm:px-8 py-6 bg-kaf-panel">
-        <div className="absolute inset-0 bg-line-grid opacity-30"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-cyan/10 via-transparent to-brand-blue/10"></div>
+    <div className="kaf-app-page flex w-full flex-col pb-24">
+      <div className="kaf-page-hero px-4 sm:px-8 py-6">
         <div className="relative z-10">
         <Link href={`/tournaments/${id}`} className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-brand-cyan mb-3 font-mono uppercase tracking-widest transition-colors">
           <ArrowLeft size={12} /> {tournament.title}
         </Link>
-        <h1 className="text-2xl font-display font-black text-white uppercase flex items-center gap-2">
+        <h1 className="kaf-display flex items-center gap-2 text-3xl text-white">
           <Swords size={20} className="text-brand-cyan" /> All Matches
         </h1>
         </div>
@@ -60,7 +58,7 @@ export default async function TournamentMatchesPage({ params }: { params: Promis
                 const cB = clanMap[m.clan_b_id]
                 return (
                   <Link key={m.id} href={`/matches/${m.id}`}
-                    className="depth-panel depth-hover rounded-2xl p-4 hover:border-brand-cyan/30 space-y-3">
+                    className="depth-panel depth-hover kaf-cut p-4 hover:border-brand-cyan/30 space-y-3">
                     <div className="flex items-center justify-between">
                       <StatusBadge status={m.status} />
                       {m.scheduled_at && (
@@ -71,8 +69,8 @@ export default async function TournamentMatchesPage({ params }: { params: Promis
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 text-sm font-bold text-white text-right truncate">{cA?.name || 'TBD'}</div>
-                      <div className="rounded-xl border border-brand-cyan/20 bg-brand-cyan/10 px-3 py-1 font-mono font-black text-brand-lime text-sm shadow-[0_0_18px_rgba(25,133,59,0.14)]">
-                        {m.score_a ?? '–'} : {m.score_b ?? '–'}
+                      <div className="border border-brand-cyan/20 bg-brand-cyan/10 px-3 py-1 font-mono font-black text-brand-lime text-sm shadow-[0_0_18px_rgba(25,133,59,0.14)]">
+                        {m.score_a ?? '-'} : {m.score_b ?? '-'}
                       </div>
                       <div className="flex-1 text-sm font-bold text-white truncate">{cB?.name || 'TBD'}</div>
                     </div>

@@ -57,19 +57,19 @@ export default function CreateClan() {
   }
 
   return (
-    <div className="flex flex-col w-full min-h-[80vh] items-center justify-center p-4">
+    <div className="kaf-app-page flex min-h-[80vh] w-full flex-col items-center justify-center p-4">
       <div className="grid w-full max-w-5xl gap-6 lg:grid-cols-[1fr_380px]">
-      <div className="depth-panel p-6 md:p-10 rounded-3xl relative overflow-hidden">
-        <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-purple-500/10 blur-3xl"></div>
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-brand-cyan"></div>
+      <div className="depth-panel kaf-cut p-6 md:p-10 relative overflow-hidden">
+        <div className="absolute inset-x-0 top-0 h-px bg-brand-cyan/70"></div>
+        <div className="absolute right-0 top-0 h-full w-px bg-brand-cyan/20"></div>
         
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl depth-stat flex items-center justify-center">
-            <Shield size={24} className="text-purple-400" />
+          <div className="depth-stat flex h-12 w-12 items-center justify-center border-brand-cyan/25">
+            <Shield size={24} className="text-brand-lime" />
           </div>
           <div>
-            <h1 className="text-3xl font-display font-black text-white">Forge a Legacy</h1>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">Clan Registration</p>
+            <h1 className="kaf-display text-3xl text-white">Forge a Legacy</h1>
+            <p className="kaf-panel-title mt-2">Clan Registration</p>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export default function CreateClan() {
                 placeholder='e.g., KAF Esports'
                 required
                 maxLength={30}
-                className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-4 text-white font-bold placeholder-slate-600 focus:border-purple-400 focus:outline-none transition-colors"
+                className="kaf-input py-4 font-bold"
               />
             </div>
             
@@ -102,7 +102,7 @@ export default function CreateClan() {
                 required
                 minLength={2}
                 maxLength={5}
-                className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-4 text-white font-bold placeholder-slate-600 focus:border-purple-400 focus:outline-none transition-colors"
+                className="kaf-input py-4 font-bold"
               />
             </div>
             
@@ -114,7 +114,7 @@ export default function CreateClan() {
                 placeholder='What does your clan stand for?'
                 rows={3}
                 maxLength={200}
-                className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-4 text-white font-medium placeholder-slate-600 focus:border-purple-400 focus:outline-none transition-colors resize-none"
+                className="kaf-input resize-none py-4 font-medium"
               />
             </div>
           </div>
@@ -122,7 +122,7 @@ export default function CreateClan() {
           <button
             type="submit"
             disabled={isSubmitting || !name.trim()}
-            className="w-full rounded-2xl bg-purple-600 py-5 font-black text-lg text-white transition-all hover:bg-purple-500 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 mt-8"
+            className="btn-primary mt-8 w-full py-5 text-base disabled:opacity-50"
           >
             {isSubmitting ? (
               <><Loader2 size={20} className="animate-spin" /> Registering...</>
@@ -132,11 +132,11 @@ export default function CreateClan() {
           </button>
         </form>
       </div>
-      <aside className="depth-panel rounded-3xl p-6 self-start">
-        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500 mb-4">Live Preview</p>
-        <div className="rounded-2xl border border-purple-400/25 bg-purple-500/5 p-5">
+      <aside className="depth-panel kaf-cut p-6 self-start">
+        <p className="kaf-panel-title mb-4">Live Preview</p>
+        <div className="border border-brand-cyan/20 bg-brand-cyan/5 p-5">
           <div className="mb-4 flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-white/10 bg-kaf-panel text-2xl font-black text-purple-300 shadow-[0_18px_38px_rgba(0,0,0,0.35)]">
+            <div className="flex h-16 w-16 items-center justify-center border border-brand-cyan/25 bg-kaf-panel text-2xl font-black text-brand-lime shadow-[0_18px_38px_rgba(0,0,0,0.35)]">
               {(tag || name || 'K').slice(0, 2).toUpperCase()}
             </div>
             <div className="min-w-0">

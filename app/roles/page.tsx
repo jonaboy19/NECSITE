@@ -32,9 +32,9 @@ const ROLES = [
     id: 'tournament_admin',
     name: 'Tournament Admin',
     icon: Shield,
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10 border-purple-500/30',
-    badge: 'bg-purple-600 text-white',
+    color: 'text-brand-lime',
+    bg: 'bg-brand-cyan/10 border-brand-cyan/30',
+    badge: 'bg-brand-cyan text-white',
     description: 'Can create and fully manage tournaments — including approving registrations, setting match results, and resolving disputes within their events.',
     permissions: [
       { label: 'Create & manage tournaments', allowed: true },

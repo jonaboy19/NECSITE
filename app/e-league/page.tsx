@@ -110,7 +110,7 @@ function SeriesCard({ series, highlight = false }: { series: any; highlight?: bo
       {series.banner_url ? (
         <img src={series.banner_url} alt={series.name} className="w-full h-28 object-cover" />
       ) : (
-        <div className="w-full h-28 bg-gradient-to-br from-purple-900/40 to-slate-900/40 flex items-center justify-center">
+        <div className="kaf-stadium-bg flex h-28 w-full items-center justify-center">
           <Trophy size={32} className="text-slate-600" />
         </div>
       )}

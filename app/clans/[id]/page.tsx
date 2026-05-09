@@ -237,7 +237,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
 
   const roleColors: Record<string, string> = {
     owner: 'text-brand-gold border-brand-gold/30 bg-brand-gold/10',
-    manager: 'text-purple-400 border-purple-400/30 bg-purple-400/10',
+    manager: 'text-brand-lime border-brand-cyan/30 bg-brand-cyan/10',
     captain: 'text-brand-cyan border-brand-cyan/30 bg-brand-cyan/10',
     co_captain: 'text-blue-400 border-blue-400/30 bg-blue-400/10',
     coach: 'text-green-400 border-green-400/30 bg-green-400/10',

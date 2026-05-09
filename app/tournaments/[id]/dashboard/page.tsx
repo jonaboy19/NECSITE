@@ -46,7 +46,7 @@ export default async function TournamentDashboardPage({ params }: { params: Prom
         <div className="grid grid-cols-3 gap-4">
           {[
             { Icon: Users, label: 'Registrations', value: regs?.length ?? 0, color: 'text-brand-cyan' },
-            { Icon: Play, label: 'Matches', value: matches?.length ?? 0, color: 'text-purple-400' },
+            { Icon: Play, label: 'Matches', value: matches?.length ?? 0, color: 'text-brand-lime' },
             { Icon: Trophy, label: 'Completed', value: matches?.filter(m => m.status === 'completed').length ?? 0, color: 'text-brand-gold' },
           ].map(s => (
             <div key={s.label} className="depth-panel depth-hover rounded-2xl p-4 text-center">

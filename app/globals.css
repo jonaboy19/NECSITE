@@ -49,7 +49,9 @@
 
   body {
     margin: 0;
-    background-color: var(--kaf-bg);
+    background:
+      radial-gradient(circle at 72% 28%, rgba(21, 153, 71, 0.08), transparent 32%),
+      linear-gradient(180deg, #050706 0%, #030403 100%);
     color: #f1f5f9;  /* slate-100 — slightly warm white */
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
@@ -75,29 +77,32 @@
 @layer components {
   /* ── Core card ─────────────────────────── */
   .kaf-card {
-    background-color: var(--kaf-card);
+    position: relative;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.008) 42%, rgba(0,0,0,0.2)),
+      rgba(12, 15, 13, 0.88);
     border: 1px solid var(--kaf-border);
+    border-radius: 8px;
     box-shadow:
-      0 18px 44px rgba(0, 0, 0, 0.34),
-      0 5px 14px rgba(0, 0, 0, 0.28),
-      0 1px 0 rgba(255, 255, 255, 0.05) inset;
+      0 18px 48px rgba(0, 0, 0, 0.34),
+      0 1px 0 rgba(255, 255, 255, 0.045) inset;
     transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   }
 
   .kaf-card-elevated {
     background-color: var(--kaf-elevated);
     border: 1px solid var(--kaf-border-strong);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
   }
 
   body.enable-card-hover:not(.reduce-motion) .kaf-card:hover {
     border-color: rgba(25, 133, 59, 0.3);
     box-shadow:
-      0 26px 60px rgba(0, 0, 0, 0.48),
-      0 10px 24px rgba(0, 0, 0, 0.34),
-      0 0 0 1px rgba(25, 133, 59, 0.2),
-      0 1px 0 rgba(255, 255, 255, 0.07) inset;
-    transform: translateY(-2px);
+      0 24px 58px rgba(0, 0, 0, 0.48),
+      0 0 0 1px rgba(25, 133, 59, 0.18),
+      0 1px 0 rgba(255, 255, 255, 0.06) inset;
+    transform: translateY(-1px);
   }
 
   button:active,
@@ -141,8 +146,9 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease, box-shadow 0.2s ease;
-    border-radius: 0.75rem;
-    box-shadow: 0 0 0 0 rgba(25,133,59,0);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba(34,197,94,0.1), 0 14px 30px rgba(25,133,59,0.18);
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   }
 
   .btn-primary:hover {
@@ -165,7 +171,8 @@
     border: 1px solid var(--kaf-border-strong);
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
-    border-radius: 0.75rem;
+    border-radius: 8px;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   }
 
   .btn-secondary:hover {
@@ -178,7 +185,7 @@
     width: 100%;
     background-color: var(--kaf-bg);
     border: 1px solid var(--kaf-border-strong);
-    border-radius: 0.75rem;
+    border-radius: 8px;
     padding: 0.75rem 1rem;
     color: white;
     font-size: 0.875rem;
@@ -238,19 +245,19 @@
   .kaf-card-gradient-border {
     position: relative;
     background: var(--kaf-card);
-    border-radius: 1rem;
+    border-radius: 8px;
   }
 
   .depth-panel {
     position: relative;
     background:
-      linear-gradient(145deg, rgba(255,255,255,0.055), rgba(255,255,255,0.012) 32%, rgba(0,0,0,0.18)),
-      var(--kaf-card);
+      linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.008) 38%, rgba(0,0,0,0.26)),
+      rgba(12, 15, 13, 0.88);
     border: 1px solid var(--kaf-border);
+    border-radius: 8px;
     box-shadow:
-      0 24px 70px rgba(0,0,0,0.42),
-      0 8px 22px rgba(0,0,0,0.3),
-      0 1px 0 rgba(255,255,255,0.07) inset;
+      0 18px 54px rgba(0,0,0,0.38),
+      0 1px 0 rgba(255,255,255,0.055) inset;
   }
 
   .depth-panel::after {
@@ -268,10 +275,9 @@
   }
 
   body.enable-card-hover:not(.reduce-motion) .depth-hover:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
     box-shadow:
-      0 32px 86px rgba(0,0,0,0.55),
-      0 14px 28px rgba(0,0,0,0.36),
+      0 26px 70px rgba(0,0,0,0.52),
       0 0 0 1px rgba(34,197,94,0.22);
   }
 
@@ -281,6 +287,7 @@
       linear-gradient(180deg, rgba(255,255,255,0.045), rgba(255,255,255,0.01)),
       var(--kaf-bg);
     border: 1px solid var(--kaf-border);
+    border-radius: 8px;
     box-shadow: 0 12px 28px rgba(0,0,0,0.32), 0 1px 0 rgba(255,255,255,0.05) inset;
   }
 
@@ -337,6 +344,7 @@
       linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.012) 36%, rgba(0,0,0,0.2)),
       rgba(12, 15, 13, 0.78);
     border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 8px;
     box-shadow: 0 28px 80px rgba(0,0,0,0.46), inset 0 1px 0 rgba(255,255,255,0.055);
     backdrop-filter: blur(14px);
   }
@@ -417,7 +425,7 @@
     padding: 1rem;
     background: var(--kaf-card);
     border: 1px solid var(--kaf-border);
-    border-radius: 0.75rem;
+    border-radius: 8px;
     text-align: center;
     gap: 0.25rem;
   }
@@ -434,6 +442,55 @@
     letter-spacing: 0.15em;
     text-transform: uppercase;
     color: #64748b;
+  }
+
+  .kaf-app-page {
+    min-height: 100%;
+    background:
+      radial-gradient(circle at 82% 16%, rgba(21,153,71,0.12), transparent 28%),
+      linear-gradient(180deg, rgba(8,13,10,0.96), rgba(5,7,6,1));
+  }
+
+  .kaf-page-hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--kaf-border);
+    background:
+      linear-gradient(90deg, rgba(5,7,6,0.98) 0%, rgba(5,7,6,0.9) 56%, rgba(11,22,15,0.78) 100%),
+      url('/hero-stadium.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .kaf-page-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 4px),
+      linear-gradient(180deg, transparent 0%, rgba(5,7,6,0.72) 100%);
+    opacity: 0.5;
+  }
+
+  .kaf-panel-title {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.68rem;
+    font-weight: 900;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--kaf-green-bright);
+  }
+
+  .kaf-card.rounded-2xl,
+  .kaf-card.rounded-3xl,
+  .depth-panel.rounded-2xl,
+  .depth-panel.rounded-3xl,
+  .depth-stat.rounded-2xl,
+  .depth-stat.rounded-3xl,
+  .kaf-frame.rounded-2xl,
+  .kaf-frame.rounded-3xl {
+    border-radius: 8px !important;
   }
 }
 

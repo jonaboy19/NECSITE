@@ -67,7 +67,7 @@ export default async function Profile() {
             <p className="text-slate-400 font-medium mb-4">{profile?.display_name || 'No display name set'}</p>
             
             <div className="flex flex-wrap gap-2">
-              <div className="px-3 py-1 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
+              <div className="px-3 py-1 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 text-brand-lime text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">
                 <Shield size={12} /> Free Agent
               </div>
               <div className="px-3 py-1 rounded-lg bg-status-live/10 border border-status-live/30 text-status-live text-xs font-bold uppercase tracking-widest flex items-center gap-1.5">

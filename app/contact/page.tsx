@@ -112,8 +112,8 @@ export default function Contact() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-purple-400/10 border border-purple-400/20 flex items-center justify-center shrink-0">
-                    <MessageSquare size={18} className="text-purple-400" />
+                  <div className="w-10 h-10 rounded-xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center shrink-0">
+                    <MessageSquare size={18} className="text-brand-lime" />
                   </div>
                   <div>
                     <p className="text-xs text-slate-500 uppercase font-bold tracking-wider">Discord</p>

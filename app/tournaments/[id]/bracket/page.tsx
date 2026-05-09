@@ -59,22 +59,20 @@ export default async function BracketPage({ params }: { params: Promise<{ id: st
   })
 
   return (
-    <div className="flex flex-col w-full pb-24">
+    <div className="kaf-app-page flex w-full flex-col pb-24">
       {/* Header */}
-      <div className="relative overflow-hidden border-b border-kaf-border px-4 sm:px-8 py-6 bg-kaf-panel">
-        <div className="absolute inset-0 bg-line-grid opacity-30"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-gold/10 via-transparent to-brand-cyan/10"></div>
+      <div className="kaf-page-hero px-4 sm:px-8 py-6">
         <div className="relative z-10">
         <Link href={`/tournaments/${id}`} className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-brand-cyan mb-3 transition-colors font-mono uppercase tracking-widest">
           <ArrowLeft size={12} /> {tournament.title}
         </Link>
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-3xl font-display font-black text-white uppercase flex items-center gap-3">
+          <h1 className="kaf-display flex items-center gap-3 text-3xl text-white">
             <Trophy size={24} className="text-brand-gold" /> Tournament Bracket
           </h1>
           <StatusBadge status={tournament.status} />
         </div>
-        <p className="text-slate-400 text-sm mt-1">{tournament.format || 'Single Elimination'} · {bracketMatches.length} matches</p>
+        <p className="text-slate-400 text-sm mt-1">{tournament.format || 'Single Elimination'} - {bracketMatches.length} matches</p>
         </div>
       </div>
 

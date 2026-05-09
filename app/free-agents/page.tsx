@@ -27,14 +27,16 @@ export default async function FreeAgents() {
   const agents = (freeAgents || []).filter((p: any) => !clanMemberIds.has(p.id))
 
   return (
-    <div className="flex flex-col w-full pb-20">
+    <div className="kaf-app-page flex w-full flex-col pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-30 bg-kaf-panel/95 backdrop-blur-xl border-b border-kaf-border px-6 py-4">
-        <h1 className="text-2xl font-display font-black text-white uppercase tracking-wide flex items-center gap-3">
+      <div className="kaf-page-hero sticky top-0 z-30 px-6 py-5">
+        <div className="relative z-10">
+        <h1 className="kaf-display flex items-center gap-3 text-3xl text-white">
           <UserPlus className="text-brand-gold" size={26} />
           Free Agents
         </h1>
         <p className="text-slate-400 text-sm mt-0.5">Players not affiliated with any clan - available for recruitment</p>
+        </div>
       </div>
 
       <div className="p-6 max-w-6xl mx-auto w-full space-y-6">
@@ -49,7 +51,7 @@ export default async function FreeAgents() {
             <Link
               key={player.id}
               href={`/profile/${player.username}`}
-              className="kaf-card rounded-2xl border border-kaf-border p-5 flex items-center gap-4 group hover:border-brand-gold/30 transition-all"
+              className="kaf-card kaf-cut flex items-center gap-4 border border-kaf-border p-5 transition-all hover:border-brand-gold/30"
             >
               <div
                 className="w-14 h-14 rounded-full bg-slate-800 bg-cover bg-center border-2 border-kaf-border group-hover:border-brand-gold transition-all shrink-0"
@@ -68,7 +70,7 @@ export default async function FreeAgents() {
                   )}
                 </div>
               </div>
-              <div className="px-2.5 py-1 rounded-full bg-brand-gold/10 border border-brand-gold/30 text-brand-gold text-[9px] font-black uppercase tracking-widest shrink-0">
+              <div className="shrink-0 border border-brand-gold/30 bg-brand-gold/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest text-brand-gold">
                 Free Agent
               </div>
             </Link>

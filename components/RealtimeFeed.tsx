@@ -116,11 +116,11 @@ export default function RealtimeFeed({ initialActivities = [] }: { initialActivi
         <div key={activity.id} className="kaf-card rounded-2xl p-0 border border-kaf-border/50 bg-kaf-card/80 backdrop-blur-md flex flex-col hover:border-brand-cyan/40 transition-all overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_30px_rgba(25,133,59,0.14)]">
           <div className="p-5 flex gap-4">
             <div className={`w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center bg-cover shadow-inner ${
-              activity.activity_type === 'transfer' ? 'bg-purple-500/10 border border-purple-500/30' :
+              activity.activity_type === 'transfer' ? 'bg-brand-gold/10 border border-brand-gold/30' :
               activity.activity_type === 'tournament' ? 'bg-emerald-500/10 border border-emerald-500/30' :
               'bg-brand-cyan/10 border border-brand-cyan/30'
             }`}>
-              {activity.activity_type === 'transfer' && <Star size={20} className="text-purple-400 fill-current" />}
+              {activity.activity_type === 'transfer' && <Star size={20} className="text-brand-gold fill-current" />}
               {activity.activity_type === 'tournament' && <Trophy size={20} className="text-emerald-400" />}
               {activity.activity_type === 'media' && <Video size={20} className="text-brand-cyan" />}
             </div>

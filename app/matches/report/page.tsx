@@ -173,8 +173,8 @@ export default function ReportMatch() {
 
   if (status === 'success') {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[80vh] p-6 text-center">
-        <div className="w-24 h-24 bg-emerald-500/10 border-2 border-emerald-500/50 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+      <div className="kaf-app-page flex min-h-[80vh] flex-col items-center justify-center p-6 text-center">
+        <div className="mb-6 flex h-24 w-24 items-center justify-center border-2 border-emerald-500/50 bg-emerald-500/10 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
           <Check size={40} className="text-emerald-400" />
         </div>
         <h1 className="text-4xl font-display font-black text-white mb-4">SCORE VERIFIED</h1>
@@ -184,18 +184,17 @@ export default function ReportMatch() {
   }
 
   return (
-    <div className="flex flex-col w-full min-h-[80vh] items-center justify-center p-4">
-      <div className="w-full max-w-lg depth-panel p-6 md:p-8 rounded-3xl relative overflow-hidden">
-        <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-brand-cyan/10 blur-3xl"></div>
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-cyan to-purple-500"></div>
+    <div className="kaf-app-page flex min-h-[80vh] w-full flex-col items-center justify-center p-4">
+      <div className="depth-panel kaf-cut relative w-full max-w-lg overflow-hidden p-6 md:p-8">
+        <div className="absolute inset-x-0 top-0 h-px bg-brand-cyan/70"></div>
         
         <div className="flex items-center gap-3 mb-8 justify-center">
-          <div className="w-12 h-12 rounded-xl depth-stat flex items-center justify-center">
+          <div className="depth-stat flex h-12 w-12 items-center justify-center">
             <Sword size={24} className="text-brand-cyan" />
           </div>
           <div>
-            <h1 className="text-2xl font-display font-black text-white">Report Score</h1>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-widest">{selectedMatch?.tournaments?.title || 'Select Match'}</p>
+            <h1 className="kaf-display text-3xl text-white">Report Score</h1>
+            <p className="kaf-panel-title mt-2">{selectedMatch?.tournaments?.title || 'Select Match'}</p>
           </div>
         </div>
 
@@ -204,13 +203,13 @@ export default function ReportMatch() {
           <div className="flex items-center justify-between gap-4 mb-10">
             {/* Player A */}
             <div className="flex flex-col items-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-kaf-panel border-2 border-brand-cyan/50 shadow-[0_18px_38px_rgba(0,0,0,0.38),0_0_20px_rgba(25,133,59,0.2)] mb-4 bg-cover" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=You')` }}></div>
+              <div className="mb-4 h-20 w-20 border-2 border-brand-cyan/50 bg-kaf-panel bg-cover shadow-[0_18px_38px_rgba(0,0,0,0.38),0_0_20px_rgba(25,133,59,0.2)]" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=You')` }}></div>
               <p className="font-bold text-white mb-4">You</p>
               
-              <div className="flex items-center gap-3 bg-kaf-panel rounded-full p-1 border border-kaf-border">
-                <button onClick={() => setScoreA(Math.max(0, scoreA - 1))} className="w-10 h-10 rounded-full bg-kaf-bg flex items-center justify-center text-xl font-bold text-slate-400 hover:text-white transition-colors">-</button>
+              <div className="flex items-center gap-3 border border-kaf-border bg-kaf-panel p-1">
+                <button onClick={() => setScoreA(Math.max(0, scoreA - 1))} className="flex h-10 w-10 items-center justify-center bg-kaf-bg text-xl font-bold text-slate-400 transition-colors hover:text-white">-</button>
                 <span className="w-8 text-center text-3xl font-black text-brand-cyan">{scoreA}</span>
-                <button onClick={() => setScoreA(scoreA + 1)} className="w-10 h-10 rounded-full bg-kaf-bg flex items-center justify-center text-xl font-bold text-slate-400 hover:text-white transition-colors">+</button>
+                <button onClick={() => setScoreA(scoreA + 1)} className="flex h-10 w-10 items-center justify-center bg-kaf-bg text-xl font-bold text-slate-400 transition-colors hover:text-white">+</button>
               </div>
             </div>
 
@@ -218,18 +217,18 @@ export default function ReportMatch() {
 
             {/* Player B */}
             <div className="flex flex-col items-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-kaf-panel border-2 border-slate-700 mb-4 bg-cover opacity-80 shadow-[0_18px_38px_rgba(0,0,0,0.32)]" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=Opponent')` }}></div>
+              <div className="mb-4 h-20 w-20 border-2 border-slate-700 bg-kaf-panel bg-cover opacity-80 shadow-[0_18px_38px_rgba(0,0,0,0.32)]" style={{ backgroundImage: `url('https://api.dicebear.com/7.x/avataaars/svg?seed=Opponent')` }}></div>
               <p className="font-bold text-white mb-4">Opponent</p>
               
-              <div className="flex items-center gap-3 bg-kaf-panel rounded-full p-1 border border-kaf-border">
-                <button onClick={() => setScoreB(Math.max(0, scoreB - 1))} className="w-10 h-10 rounded-full bg-kaf-bg flex items-center justify-center text-xl font-bold text-slate-400 hover:text-white transition-colors">-</button>
+              <div className="flex items-center gap-3 border border-kaf-border bg-kaf-panel p-1">
+                <button onClick={() => setScoreB(Math.max(0, scoreB - 1))} className="flex h-10 w-10 items-center justify-center bg-kaf-bg text-xl font-bold text-slate-400 transition-colors hover:text-white">-</button>
                 <span className="w-8 text-center text-3xl font-black text-slate-300">{scoreB}</span>
-                <button onClick={() => setScoreB(scoreB + 1)} className="w-10 h-10 rounded-full bg-kaf-bg flex items-center justify-center text-xl font-bold text-slate-400 hover:text-white transition-colors">+</button>
+                <button onClick={() => setScoreB(scoreB + 1)} className="flex h-10 w-10 items-center justify-center bg-kaf-bg text-xl font-bold text-slate-400 transition-colors hover:text-white">+</button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="p-8 text-center text-slate-400 mb-10 border border-dashed border-kaf-border rounded-2xl">
+          <div className="mb-10 border border-dashed border-kaf-border p-8 text-center text-slate-400">
             You have no pending matches to report.
           </div>
         )}
@@ -241,7 +240,7 @@ export default function ReportMatch() {
         )}
 
         {selectedMatch && (
-          <div className="mb-6 rounded-2xl border border-kaf-border bg-kaf-panel p-4">
+          <div className="mb-6 border border-kaf-border bg-kaf-panel p-4">
             <label className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-slate-400">
               <Upload size={13} className="text-brand-cyan" /> Proof screenshot/video
             </label>
@@ -257,7 +256,7 @@ export default function ReportMatch() {
         <button 
           onClick={report} 
           disabled={isSubmitting || !selectedMatch}
-          className="w-full rounded-2xl bg-brand-cyan py-5 font-black text-lg text-white transition-all hover:bg-brand-lime hover:scale-105 shadow-glow-green disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2"
+          className="btn-primary w-full py-5 text-base disabled:opacity-50"
         >
           {isSubmitting ? 'Verifying...' : 'Confirm Result'} <Trophy size={20} />
         </button>

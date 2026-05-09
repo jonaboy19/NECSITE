@@ -39,12 +39,12 @@ export default async function TournamentDetailPage({ params }: { params: Promise
   ]
 
   return (
-    <div className="flex flex-col w-full pb-24">
+    <div className="kaf-app-page flex w-full flex-col pb-24">
       {/* Hero Banner */}
       <div className="relative border-b border-kaf-border overflow-hidden">
         {t.banner_url
           ? <img src={t.banner_url} alt={t.title} className="w-full h-48 sm:h-64 object-cover" />
-          : <div className="w-full h-48 sm:h-64 bg-gradient-to-br from-purple-950/60 via-slate-950 to-slate-950 flex items-center justify-center">
+          : <div className="kaf-stadium-bg flex h-48 w-full items-center justify-center sm:h-64">
               <Trophy size={64} className="text-slate-700" />
             </div>
         }
@@ -55,7 +55,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             <ArrowLeft size={12} /> Tournaments
           </Link>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl sm:text-4xl font-display font-black text-white uppercase">{t.title}</h1>
+            <h1 className="kaf-display text-4xl text-white sm:text-5xl">{t.title}</h1>
             <StatusBadge status={t.status} />
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -65,7 +65,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               { label: 'Ready', value: checkins?.filter((c: any) => ['ready', 'locked'].includes(c.status)).length ?? 0 },
               { label: 'Prize', value: t.prize_pool || 'Glory' },
             ].map(item => (
-              <div key={item.label} className="rounded-xl border border-white/10 bg-black/35 px-4 py-2 backdrop-blur">
+              <div key={item.label} className="kaf-cut-sm border border-white/10 bg-black/35 px-4 py-2 backdrop-blur">
                 <div className="text-lg font-black text-white">{item.value}</div>
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{item.label}</div>
               </div>
@@ -94,26 +94,26 @@ export default async function TournamentDetailPage({ params }: { params: Promise
         {/* Main */}
         <div className="lg:col-span-2 space-y-6">
           {t.description && (
-            <div className="depth-panel rounded-2xl p-5">
-              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3">About</h2>
+            <div className="depth-panel kaf-cut p-5">
+              <h2 className="kaf-panel-title mb-3">About</h2>
               <p className="text-slate-400 text-sm leading-relaxed">{t.description}</p>
             </div>
           )}
 
           {/* Recent Matches */}
           {matches && matches.length > 0 && (
-            <div className="depth-panel rounded-2xl p-5">
-              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
+            <div className="depth-panel kaf-cut p-5">
+              <h2 className="kaf-panel-title mb-3 flex items-center gap-2">
                 <Swords size={14} className="text-brand-cyan" /> Recent Matches
               </h2>
               <div className="space-y-2">
                 {matches.slice(0, 5).map((m: any) => (
-                  <div key={m.id} className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2 text-sm">
+                  <div key={m.id} className="flex items-center justify-between border border-white/5 bg-black/20 px-3 py-2 text-sm">
                     <span className="text-slate-400 font-mono text-xs">Round {m.round}</span>
                     <div className="flex items-center gap-3">
                       <StatusBadge status={m.status} />
                       {(m.score_a != null || m.score_b != null) && (
-                        <span className="font-mono font-black text-white">{m.score_a ?? '–'} : {m.score_b ?? '–'}</span>
+                        <span className="font-mono font-black text-white">{m.score_a ?? '-'} : {m.score_b ?? '-'}</span>
                       )}
                     </div>
                   </div>
@@ -126,8 +126,8 @@ export default async function TournamentDetailPage({ params }: { params: Promise
           )}
 
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="depth-panel rounded-2xl p-5">
-              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
+            <div className="depth-panel kaf-cut p-5">
+              <h2 className="kaf-panel-title mb-3 flex items-center gap-2">
                 <Radio size={14} className="text-brand-lime" /> Check-In Status
               </h2>
               {(checkins || []).length === 0 ? (
@@ -135,7 +135,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               ) : (
                 <div className="space-y-2">
                   {(checkins || []).slice(0, 6).map((item: any) => (
-                    <div key={item.id} className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                    <div key={item.id} className="flex items-center justify-between border border-white/5 bg-black/20 px-3 py-2">
                       <div className="min-w-0">
                         <div className="truncate text-sm font-bold text-white">{item.clans?.name || 'Player check-in'}</div>
                         <div className="text-[10px] text-slate-500">{item.checked_in_at ? new Date(item.checked_in_at).toLocaleString() : 'Not checked in'}</div>
@@ -147,8 +147,8 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               )}
             </div>
 
-            <div className="depth-panel rounded-2xl p-5">
-              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
+            <div className="depth-panel kaf-cut p-5">
+              <h2 className="kaf-panel-title mb-3 flex items-center gap-2">
                 <AlertTriangle size={14} className="text-red-400" /> Disputes
               </h2>
               {(disputes || []).length === 0 ? (
@@ -156,7 +156,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               ) : (
                 <div className="space-y-2">
                   {(disputes || []).map((item: any) => (
-                    <div key={item.id} className="rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                    <div key={item.id} className="border border-white/5 bg-black/20 px-3 py-2">
                       <div className="line-clamp-2 text-sm font-bold text-white">{item.reason}</div>
                       <div className="mt-2"><StatusBadge status={item.status} /></div>
                     </div>
@@ -168,16 +168,16 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
           {/* Registrations */}
           {regs && regs.length > 0 && (
-            <div className="depth-panel rounded-2xl p-5">
-              <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
+            <div className="depth-panel kaf-cut p-5">
+              <h2 className="kaf-panel-title mb-3 flex items-center gap-2">
                 <Shield size={14} className="text-brand-cyan" /> Registered Teams ({regs.length})
               </h2>
               <div className="grid sm:grid-cols-2 gap-2">
                 {regs.map((r: any) => {
                   const clan = r.clans
                   return (
-                    <div key={r.id} className="flex items-center gap-2.5 p-2.5 rounded-xl depth-stat">
-                      <div className="w-8 h-8 rounded-lg bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center font-black text-brand-cyan text-xs">
+                    <div key={r.id} className="flex items-center gap-2.5 p-2.5 depth-stat">
+                      <div className="w-8 h-8 bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center font-black text-brand-cyan text-xs">
                         {clan ? (clan.tag || clan.name)[0] : '?'}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -195,8 +195,8 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="depth-panel rounded-2xl p-5 space-y-3">
-            <h2 className="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2">
+          <div className="depth-panel kaf-cut p-5 space-y-3">
+            <h2 className="kaf-panel-title flex items-center gap-2">
               <Tv size={14} className="text-brand-gold" /> Broadcasts
             </h2>
             {(broadcasts || []).length === 0 ? (
@@ -214,11 +214,11 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                     </>
                   )
                   return slot.stream_url ? (
-                    <a key={slot.id} href={slot.stream_url} className="block rounded-xl border border-white/5 bg-black/20 p-3 transition-colors hover:border-brand-gold/30">
+                    <a key={slot.id} href={slot.stream_url} className="block border border-white/5 bg-black/20 p-3 transition-colors hover:border-brand-gold/30">
                       {content}
                     </a>
                   ) : (
-                    <div key={slot.id} className="rounded-xl border border-white/5 bg-black/20 p-3">
+                    <div key={slot.id} className="border border-white/5 bg-black/20 p-3">
                       {content}
                     </div>
                   )
@@ -227,14 +227,14 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             )}
           </div>
 
-          <div className="depth-panel rounded-2xl p-5 space-y-3">
-            <h2 className="text-sm font-black text-white uppercase tracking-wide">Admins</h2>
+          <div className="depth-panel kaf-cut p-5 space-y-3">
+            <h2 className="kaf-panel-title">Admins</h2>
             {(admins || []).length === 0 ? (
               <p className="text-sm text-slate-500">No tournament admins assigned.</p>
             ) : (
               <div className="space-y-2">
                 {(admins || []).map((admin: any, i: number) => (
-                  <div key={`${admin.profiles?.username || i}-${admin.role}`} className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2">
+                  <div key={`${admin.profiles?.username || i}-${admin.role}`} className="flex items-center justify-between border border-white/5 bg-black/20 px-3 py-2">
                     <span className="text-sm font-bold text-white">{admin.profiles?.username || 'Admin'}</span>
                     <span className="text-[10px] font-black uppercase tracking-wider text-brand-lime">{admin.role}</span>
                   </div>
@@ -243,8 +243,8 @@ export default async function TournamentDetailPage({ params }: { params: Promise
             )}
           </div>
 
-          <div className="depth-panel rounded-2xl p-5 space-y-3">
-            <h2 className="text-sm font-black text-white uppercase tracking-wide">Details</h2>
+          <div className="depth-panel kaf-cut p-5 space-y-3">
+            <h2 className="kaf-panel-title">Details</h2>
             {[
               { Icon: Globe, label: 'Region', value: t.region },
               { Icon: Users, label: 'Format', value: t.format },
@@ -263,7 +263,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
           {(t.status === 'registration_open' || t.status === 'upcoming') && (
             <Link href={`/tournaments/${id}/join`}
-              className="block w-full py-3 bg-brand-cyan hover:bg-brand-lime text-white rounded-xl font-black text-sm text-center transition-all shadow-glow-green hover:scale-[1.02]">
+              className="btn-primary w-full py-3 text-sm">
               Register Your Clan
             </Link>
           )}

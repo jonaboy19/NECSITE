@@ -30,18 +30,17 @@ export default async function Players({ searchParams }: { searchParams: Promise<
   const REGIONS = ['All', 'EU', 'NA', 'SA', 'MENA', 'ASIA', 'OCE', 'AF']
 
   return (
-    <div className="flex flex-col w-full pb-20">
+    <div className="kaf-app-page flex w-full flex-col pb-20">
       <PublicHeader />
 
       {/* Hero */}
-      <section className="relative bg-kaf-panel border-b border-kaf-border px-6 py-10 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(124,58,237,0.08)_0%,transparent_60%)]" />
+      <section className="kaf-page-hero px-6 py-10">
         <div className="max-w-5xl mx-auto relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-widest mb-4">
+          <div className="kaf-chip kaf-chip-green mb-4">
             <Users size={12} /> Player Directory
           </div>
-          <h1 className="text-4xl md:text-5xl font-display font-black text-white tracking-tight">
-            ALL <span className="text-brand-cyan">PLAYERS</span>
+          <h1 className="kaf-display text-4xl text-white md:text-5xl">
+            All <span className="text-brand-cyan">Players</span>
           </h1>
           <p className="text-slate-400 mt-3 max-w-xl">Browse competitive eFootball players from every region.</p>
         </div>
@@ -56,7 +55,7 @@ export default async function Players({ searchParams }: { searchParams: Promise<
               name="q"
               defaultValue={q}
               placeholder="Search by gamertag..."
-              className="w-full pl-10 pr-4 py-2.5 bg-kaf-card border border-kaf-border rounded-xl text-white placeholder-slate-500 text-sm focus:border-brand-cyan focus:outline-none transition-all"
+              className="kaf-input py-2.5 pl-10 pr-4 text-sm"
             />
           </form>
           <div className="flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible lg:pb-0">
@@ -64,7 +63,7 @@ export default async function Players({ searchParams }: { searchParams: Promise<
               <Link
                 key={r}
                 href={r === 'All' ? '/players' : `/players?region=${r}`}
-                className={`whitespace-nowrap px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
+                className={`whitespace-nowrap border px-3 py-2 text-xs font-bold transition-all ${
                   (r === 'All' && !region) || region === r
                     ? 'bg-brand-cyan/20 text-brand-cyan border-brand-cyan/40'
                     : 'bg-kaf-card border-kaf-border text-slate-400 hover:text-white'
@@ -83,7 +82,7 @@ export default async function Players({ searchParams }: { searchParams: Promise<
               <Link
                 key={player.id}
                 href={`/profile/${player.username}`}
-                className="kaf-card rounded-2xl border border-kaf-border p-4 flex flex-col items-center text-center group hover:border-brand-cyan/40 hover:shadow-[0_0_15px_rgba(0,255,102,0.1)] transition-all"
+                className="kaf-card kaf-cut flex flex-col items-center border border-kaf-border p-4 text-center transition-all hover:border-brand-cyan/40"
               >
                 <div
                   className="w-16 h-16 rounded-full bg-slate-800 bg-cover bg-center border-2 border-kaf-border group-hover:border-brand-cyan transition-all mb-3"

@@ -115,7 +115,7 @@ export default function DraftRoom() {
         {/* Free Agent Pool */}
         <div className="space-y-6">
           <h2 className="text-xl font-bold text-white flex items-center gap-2 uppercase tracking-wide">
-            <Users className="text-purple-400" size={24} /> Free Agent Pool
+            <Users className="text-brand-lime" size={24} /> Free Agent Pool
           </h2>
           
           <div className="kaf-card rounded-2xl border border-kaf-border overflow-hidden">

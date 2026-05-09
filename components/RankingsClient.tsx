@@ -94,7 +94,7 @@ export default function RankingsClient({ rankingsData }: { rankingsData: Ranking
       )}
 
       {activeTab === 'Clans' && (
-        <div className="rounded-xl border border-purple-400/20 bg-purple-400/5 px-4 py-3 text-xs font-bold uppercase tracking-widest text-purple-300">
+        <div className="rounded-xl border border-brand-cyan/20 bg-brand-cyan/5 px-4 py-3 text-xs font-bold uppercase tracking-widest text-brand-lime">
           Showing ranked players currently attached to a clan.
         </div>
       )}

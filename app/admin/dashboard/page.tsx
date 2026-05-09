@@ -58,7 +58,7 @@ export default async function AdminDashboard() {
 
   const stats = [
     { label: 'Registered Users', value: userCount ?? 0, icon: Users, color: 'text-brand-cyan', border: 'border-brand-cyan/20' },
-    { label: 'Clans', value: clanCount ?? 0, icon: Activity, color: 'text-purple-400', border: 'border-purple-400/20' },
+    { label: 'Clans', value: clanCount ?? 0, icon: Activity, color: 'text-brand-lime', border: 'border-brand-cyan/20' },
     { label: 'Tournaments', value: tournamentCount ?? 0, icon: Trophy, color: 'text-brand-gold', border: 'border-brand-gold/20' },
     { label: 'Matches', value: matchCount ?? 0, icon: Activity, color: 'text-green-400', border: 'border-green-400/20' },
     { label: 'Open Disputes', value: disputeCount ?? 0, icon: Gavel, color: 'text-red-400', border: 'border-red-400/20' },
@@ -100,7 +100,7 @@ export default async function AdminDashboard() {
           {[
             { label: 'Manage Users & Roles', href: '/admin', desc: 'Assign/revoke platform roles', color: 'brand-cyan' },
             { label: 'Manage Tournaments', href: '/admin?tab=tournaments', desc: 'Create, edit, delete tournaments', color: 'brand-gold' },
-            { label: 'Clan Verification', href: '/admin?tab=clans', desc: 'Approve and verify clan organizations', color: 'purple-400' },
+            { label: 'Clan Verification', href: '/admin?tab=clans', desc: 'Approve and verify clan organizations', color: 'brand-cyan' },
             { label: 'View Disputes', href: '/appeals', desc: 'Review open appeals and disputes', color: 'red-400' },
             { label: 'View All Matches', href: '/matches', desc: 'Full match history and results', color: 'green-400' },
             { label: 'Create Tournament', href: '/tournaments/create', desc: 'Start a new competition', color: 'orange-400' },

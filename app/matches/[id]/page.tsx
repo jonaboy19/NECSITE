@@ -28,25 +28,23 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
   const isDone = match.status === 'completed' || match.status === 'finished'
 
   const ClubBox = ({ clan, score, isWinner }: { clan: any; score: any; isWinner: boolean }) => (
-    <div className={`depth-panel flex-1 flex flex-col items-center gap-3 p-6 rounded-2xl transition-all ${isWinner ? 'border-brand-cyan/40 bg-brand-cyan/5' : ''}`}>
+    <div className={`depth-panel kaf-cut flex-1 flex flex-col items-center gap-3 p-6 transition-all ${isWinner ? 'border-brand-cyan/40 bg-brand-cyan/5' : ''}`}>
       {clan?.logo_url
-        ? <img src={clan.logo_url} alt={clan?.name} className="w-16 h-16 rounded-2xl object-cover border border-kaf-border" />
-        : <div className="w-16 h-16 rounded-2xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-2xl font-black text-brand-cyan">{clan?.name?.[0] || '?'}</div>
+        ? <img src={clan.logo_url} alt={clan?.name} className="w-16 h-16 object-cover border border-kaf-border" />
+        : <div className="w-16 h-16 bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-2xl font-black text-brand-cyan">{clan?.name?.[0] || '?'}</div>
       }
       {clan?.tag && <div className="text-xs text-slate-500 font-mono">[{clan.tag}]</div>}
       <div className={`text-lg font-black ${isWinner ? 'text-brand-cyan' : 'text-white'}`}>{clan?.name || 'TBD'}</div>
       <div className={`text-5xl font-black tabular-nums ${isWinner ? 'text-brand-cyan' : 'text-white'}`}>
-        {score ?? '–'}
+        {score ?? '-'}
       </div>
       {isWinner && <div className="flex items-center gap-1 text-brand-cyan text-xs font-black"><Trophy size={12} /> Winner</div>}
     </div>
   )
 
   return (
-    <div className="flex flex-col w-full pb-24">
-      <div className="relative overflow-hidden border-b border-kaf-border px-4 sm:px-8 py-6 bg-kaf-panel">
-        <div className="absolute inset-0 bg-line-grid opacity-30"></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-brand-cyan/10 via-transparent to-brand-blue/10"></div>
+    <div className="kaf-app-page flex w-full flex-col pb-24">
+      <div className="kaf-page-hero px-4 sm:px-8 py-6">
         <div className="relative z-10">
         {match.tournament_id && (
           <Link href={`/tournaments/${match.tournament_id}/matches`}
@@ -55,7 +53,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
           </Link>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <h1 className="text-2xl font-display font-black text-white uppercase flex items-center gap-2">
+          <h1 className="kaf-display flex items-center gap-2 text-3xl text-white">
             <Swords size={20} className="text-brand-cyan" /> Match Room
           </h1>
           <StatusBadge status={match.status} />
@@ -77,7 +75,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
         </div>
 
         {/* Match details */}
-        <div className="depth-panel rounded-2xl p-5 space-y-2 text-sm">
+        <div className="depth-panel kaf-cut p-5 space-y-2 text-sm">
           {match.round && <div className="flex justify-between"><span className="text-slate-400">Round</span><span className="font-bold text-white">{match.round}</span></div>}
           {match.format && <div className="flex justify-between"><span className="text-slate-400">Format</span><span className="font-bold text-white">{match.format}</span></div>}
           {match.evidence_url && (
@@ -94,7 +92,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
         {/* Submit result link */}
         {!isDone && (
           <Link href={`/matches/report?match=${id}`}
-            className="block w-full py-3 text-center bg-brand-cyan hover:bg-brand-lime text-white rounded-xl font-black transition-all shadow-glow-green hover:scale-[1.01]">
+            className="btn-primary w-full py-3">
             Submit Match Result
           </Link>
         )}
