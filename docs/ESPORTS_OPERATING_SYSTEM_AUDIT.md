@@ -23,6 +23,11 @@ The strongest parts are the schema depth and route coverage. The weakest parts a
 - Removed the hardcoded right-panel "Active Lounges" mock block.
 - Replaced the missing `broadcasts` query with real notifications, scheduled matches, and clan match rooms.
 - Fixed dashboard links/status handling so the player dashboard routes users into their actual clan HQ.
+- Added the esports OS schema foundation for contracts, transfer negotiations, reputation, tactics, lineups, tournament check-ins, tournament admins, broadcast slots, evidence items, penalties, activity events, audit events, and media buckets.
+- Added shared status and permission helpers so UI can stop guessing roles and legacy status names.
+- Added audit writes to key clan management mutations.
+- Expanded Clan HQ with real command-center counters and HQ panels for contracts, transfers, tactics, and activity.
+- Expanded command search with action shortcuts for creation, score reporting, messages, notifications, scouting, and admin.
 
 ## Must-Fix Before Heavy Community Use
 

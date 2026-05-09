@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { formatStatusLabel, isTournamentLive, normalizeTournamentStatus } from '@/lib/status'
 
 const STYLES: Record<string, string> = {
   live:              'bg-red-500/10 text-red-400 border-red-500/40',
@@ -21,15 +22,16 @@ const STYLES: Record<string, string> = {
 }
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
-  const isLive = status === 'live' || status === 'active'
+  const normalizedStatus = normalizeTournamentStatus(status)
+  const isLive = isTournamentLive(status)
   return (
     <span className={cn(
       'inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider shadow-[0_8px_18px_rgba(0,0,0,0.22)]',
-      STYLES[status] ?? 'bg-slate-500/10 text-slate-400 border-slate-500/30',
+      STYLES[status] ?? STYLES[normalizedStatus] ?? 'bg-slate-500/10 text-slate-400 border-slate-500/30',
       className
     )}>
       {isLive && <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />}
-      {status.replace(/_/g, ' ')}
+      {formatStatusLabel(normalizedStatus)}
     </span>
   )
 }

@@ -1,9 +1,10 @@
 'use client'
 import { useState, useEffect, use } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Shield, Users, Star, Settings, CheckCircle, UserPlus, GitMerge, RefreshCw, Trophy, ArrowLeft, Globe, Medal, Award } from 'lucide-react'
+import { Shield, Users, Star, Settings, CheckCircle, UserPlus, GitMerge, RefreshCw, Trophy, ArrowLeft, Globe, Medal, Award, Handshake, ClipboardList, Activity } from 'lucide-react'
 import Link from 'next/link'
 import { useToast } from '@/components/Toast'
+import { hasClanPermission } from '@/lib/permissions'
 
 export default function ClanDashboard({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
@@ -14,6 +15,10 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
   const [roster, setRoster] = useState<any[]>([])
   const [joinRequests, setJoinRequests] = useState<any[]>([])
   const [clanWars, setClanWars] = useState<any[]>([])
+  const [contracts, setContracts] = useState<any[]>([])
+  const [transferOffers, setTransferOffers] = useState<any[]>([])
+  const [tactics, setTactics] = useState<any[]>([])
+  const [activityEvents, setActivityEvents] = useState<any[]>([])
   const [applicationMessage, setApplicationMessage] = useState('')
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('Overview')
@@ -57,6 +62,37 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
       .select('*, challenger:challenger_clan_id(name, tag, logo_url), challenged:challenged_clan_id(name, tag, logo_url)')
       .or(`challenger_clan_id.eq.${id},challenged_clan_id.eq.${id}`)
     setClanWars(cwData || [])
+
+    const [contractRes, transferRes, tacticsRes, activityRes] = await Promise.all([
+      supabase
+        .from('player_contracts')
+        .select('*, players(gamertag, profile_id, profiles(username, avatar_url))')
+        .eq('clan_id', id)
+        .order('ends_at', { ascending: true, nullsFirst: false })
+        .limit(12),
+      supabase
+        .from('transfer_negotiations')
+        .select('*, players(gamertag), from_clan:from_clan_id(name,tag), to_clan:to_clan_id(name,tag)')
+        .or(`from_clan_id.eq.${id},to_clan_id.eq.${id}`)
+        .order('created_at', { ascending: false })
+        .limit(8),
+      supabase
+        .from('clan_tactical_presets')
+        .select('*')
+        .eq('clan_id', id)
+        .order('updated_at', { ascending: false })
+        .limit(6),
+      supabase
+        .from('activity_events')
+        .select('*')
+        .eq('clan_id', id)
+        .order('created_at', { ascending: false })
+        .limit(8),
+    ])
+    setContracts(contractRes.data || [])
+    setTransferOffers(transferRes.data || [])
+    setTactics(tacticsRes.data || [])
+    setActivityEvents(activityRes.data || [])
     
     setLoading(false)
   }
@@ -73,7 +109,22 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
   const userRole = getMemberRole(userMember)
   const canManageRoster = ['owner', 'manager', 'captain'].includes(userRole)
   const canEditClanDetails = ['owner', 'manager'].includes(userRole)
+  const canManageContracts = hasClanPermission(userRole, 'manage_contracts')
+  const canManageTransfers = hasClanPermission(userRole, 'manage_transfers')
+  const canManageTactics = hasClanPermission(userRole, 'manage_tactics')
   const isMember = !!userMember
+
+  const logClanAction = async (action: string, entityType: string, entityId?: string, metadata: Record<string, unknown> = {}) => {
+    if (!currentUser) return
+    await supabase.from('platform_audit_events').insert({
+      actor_id: currentUser.id,
+      action,
+      entity_type: entityType,
+      entity_id: entityId || null,
+      clan_id: id,
+      metadata,
+    })
+  }
 
   const handleApply = async () => {
     if (!currentUser) return toastError('You must be logged in to apply.')
@@ -85,6 +136,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     })
     if (error) toastError(error.message)
     else {
+      await logClanAction('clan.application.submitted', 'clan', id)
       success('Application submitted! The captain will review it.')
       setApplicationMessage('')
     }
@@ -95,6 +147,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     const { error } = await supabase.from('clans').update({ is_recruiting: newStatus, recruitment_status: newStatus ? 'open' : 'closed' }).eq('id', id)
     if (error) toastError(error.message)
     else {
+      await logClanAction('clan.recruitment.updated', 'clan', id, { is_recruiting: newStatus })
       success('Recruitment status updated')
       fetchData()
     }
@@ -110,6 +163,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     if (myMemberId) await supabase.from('clan_members').update({ role: 'captain' }).eq('id', myMemberId)
     if (newOwnerMember) await supabase.from('clan_members').update({ role: 'owner' }).eq('id', newOwnerMember.id)
     
+    await logClanAction('clan.ownership.transferred', 'clan', id, { new_owner_id: newOwnerId })
     success('Ownership transferred successfully')
     fetchData()
   }
@@ -123,8 +177,12 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
         role: 'player'
       })
       if (error) toastError(error.message)
-      else success('Player accepted into clan!')
+      else {
+        await logClanAction('clan.application.accepted', 'clan_application', reqId, { profile_id: profileId })
+        success('Player accepted into clan!')
+      }
     } else {
+      await logClanAction('clan.application.rejected', 'clan_application', reqId, { profile_id: profileId })
       success('Application rejected.')
     }
     fetchData()
@@ -134,14 +192,20 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     if (!confirm('Remove this player from the clan?')) return
     const { error } = await supabase.from('clan_members').delete().eq('id', memberId)
     if (error) toastError(error.message)
-    else success('Player removed from roster.')
+    else {
+      await logClanAction('clan.member.removed', 'clan_member', memberId, { profile_id: memberProfileId })
+      success('Player removed from roster.')
+    }
     fetchData()
   }
 
   const handleChangeRole = async (memberId: string, newRole: string) => {
     const { error } = await supabase.from('clan_members').update({ role: newRole, member_role: newRole }).eq('id', memberId)
     if (error) toastError(error.message)
-    else success(`Role updated to ${newRole}`)
+    else {
+      await logClanAction('clan.member.role_updated', 'clan_member', memberId, { role: newRole })
+      success(`Role updated to ${newRole}`)
+    }
     fetchData()
   }
 
@@ -150,6 +214,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     const { error } = await supabase.from('clans').update(editForm).eq('id', id)
     if (error) toastError(error.message)
     else {
+      await logClanAction('clan.details.updated', 'clan', id)
       success('Clan details updated!')
       setIsEditModalOpen(false)
       fetchData()
@@ -164,6 +229,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
     const { error } = await supabase.from('clan_members').delete().eq('id', userMember.id)
     if (error) toastError(error.message)
     else {
+      await logClanAction('clan.member.left', 'clan_member', userMember.id)
       success('You have left the clan.')
       fetchData()
     }
@@ -342,6 +408,20 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             {/* OVERVIEW TAB */}
             {activeTab === 'Overview' && (
               <div className="space-y-6">
+                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                  {[
+                    { label: 'Pending applications', value: joinRequests.length, Icon: UserPlus, tone: 'text-brand-gold' },
+                    { label: 'Transfer offers', value: transferOffers.filter(t => ['sent', 'negotiating', 'draft'].includes(t.status)).length, Icon: Handshake, tone: 'text-brand-lime' },
+                    { label: 'Contracts expiring', value: contracts.filter(c => c.ends_at && new Date(c.ends_at).getTime() - Date.now() < 1000 * 60 * 60 * 24 * 30).length, Icon: ClipboardList, tone: 'text-orange-400' },
+                    { label: 'Tactical presets', value: tactics.length, Icon: Activity, tone: 'text-brand-cyan' },
+                  ].map(item => (
+                    <div key={item.label} className="kaf-frame kaf-cut-sm p-4">
+                      <item.Icon size={18} className={item.tone} />
+                      <div className={`mt-3 font-display text-3xl ${item.tone}`}>{item.value}</div>
+                      <div className="mt-1 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">{item.label}</div>
+                    </div>
+                  ))}
+                </div>
                 {(clan.motd || canEditClanDetails) && (
                   <div className="depth-panel p-6 rounded-2xl border-brand-cyan/30 mb-6 bg-brand-cyan/5">
                     <h3 className="font-black text-brand-cyan text-sm mb-2 uppercase tracking-widest">Message of the Day</h3>
@@ -364,9 +444,26 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                   </div>
                   <h3 className="text-2xl font-display font-black text-white mb-2 relative z-10">Trophy Cabinet</h3>
                   {wins > 0 ? (
-                    <p className="text-brand-gold font-bold relative z-10">🏆 {wins} competitive wins</p>
+                    <p className="text-brand-gold font-bold relative z-10">{wins} competitive wins</p>
                   ) : (
-                    <p className="text-slate-400 relative z-10">No trophies yet — the hunt begins here.</p>
+                    <p className="text-slate-400 relative z-10">No trophies yet - the hunt begins here.</p>
+                  )}
+                </div>
+                <div className="depth-panel p-6 rounded-2xl">
+                  <h3 className="font-black text-white text-lg mb-4 flex items-center gap-2">
+                    <Activity size={18} className="text-brand-lime" /> Recent Clan Activity
+                  </h3>
+                  {activityEvents.length === 0 ? (
+                    <p className="text-sm text-slate-500">No clan activity has been logged yet.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {activityEvents.map(event => (
+                        <Link key={event.id} href={event.link || `/clans/${id}`} className="block rounded-xl border border-white/[0.06] bg-black/20 p-3 transition-colors hover:border-brand-lime/30">
+                          <div className="text-sm font-black text-white">{event.title}</div>
+                          {event.body && <div className="mt-1 line-clamp-2 text-xs text-slate-500">{event.body}</div>}
+                        </Link>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
@@ -495,6 +592,75 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             {/* HQ / MANAGEMENT TAB */}
             {activeTab === 'HQ' && canManageRoster && (
               <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="depth-panel p-5 rounded-2xl">
+                    <h3 className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider text-brand-lime">
+                      <ClipboardList size={16} /> Contracts
+                    </h3>
+                    {contracts.length === 0 ? (
+                      <p className="text-xs text-slate-500">No contracts are recorded yet.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {contracts.slice(0, 4).map(contract => (
+                          <div key={contract.id} className="rounded-lg border border-white/[0.06] bg-black/20 p-3">
+                            <div className="text-sm font-bold text-white">{contract.players?.gamertag || contract.players?.profiles?.username || 'Player'}</div>
+                            <div className="mt-1 text-[10px] font-black uppercase tracking-wider text-slate-500">{contract.status} {contract.ends_at ? `- ends ${new Date(contract.ends_at).toLocaleDateString()}` : ''}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {canManageContracts && (
+                      <Link href="/free-agents" className="mt-4 inline-flex text-xs font-black uppercase tracking-wider text-brand-lime hover:underline">
+                        Negotiate players
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="depth-panel p-5 rounded-2xl">
+                    <h3 className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider text-brand-gold">
+                      <Handshake size={16} /> Transfers
+                    </h3>
+                    {transferOffers.length === 0 ? (
+                      <p className="text-xs text-slate-500">No transfer offers are active.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {transferOffers.slice(0, 4).map(offer => (
+                          <div key={offer.id} className="rounded-lg border border-white/[0.06] bg-black/20 p-3">
+                            <div className="text-sm font-bold text-white">{offer.players?.gamertag || 'Player offer'}</div>
+                            <div className="mt-1 text-[10px] font-black uppercase tracking-wider text-slate-500">{offer.status}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {canManageTransfers && (
+                      <Link href="/free-agents" className="mt-4 inline-flex text-xs font-black uppercase tracking-wider text-brand-gold hover:underline">
+                        Open scouting board
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="depth-panel p-5 rounded-2xl">
+                    <h3 className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-wider text-brand-cyan">
+                      <Activity size={16} /> Tactics
+                    </h3>
+                    {tactics.length === 0 ? (
+                      <p className="text-xs text-slate-500">No tactical presets saved yet.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {tactics.slice(0, 4).map(plan => (
+                          <div key={plan.id} className="rounded-lg border border-white/[0.06] bg-black/20 p-3">
+                            <div className="text-sm font-bold text-white">{plan.name}</div>
+                            <div className="mt-1 text-[10px] font-black uppercase tracking-wider text-slate-500">{plan.formation} - {plan.style}</div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {canManageTactics && (
+                      <span className="mt-4 inline-flex text-xs font-black uppercase tracking-wider text-brand-cyan">Tactical board ready</span>
+                    )}
+                  </div>
+                </div>
+
                 <div className="depth-panel p-6 rounded-2xl">
                   <h3 className="font-black text-white mb-4">Recruitment Settings</h3>
                   <div className="flex items-center justify-between p-4 depth-stat rounded-xl">

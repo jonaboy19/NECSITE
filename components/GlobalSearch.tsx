@@ -1,10 +1,20 @@
 'use client'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Search, Loader2, Trophy, Shield, Users, X } from 'lucide-react'
+import { Search, Loader2, Trophy, Shield, Users, X, Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
-type Hit = { id: string; type: 'player' | 'clan' | 'tournament'; label: string; sub?: string; href: string }
+type Hit = { id: string; type: 'player' | 'clan' | 'tournament' | 'action'; label: string; sub?: string; href: string }
+
+const ACTIONS: Hit[] = [
+  { id: 'create-clan', type: 'action', label: 'Create clan', sub: 'Clan operations', href: '/clans/create' },
+  { id: 'create-tournament', type: 'action', label: 'Create tournament', sub: 'Tournament operations', href: '/tournaments/create' },
+  { id: 'report-score', type: 'action', label: 'Report score', sub: 'Match center', href: '/matches/report' },
+  { id: 'messages', type: 'action', label: 'Open messages', sub: 'Communication hub', href: '/messages' },
+  { id: 'notifications', type: 'action', label: 'Open notifications', sub: 'Command queue', href: '/notifications' },
+  { id: 'free-agents', type: 'action', label: 'Scout free agents', sub: 'Transfer market', href: '/free-agents' },
+  { id: 'admin', type: 'action', label: 'Open admin panel', sub: 'Moderation and operations', href: '/admin' },
+]
 
 export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => void }) {
   const supabase = useMemo(() => createClient(), [])
@@ -31,6 +41,7 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
     let cancelled = false
     const t = setTimeout(async () => {
       setLoading(true)
+      const cleanQuery = q.trim().toLowerCase()
       const term = `%${q.trim()}%`
       const [pl, cl, tn] = await Promise.all([
         supabase.from('profiles').select('id,username,display_name,country').or(`username.ilike.${term},display_name.ilike.${term}`).limit(6),
@@ -39,7 +50,13 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
       ])
 
       if (cancelled) return
+      const actionHits = ACTIONS.filter(action =>
+        action.label.toLowerCase().includes(cleanQuery) ||
+        action.sub?.toLowerCase().includes(cleanQuery)
+      ).slice(0, 5)
+
       setHits([
+        ...actionHits,
         ...(pl.data ?? []).map((p: any) => ({ id: p.id, type: 'player' as const, label: p.display_name || p.username, sub: p.country, href: `/profile/${p.username}` })),
         ...(cl.data ?? []).map((c: any) => ({ id: c.id, type: 'clan' as const, label: `[${c.tag}] ${c.name}`, sub: c.region, href: `/clans/${c.id}` })),
         ...(tn.data ?? []).map((t: any) => ({ id: t.id, type: 'tournament' as const, label: t.title, sub: t.status, href: `/tournaments/${t.id}` })),
@@ -63,7 +80,7 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
 
   if (!open) return null
 
-  const ICONS = { player: Users, clan: Shield, tournament: Trophy }
+  const ICONS = { player: Users, clan: Shield, tournament: Trophy, action: Plus }
 
   return (
     <div className="fixed inset-0 z-[200] flex items-start justify-center bg-black/70 px-4 pt-[10vh] backdrop-blur-sm animate-fadeIn" onClick={onClose}>
@@ -90,7 +107,7 @@ export function GlobalSearch({ open, onClose }: { open: boolean; onClose: () => 
           )}
           {hits.length === 0 && q.length < 2 && (
             <div className="p-8 text-center font-mono text-xs uppercase tracking-wider text-slate-500">
-              Type at least 2 characters - Ctrl K to toggle
+              Type at least 2 characters - try "create", "clan", "message", or "score"
             </div>
           )}
           {hits.map((h, i) => {
