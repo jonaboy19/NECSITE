@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Loader2, ArrowLeft, Trophy, Users, Shield, Check } from 'lucide-react'
 import Link from 'next/link'
 import { useToast } from '@/components/Toast'
+import { trackEvent } from '@/lib/analytics'
 
 export default function TournamentJoinPage({ params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -19,7 +20,10 @@ export default function TournamentJoinPage({ params }: { params: { id: string } 
   useEffect(() => {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/auth/login'); return }
+      if (!user) {
+        router.push(`/auth/login?redirect=/tournaments/${params.id}/join&message=Sign%20in%20to%20register%20for%20this%20tournament`)
+        return
+      }
 
       const [{ data: t }, { data: cm }] = await Promise.all([
         supabase.from('tournaments').select('*').eq('id', params.id).single(),
@@ -45,8 +49,14 @@ export default function TournamentJoinPage({ params }: { params: { id: string } 
       tournament_id: params.id, clan_id: myClan.id, status: 'pending',
     })
     setRegistering(false)
-    if (error) toastError(error.message)
-    else { success('Registered! Awaiting approval.'); setAlreadyRegistered(true) }
+    if (error) {
+      toastError(error.message)
+      trackEvent('tournament_join_failed', { tournament_id: params.id, reason: error.message })
+    } else {
+      success('Registered! Awaiting approval.')
+      setAlreadyRegistered(true)
+      trackEvent('tournament_join_submitted', { tournament_id: params.id, clan_id: myClan.id })
+    }
   }
 
   if (loading) return <div className="flex items-center justify-center h-screen"><Loader2 size={24} className="animate-spin text-brand-cyan" /></div>

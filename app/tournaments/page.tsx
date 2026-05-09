@@ -1,11 +1,24 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import { Trophy, Calendar, Plus, Users, GitMerge, ShieldAlert } from 'lucide-react'
+import { Trophy, Calendar, Plus, Users, GitMerge, ShieldAlert, Search } from 'lucide-react'
 import PublicHeader from '@/components/PublicHeader'
+import { EmptyState } from '@/components/EmptyState'
 
-export default async function Tournaments() {
+export default async function Tournaments({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
+  const { q, status } = await searchParams
   const supabase = await createServerSupabaseClient()
-  const { data: tournaments } = await supabase.from('tournaments').select('*').order('created_at', { ascending: false })
+  let query = supabase.from('tournaments').select('*').order('created_at', { ascending: false })
+
+  if (q) query = query.ilike('title', `%${q}%`)
+  if (status && status !== 'all') query = query.eq('status', status)
+
+  const { data: tournaments, error } = await query
+  const statusTabs = [
+    { label: 'All', value: 'all' },
+    { label: 'Open', value: 'registration_open' },
+    { label: 'Live', value: 'live' },
+    { label: 'Completed', value: 'completed' },
+  ]
 
   return (
     <div className="flex flex-col w-full pb-20">
@@ -46,7 +59,47 @@ export default async function Tournaments() {
           </h2>
         </div>
 
-        {tournaments && tournaments.length > 0 ? (
+        <div className="flex flex-col gap-3 rounded-2xl border border-kaf-border bg-kaf-card p-3 sm:flex-row sm:items-center sm:justify-between">
+          <form className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input
+              name="q"
+              defaultValue={q}
+              placeholder="Search tournaments..."
+              className="w-full rounded-xl border border-kaf-border bg-kaf-bg py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 outline-none transition-colors focus:border-brand-cyan"
+            />
+            {status && status !== 'all' && <input type="hidden" name="status" value={status} />}
+          </form>
+          <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
+            {statusTabs.map(tab => {
+              const active = (!status && tab.value === 'all') || status === tab.value
+              const href = `/tournaments?${new URLSearchParams({
+                ...(q ? { q } : {}),
+                ...(tab.value !== 'all' ? { status: tab.value } : {}),
+              }).toString()}`
+              return (
+                <Link
+                  key={tab.value}
+                  href={href}
+                  className={`whitespace-nowrap rounded-lg border px-3 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
+                    active ? 'border-brand-cyan/40 bg-brand-cyan/20 text-brand-lime' : 'border-kaf-border bg-kaf-bg text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {tab.label}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+
+        {error ? (
+          <EmptyState
+            Icon={ShieldAlert}
+            title="Tournaments could not load"
+            description="The tournament list is temporarily unavailable. Try again soon or contact staff if the issue continues."
+            action={{ href: '/contact', label: 'Contact staff' }}
+          />
+        ) : tournaments && tournaments.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {tournaments.map((t: any, i: number) => (
               <Link key={t.id} href={`/tournaments/${t.id}/dashboard`} className="kaf-card rounded-2xl border border-kaf-border group hover:border-brand-cyan/50 transition-all cursor-pointer relative overflow-hidden block flex flex-col">
@@ -97,11 +150,12 @@ export default async function Tournaments() {
             ))}
           </div>
         ) : (
-          <div className="w-full py-20 flex flex-col items-center justify-center bg-kaf-card rounded-2xl border border-dashed border-kaf-border">
-            <GitMerge size={48} className="text-slate-600 mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">No Tournaments Found</h3>
-            <p className="text-slate-400 text-sm mb-6 max-w-md text-center">There are currently no official tournaments registered in the system.</p>
-          </div>
+          <EmptyState
+            Icon={GitMerge}
+            title="No tournaments open yet"
+            description="There are no official events listed right now. Check back soon or ask staff when the next competition starts."
+            action={{ href: '/contact', label: 'Ask staff' }}
+          />
         )}
       </div>
     </div>

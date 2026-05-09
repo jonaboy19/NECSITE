@@ -4,7 +4,7 @@ import { Users, Search, Globe, Star, Filter, Trophy, Shield } from 'lucide-react
 import PublicHeader from '@/components/PublicHeader'
 
 export const metadata = {
-  title: 'Players — KAFConnect',
+  title: 'Players - KAFConnect',
   description: 'Browse all competitive eFootball players registered on KAFConnect.',
 }
 
@@ -49,7 +49,7 @@ export default async function Players({ searchParams }: { searchParams: Promise<
 
       <div className="p-6 max-w-7xl mx-auto w-full space-y-6">
         {/* Search + Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-4 lg:flex-row">
           <form className="flex-1 relative">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
@@ -59,12 +59,12 @@ export default async function Players({ searchParams }: { searchParams: Promise<
               className="w-full pl-10 pr-4 py-2.5 bg-kaf-card border border-kaf-border rounded-xl text-white placeholder-slate-500 text-sm focus:border-brand-cyan focus:outline-none transition-all"
             />
           </form>
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2 overflow-x-auto pb-1 lg:flex-wrap lg:overflow-visible lg:pb-0">
             {REGIONS.map(r => (
               <Link
                 key={r}
                 href={r === 'All' ? '/players' : `/players?region=${r}`}
-                className={`px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
+                className={`whitespace-nowrap px-3 py-2 rounded-lg text-xs font-bold border transition-all ${
                   (r === 'All' && !region) || region === r
                     ? 'bg-brand-cyan/20 text-brand-cyan border-brand-cyan/40'
                     : 'bg-kaf-card border-kaf-border text-slate-400 hover:text-white'

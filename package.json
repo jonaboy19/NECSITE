@@ -3,7 +3,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:webpack": "next dev --webpack",
     "build": "next build",
+    "build:webpack": "next build --webpack",
+    "typecheck": "tsc --noEmit",
+    "smoke": "node scripts/smoke-check.mjs",
     "start": "next start",
     "lint": "next lint"
   },

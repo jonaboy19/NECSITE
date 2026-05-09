@@ -4,19 +4,24 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
+import { Mail, ArrowLeft, Loader2, CheckCircle, Info } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics'
 
 export default function Login() {
   const supabase = createClient()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [oauthLoading, setOauthLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     const callbackError = params.get('error')
+    const callbackMessage = params.get('message')
     if (callbackError) setError(callbackError)
+    if (callbackMessage) setMessage(callbackMessage)
   }, [])
 
   const getRedirectTo = () => {
@@ -41,20 +46,28 @@ export default function Login() {
 
     if (error) {
       setError(error.message)
+      trackEvent('auth_login_failed', { method: 'magic_link', reason: error.message })
     } else {
       setSent(true)
+      trackEvent('auth_magic_link_sent', { flow: 'login' })
     }
     setLoading(false)
   }
 
   const handleGithubLogin = async () => {
+    setOauthLoading(true)
+    setError('')
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
         redirectTo: getRedirectTo(),
       },
     })
-    if (error) setError(error.message)
+    if (error) {
+      setError(error.message)
+      setOauthLoading(false)
+      trackEvent('auth_login_failed', { method: 'github', reason: error.message })
+    }
   }
 
   return (
@@ -96,6 +109,13 @@ export default function Login() {
               </div>
 
               <form onSubmit={handleLogin} className="space-y-4">
+                {message && (
+                  <div className="flex gap-3 rounded-lg border border-brand-cyan/30 bg-brand-cyan/10 p-3 text-sm text-slate-200">
+                    <Info size={18} className="mt-0.5 shrink-0 text-brand-lime" />
+                    <span>{message}</span>
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Email Address</label>
                   <div className="relative">
@@ -137,13 +157,17 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={handleGithubLogin}
-                  className="w-full rounded-xl bg-slate-800 border border-kaf-border px-4 py-4 font-black text-white hover:bg-slate-700 transition-all flex items-center justify-center gap-2 text-sm"
+                  disabled={oauthLoading}
+                  className="w-full rounded-xl bg-slate-800 border border-kaf-border px-4 py-4 font-black text-white hover:bg-slate-700 transition-all flex items-center justify-center gap-2 text-sm disabled:opacity-50"
                 >
-                  Continue with GitHub
+                  {oauthLoading ? <><Loader2 size={18} className="animate-spin" /> Opening GitHub...</> : 'Continue with GitHub'}
                 </button>
               </form>
 
               <div className="mt-8 text-center">
+                <Link href="/auth/reset-password" className="mb-4 inline-block text-sm text-slate-400 hover:text-brand-lime transition-colors">
+                  Need a password reset?
+                </Link>
                 <p className="text-slate-500 text-sm">
                   Don't have an account?{' '}
                   <Link href="/auth/register" className="text-brand-cyan font-bold hover:underline">

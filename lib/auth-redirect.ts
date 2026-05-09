@@ -9,3 +9,8 @@ export function withAuthError(path: string, message: string) {
   const params = new URLSearchParams({ error: message })
   return `${path}?${params.toString()}`
 }
+
+export function withAuthMessage(path: string, message: string) {
+  const params = new URLSearchParams({ message })
+  return `${path}?${params.toString()}`
+}

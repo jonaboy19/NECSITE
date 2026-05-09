@@ -277,7 +277,7 @@ async function LandingPage() {
             {[
               { title: 'Compete', links: [{ href: '/tournaments', l: 'Tournaments' }, { href: '/e-league', l: 'KAF E-League' }, { href: '/rankings', l: 'Rankings' }, { href: '/matches', l: 'Match Center' }] },
               { title: 'Community', links: [{ href: '/clans', l: 'Clans' }, { href: '/players', l: 'Players' }, { href: '/news', l: 'News' }, { href: '/free-agents', l: 'Free Agents' }] },
-              { title: 'Platform', links: [{ href: '/features', l: 'Start Here' }, { href: '/auth/register', l: 'Join Free' }, { href: '/contact', l: 'Contact' }, { href: '/admin', l: 'Admin' }, { href: '/roles', l: 'Roles' }] },
+              { title: 'Platform', links: [{ href: '/features', l: 'Start Here' }, { href: '/how-it-works', l: 'How It Works' }, { href: '/rules', l: 'Rules' }, { href: '/contact', l: 'Contact' }, { href: '/roles', l: 'Roles' }] },
             ].map(({ title, links }) => (
               <div key={title}>
                 <h5 className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 mb-3">{title}</h5>

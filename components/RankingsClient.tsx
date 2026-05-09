@@ -38,7 +38,7 @@ export default function RankingsClient({ rankingsData }: { rankingsData: Ranking
   return (
     <>
       {/* Tab Switcher */}
-      <div className="flex gap-2 bg-kaf-panel p-1 rounded-lg border border-kaf-border shrink-0">
+      <div className="flex max-w-full gap-2 overflow-x-auto rounded-lg border border-kaf-border bg-kaf-panel p-1">
         {TABS.map(tab => (
           <button
             key={tab}
@@ -57,7 +57,7 @@ export default function RankingsClient({ rankingsData }: { rankingsData: Ranking
       {/* Active Tab Label */}
       {activeTab !== 'Global' && (
         <div className="px-1 py-2 text-xs text-slate-500 font-bold uppercase tracking-widest">
-          {activeTab === 'Region' ? 'Showing all regions — filter coming soon' : 'Showing all clans — filter coming soon'}
+          {activeTab === 'Region' ? 'Showing all regions - filter coming soon' : 'Showing all clans - filter coming soon'}
         </div>
       )}
 

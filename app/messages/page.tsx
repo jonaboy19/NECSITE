@@ -39,7 +39,10 @@ export default function MessagesPage() {
   useEffect(() => {
     const load = async () => {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/auth/login'); return }
+      if (!user) {
+        router.push('/auth/login?redirect=/messages&message=Sign%20in%20to%20continue%20to%20messages')
+        return
+      }
       const { data: profile } = await supabase.from('profiles').select('id,username,display_name,avatar_url').eq('id', user.id).single()
       setMe(profile)
     }

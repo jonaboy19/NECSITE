@@ -69,6 +69,15 @@ export const FOOTER_SECTIONS = {
       { href: '/admin', label: 'Admin Dashboard' },
       { href: '/contact', label: 'Contact' },
     ]
+  },
+  trust: {
+    title: 'Trust',
+    links: [
+      { href: '/how-it-works', label: 'How It Works' },
+      { href: '/rules', label: 'Rules' },
+      { href: '/privacy', label: 'Privacy' },
+      { href: '/terms', label: 'Terms' },
+    ]
   }
 }
 

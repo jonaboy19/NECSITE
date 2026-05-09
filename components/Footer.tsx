@@ -4,7 +4,7 @@ import { FOOTER_SECTIONS, REGIONS } from '@/lib/constants'
 export function Footer() {
   return (
     <footer className="py-16 border-t border-slate-800">
-      <div className="grid md:grid-cols-4 gap-8">
+      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
         {Object.entries(FOOTER_SECTIONS).map(([key, section]) => (
           <div key={key}>
             <h4 className="font-bold mb-4">{section.title}</h4>

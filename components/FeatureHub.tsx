@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import {
   Trophy,
@@ -12,6 +14,7 @@ import {
   HelpCircle,
   type LucideIcon,
 } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics'
 
 type Feature = {
   title: string
@@ -148,6 +151,7 @@ export function FeatureHub({
           <Link
             key={title}
             href={href}
+            onClick={() => trackEvent('feature_hub_click', { title, href, audience })}
             className="group flex min-h-36 flex-col justify-between rounded-xl border border-kaf-border bg-kaf-card p-5 transition-all hover:-translate-y-0.5 hover:border-brand-cyan/40 hover:bg-kaf-elevated"
           >
             <div className="flex items-start gap-4">

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Mail, User, AtSign, ArrowLeft, Loader2, CheckCircle, Shield } from 'lucide-react'
+import { trackEvent } from '@/lib/analytics'
 
 export default function Register() {
   const supabase = createClient()
@@ -77,8 +78,10 @@ export default function Register() {
 
     if (error) {
       setError(error.message)
+      trackEvent('auth_register_failed', { reason: error.message })
     } else {
       setSent(true)
+      trackEvent('auth_signup_started', { method: 'magic_link' })
     }
     setLoading(false)
   }
@@ -90,7 +93,10 @@ export default function Register() {
         redirectTo: getRedirectTo(),
       },
     })
-    if (error) setError(error.message)
+    if (error) {
+      setError(error.message)
+      trackEvent('auth_register_failed', { method: 'github', reason: error.message })
+    }
   }
 
   return (

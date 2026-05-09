@@ -9,7 +9,7 @@ export default async function TournamentDashboardPage({ params }: { params: Prom
   const { id } = await params
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth/login')
+  if (!user) redirect(`/auth/login?redirect=/tournaments/${id}/dashboard&message=Sign%20in%20to%20manage%20this%20tournament`)
 
   const { data: t } = await supabase.from('tournaments').select('*').eq('id', id).single()
   if (!t) notFound()

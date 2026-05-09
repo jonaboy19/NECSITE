@@ -1,16 +1,17 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
-import { Trophy } from 'lucide-react'
+import { ShieldAlert, Trophy } from 'lucide-react'
 import PublicHeader from '@/components/PublicHeader'
 import RankingsClient from '@/components/RankingsClient'
+import { EmptyState } from '@/components/EmptyState'
 
 export const metadata = {
-  title: 'Global Rankings — KAFConnect',
+  title: 'Global Rankings - KAFConnect',
   description: 'The official KAFConnect Top 50 global leaderboard based on Elo MMR performance.',
 }
 
 export default async function Rankings() {
   const supabase = await createServerSupabaseClient()
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('rankings')
     .select('*, profiles(username, avatar_url), clans(name)')
     .order('rating', { ascending: false })
@@ -32,7 +33,16 @@ export default async function Rankings() {
           {/* Tab switcher is rendered inside RankingsClient */}
         </div>
 
-        <RankingsClient rankingsData={rankingsData as any} />
+        {error ? (
+          <EmptyState
+            Icon={ShieldAlert}
+            title="Rankings could not load"
+            description="The leaderboard is temporarily unavailable. Match results are safe; try again soon."
+            action={{ href: '/contact', label: 'Contact staff' }}
+          />
+        ) : (
+          <RankingsClient rankingsData={rankingsData as any} />
+        )}
       </div>
     </div>
   )

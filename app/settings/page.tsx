@@ -30,7 +30,10 @@ export default function SettingsPage() {
   useEffect(() => {
     async function load() {
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user) { router.push('/auth/login'); return }
+      if (!user) {
+        router.push('/auth/login?redirect=/settings&message=Sign%20in%20to%20continue%20to%20settings')
+        return
+      }
       
       const { data: p } = await supabase.from('profiles').select('*').eq('id', user.id).single()
       if (p) {

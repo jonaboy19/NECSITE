@@ -9,7 +9,7 @@ export default async function PlayerDashboard() {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/auth/login')
+    redirect('/auth/login?redirect=/dashboard&message=Sign%20in%20to%20continue%20to%20your%20dashboard')
   }
 
   const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()

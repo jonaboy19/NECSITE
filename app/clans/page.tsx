@@ -2,11 +2,16 @@ import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { Shield, Search, Plus, Trophy, Users, Star, ArrowUpRight, CheckCircle, UserPlus } from 'lucide-react'
 import Link from 'next/link'
 import PublicHeader from '@/components/PublicHeader'
+import { EmptyState } from '@/components/EmptyState'
 
-export default async function Clans() {
+export default async function Clans({ searchParams }: { searchParams: Promise<{ q?: string; recruiting?: string }> }) {
+  const { q, recruiting } = await searchParams
   const supabase = await createServerSupabaseClient()
   // Fetch clans and their members count if possible. We'll just fetch clans for now.
-  const { data: clans } = await supabase.from('clans').select('*').limit(12)
+  let query = supabase.from('clans').select('*').limit(24)
+  if (q) query = query.ilike('name', `%${q}%`)
+  if (recruiting === 'true') query = query.eq('is_recruiting', true)
+  const { data: clans, error } = await query
 
   return (
     <div className="flex flex-col w-full pb-20">
@@ -51,7 +56,45 @@ export default async function Clans() {
           </h2>
         </div>
 
-        {clans && clans.length > 0 ? (
+        <div className="flex flex-col gap-3 rounded-2xl border border-kaf-border bg-kaf-card p-3 sm:flex-row sm:items-center sm:justify-between">
+          <form className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input
+              name="q"
+              defaultValue={q}
+              placeholder="Search clans..."
+              className="w-full rounded-xl border border-kaf-border bg-kaf-bg py-3 pl-10 pr-4 text-sm text-white placeholder-slate-500 outline-none transition-colors focus:border-brand-cyan"
+            />
+            {recruiting === 'true' && <input type="hidden" name="recruiting" value="true" />}
+          </form>
+          <div className="flex gap-2">
+            <Link
+              href={q ? `/clans?q=${encodeURIComponent(q)}` : '/clans'}
+              className={`rounded-lg border px-3 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
+                recruiting !== 'true' ? 'border-brand-cyan/40 bg-brand-cyan/20 text-brand-lime' : 'border-kaf-border bg-kaf-bg text-slate-400 hover:text-white'
+              }`}
+            >
+              All
+            </Link>
+            <Link
+              href={`/clans?${new URLSearchParams({ ...(q ? { q } : {}), recruiting: 'true' }).toString()}`}
+              className={`rounded-lg border px-3 py-2 text-xs font-black uppercase tracking-wider transition-colors ${
+                recruiting === 'true' ? 'border-brand-cyan/40 bg-brand-cyan/20 text-brand-lime' : 'border-kaf-border bg-kaf-bg text-slate-400 hover:text-white'
+              }`}
+            >
+              Recruiting
+            </Link>
+          </div>
+        </div>
+
+        {error ? (
+          <EmptyState
+            Icon={Shield}
+            title="Clans could not load"
+            description="The clan directory is temporarily unavailable. Try again soon or contact staff if the issue continues."
+            action={{ href: '/contact', label: 'Contact staff' }}
+          />
+        ) : clans && clans.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {clans.map((clan: any, i: number) => (
               <Link href={`/clans/${clan.id}`} key={clan.id} className="kaf-card p-5 rounded-2xl border border-kaf-border group hover:border-purple-500/50 transition-all cursor-pointer relative overflow-hidden block">
@@ -103,14 +146,12 @@ export default async function Clans() {
             ))}
           </div>
         ) : (
-          <div className="w-full py-20 flex flex-col items-center justify-center bg-kaf-card rounded-2xl border border-dashed border-kaf-border">
-            <Shield size={48} className="text-slate-600 mb-4" />
-            <h3 className="text-xl font-bold text-white mb-2">No Clans Found</h3>
-            <p className="text-slate-400 text-sm mb-6 max-w-md text-center">There are currently no esports organizations registered. Be the first to forge a legacy.</p>
-            <Link href="/clans/create" className="rounded-xl bg-brand-cyan px-6 py-3 font-bold text-white hover:bg-brand-lime hover:scale-105 transition-all">
-              Create the First Clan
-            </Link>
-          </div>
+          <EmptyState
+            Icon={Shield}
+            title="No clans yet"
+            description="There are no organizations listed yet. Start the first clan and invite your team."
+            action={{ href: '/clans/create', label: 'Create the first clan' }}
+          />
         )}
       </div>
     </div>

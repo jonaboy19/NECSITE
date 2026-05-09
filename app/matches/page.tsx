@@ -14,8 +14,8 @@ export default function MatchCenter() {
              Live Matches
           </h2>
           <div className="space-y-4">
-            <Link href="/matches/live-match-1" className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-transparent hover:border-brand-cyan/50 transition-all group">
-              <div className="flex items-center gap-4">
+            <Link href="/matches/live-match-1" className="flex flex-col gap-4 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-transparent hover:border-brand-cyan/50 transition-all group sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4 min-w-0">
                 <div className="w-12 h-12 rounded-full bg-status-live/20 border border-status-live text-status-live flex items-center justify-center shrink-0">
                    <Play size={20} className="fill-current" />
                 </div>
@@ -24,8 +24,8 @@ export default function MatchCenter() {
                      <span className="px-2 py-0.5 rounded text-[10px] font-black bg-status-live text-white tracking-widest uppercase">76:45</span>
                      <p className="text-sm font-bold text-slate-400">KAF Ramadan Cup 2026</p>
                   </div>
-                  <div className="flex items-center gap-4 font-black text-white text-lg">
-                     <span>HYDRØX</span>
+                  <div className="flex flex-wrap items-center gap-2 font-black text-white text-base sm:gap-4 sm:text-lg">
+                     <span>HYDROX</span>
                      <span className="text-brand-cyan text-xl">2 - 1</span>
                      <span>NOVA</span>
                   </div>
@@ -39,8 +39,8 @@ export default function MatchCenter() {
         <div className="kaf-card p-6 rounded-2xl border border-kaf-border">
           <h2 className="text-xl font-bold text-white mb-4">Upcoming Matches</h2>
           <div className="space-y-4">
-            <Link href="/matches/upcoming-1" className="flex items-center justify-between p-4 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-600 transition-all group">
-              <div className="flex items-center gap-4">
+            <Link href="/matches/upcoming-1" className="flex flex-col gap-4 p-4 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-transparent hover:border-slate-600 transition-all group sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-4 min-w-0">
                 <div className="w-12 h-12 rounded-full bg-slate-700 border border-slate-600 text-slate-400 flex items-center justify-center shrink-0">
                    <Clock size={20} />
                 </div>
@@ -49,7 +49,7 @@ export default function MatchCenter() {
                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-700 text-slate-300 tracking-widest uppercase">Today 18:00</span>
                      <p className="text-sm font-bold text-slate-400">Tournex Open</p>
                   </div>
-                  <div className="flex items-center gap-4 font-black text-white text-lg">
+                  <div className="flex flex-wrap items-center gap-2 font-black text-white text-base sm:gap-4 sm:text-lg">
                      <span>OXYGEN</span>
                      <span className="text-slate-500 text-base">vs</span>
                      <span>XENON</span>

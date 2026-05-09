@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Users, Globe, Search, UserPlus, Star } from 'lucide-react'
 
 export const metadata = {
-  title: 'Free Agents — KAFConnect',
+  title: 'Free Agents - KAFConnect',
   description: 'Browse players looking for a clan on KAFConnect.',
 }
 
@@ -34,7 +34,7 @@ export default async function FreeAgents() {
           <UserPlus className="text-brand-gold" size={26} />
           Free Agents
         </h1>
-        <p className="text-slate-400 text-sm mt-0.5">Players not affiliated with any clan — available for recruitment</p>
+        <p className="text-slate-400 text-sm mt-0.5">Players not affiliated with any clan - available for recruitment</p>
       </div>
 
       <div className="p-6 max-w-6xl mx-auto w-full space-y-6">
