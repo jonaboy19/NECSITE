@@ -5,73 +5,69 @@ module.exports = {
     extend: {
       colors: {
         kaf: {
-          bg:           '#0c0c10',   // Deepest background (purple-tinted black)
-          panel:        '#131318',   // Sidebar / nav panel
-          card:         '#1b1b22',   // Card surfaces
-          elevated:     '#23232d',   // Elevated cards, dropdowns
-          'border':     'rgba(255, 255, 255, 0.06)',
-          'border-strong': 'rgba(255, 255, 255, 0.13)',
+          bg: '#070908',
+          panel: '#0d1210',
+          card: '#111714',
+          elevated: '#17201b',
+          border: 'rgba(221, 255, 232, 0.08)',
+          'border-strong': 'rgba(221, 255, 232, 0.16)',
         },
         brand: {
-          // Primary — KAF Logo Green (keep 'cyan' key for backwards compat with all existing code)
-          cyan:         '#19853B',   // KAF brand forest green — MAIN ACCENT
-          teal:         '#126A2D',   // Darker KAF green (hover, pressed)
-          // Brighter greens for highlights/glow
-          neon:         '#4ade80',   // Neon green for glows / highlights
-          lime:         '#22c55e',   // Mid-bright green for hover/secondary
-          // "Normal" secondary accents (non-green)
-          blue:         '#3b82f6',   // Sky blue — info, secondary CTAs
-          'blue-light':  '#60a5fa',  // Lighter blue for hover
-          violet:       '#7c3aed',   // Purple — special roles / premium
-          'violet-light':'#a78bfa',  // Light violet
-          // Achievement & status
-          gold:         '#f59e0b',   // Amber gold — trophies, rankings
-          'gold-light': '#fcd34d',   // Light gold for glow
+          cyan: '#19b765',
+          teal: '#0f8e4a',
+          neon: '#57f28f',
+          lime: '#39d475',
+          blue: '#38a3ff',
+          'blue-light': '#75c2ff',
+          violet: '#8b5cf6',
+          'violet-light': '#b49cff',
+          gold: '#f4b942',
+          'gold-light': '#ffe08a',
         },
         status: {
-          win:    '#16a34a',
-          loss:   '#ef4444',
-          live:   '#ef4444',
-          draft:  '#7c3aed',
-          pending:'#f59e0b',
-        }
+          win: '#19b765',
+          loss: '#ff4d4d',
+          live: '#ff4d4d',
+          draft: '#8b5cf6',
+          pending: '#f4b942',
+        },
       },
       fontFamily: {
-        sans:    ['var(--font-inter)', 'sans-serif'],
+        sans: ['var(--font-inter)', 'sans-serif'],
         display: ['var(--font-outfit)', 'sans-serif'],
-        mono:    ['JetBrains Mono', 'Geist Mono', 'monospace'],
+        mono: ['JetBrains Mono', 'Geist Mono', 'monospace'],
       },
       backgroundImage: {
-        'grid-pattern':  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M0 0h40v40H0z' fill='none'/%3E%3Cpath d='M0 0h1v1H0z' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E\")",
-        'dot-pattern':   "radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)",
-        'glow-green':    'radial-gradient(ellipse at center, rgba(25,133,59,0.2) 0%, transparent 70%)',
-        'glow-blue':     'radial-gradient(ellipse at center, rgba(59,130,246,0.15) 0%, transparent 70%)',
-        'hero-gradient': 'linear-gradient(135deg, #0c0c10 0%, #0f1318 50%, #0c0c10 100%)',
+        'grid-pattern': "linear-gradient(rgba(221,255,232,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(221,255,232,0.035) 1px, transparent 1px)",
+        'dot-pattern': 'radial-gradient(circle, rgba(221,255,232,0.055) 1px, transparent 1px)',
+        'glow-green': 'radial-gradient(ellipse at center, rgba(25,183,101,0.2) 0%, transparent 70%)',
+        'glow-blue': 'radial-gradient(ellipse at center, rgba(56,163,255,0.14) 0%, transparent 70%)',
+        'hero-gradient': 'linear-gradient(135deg, #070908 0%, #0d1210 52%, #050706 100%)',
       },
       boxShadow: {
-        'glow-green':  '0 0 20px rgba(25,133,59,0.35), 0 0 60px rgba(25,133,59,0.1)',
-        'glow-green-sm':'0 0 10px rgba(25,133,59,0.4)',
-        'glow-blue':   '0 0 20px rgba(59,130,246,0.3)',
-        'glow-gold':   '0 0 20px rgba(245,158,11,0.3)',
-        'card':        '0 4px 24px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.04) inset',
-        'card-hover':  '0 8px 40px rgba(0,0,0,0.7), 0 0 0 1px rgba(25,133,59,0.25)',
-        'panel':       '4px 0 24px rgba(0,0,0,0.4)',
+        'glow-green': '0 0 28px rgba(25,183,101,0.28), 0 0 70px rgba(25,183,101,0.1)',
+        'glow-green-sm': '0 0 14px rgba(25,183,101,0.3)',
+        'glow-blue': '0 0 22px rgba(56,163,255,0.24)',
+        'glow-gold': '0 0 22px rgba(244,185,66,0.26)',
+        card: '0 24px 80px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.055)',
+        'card-hover': '0 30px 90px rgba(0,0,0,0.5), 0 0 0 1px rgba(57,212,117,0.14)',
+        panel: '8px 0 34px rgba(0,0,0,0.42)',
       },
       animation: {
-        'marquee':      'marquee 25s linear infinite',
-        'glow-pulse':   'glowPulse 3s ease-in-out infinite',
-        'float':        'float 6s ease-in-out infinite',
-        'shimmer':      'shimmer 1.6s infinite',
-        'fade-in':      'fade-in 0.35s ease-out',
-        'slide-up':     'slideUp 0.35s cubic-bezier(.22,1,.36,1)',
+        marquee: 'marquee 25s linear infinite',
+        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+        float: 'float 6s ease-in-out infinite',
+        shimmer: 'shimmer 1.6s infinite',
+        'fade-in': 'fade-in 0.35s ease-out',
+        'slide-up': 'slideUp 0.35s cubic-bezier(.22,1,.36,1)',
       },
       keyframes: {
-        marquee:    { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
-        glowPulse:  { '0%,100%': { boxShadow: '0 0 0 0 rgba(25,133,59,0)' }, '50%': { boxShadow: '0 0 30px 8px rgba(25,133,59,0.2)' } },
-        float:      { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
-        shimmer:    { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
-        'fade-in':  { from: { opacity: '0', transform: 'translateY(6px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
-        slideUp:    { from: { opacity: '0', transform: 'translateY(24px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        marquee: { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
+        glowPulse: { '0%,100%': { boxShadow: '0 0 0 0 rgba(25,183,101,0)' }, '50%': { boxShadow: '0 0 30px 8px rgba(25,183,101,0.18)' } },
+        float: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-8px)' } },
+        shimmer: { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+        'fade-in': { from: { opacity: '0', transform: 'translateY(6px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
+        slideUp: { from: { opacity: '0', transform: 'translateY(24px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
       },
     },
   },

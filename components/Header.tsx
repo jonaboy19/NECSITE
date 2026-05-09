@@ -16,10 +16,10 @@ export default function Header() {
   }, [])
 
   return (
-    <nav className="flex items-center justify-between rounded-xl border border-kaf-border bg-kaf-panel/80 px-4 py-3 backdrop-blur">
+    <nav className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-[#070908]/80 px-4 py-3 backdrop-blur-2xl">
       <Link href="/" className="flex items-center gap-2 font-black tracking-[0.18em] text-white">
         <Image src="/kaf-logo.png" alt="KAFConnect" width={28} height={28} className="object-contain" />
-        <span>KAF<span className="text-brand-lime">CONNECT</span></span>
+        <span>KAF<span className="text-brand-lime">Connect</span></span>
       </Link>
       <div className="hidden gap-6 text-sm font-bold text-slate-400 md:flex">
         <Link href="/tournaments" className="flex items-center gap-2 hover:text-brand-lime transition">
@@ -54,7 +54,7 @@ export default function Header() {
             Profile
           </Link>
         ) : (
-          <Link href="/auth/register" className="rounded-lg bg-brand-cyan px-4 py-2 text-sm font-black text-white hover:bg-brand-lime transition">
+          <Link href="/auth/register" className="rounded-xl bg-brand-lime px-4 py-2 text-sm font-black text-[#041006] hover:bg-brand-neon transition">
             Join
           </Link>
         )}

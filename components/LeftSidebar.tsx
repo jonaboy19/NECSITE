@@ -126,18 +126,18 @@ export default function LeftSidebar() {
     href === '/' ? pathname === '/' : pathname.startsWith(href)
 
   return (
-    <aside className={`sticky top-0 hidden h-screen flex-col border-r border-white/[0.06] bg-[#050706]/96 shadow-panel no-scrollbar lg:flex overflow-hidden transition-[width] duration-300 ease-out ${railMode ? 'w-20' : 'w-64'}`}>
+    <aside className={`sticky top-0 hidden h-screen flex-col border-r border-white/[0.07] bg-[#070908]/94 shadow-panel no-scrollbar backdrop-blur-2xl lg:flex overflow-hidden transition-[width] duration-300 ease-out ${railMode ? 'w-20' : 'w-[17rem]'}`}>
       <GlobalSearch open={searchOpen} onClose={() => setSearchOpen(false)} />
 
-      {/* Subtle top gradient accent */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-cyan/40 to-transparent pointer-events-none" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand-lime/45 to-transparent" />
+      <div className="pointer-events-none absolute -left-20 top-8 h-56 w-56 rounded-full bg-brand-lime/10 blur-3xl" />
 
       <div className="flex flex-col h-full overflow-y-auto no-scrollbar p-4 gap-4">
 
         {/* Logo */}
         <div className="flex items-center justify-between gap-2">
         <Link href="/" className="flex min-w-0 items-center gap-3 px-1 py-1 group shrink-0">
-          <div className="relative w-10 h-10 overflow-hidden bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center shrink-0 group-hover:border-brand-cyan/50 transition-colors kaf-cut-sm">
+          <div className="relative w-10 h-10 overflow-hidden rounded-xl bg-brand-lime/10 border border-brand-lime/20 flex items-center justify-center shrink-0 group-hover:border-brand-lime/50 transition-colors">
             <Image
               src="/kaf-logo.png"
               alt="KAF Connect Logo"
@@ -147,16 +147,16 @@ export default function LeftSidebar() {
             />
           </div>
           {!railMode && <div className="leading-none">
-            <span className="text-base font-display font-black tracking-widest text-white block">
-              KAF<span className="text-brand-lime">CONNECT</span>
+            <span className="text-base font-display font-black tracking-wide text-white block">
+              KAF<span className="text-brand-lime">Connect</span>
             </span>
-            <span className="text-[9px] text-slate-600 uppercase tracking-[0.25em] font-bold">Arena Hub</span>
+            <span className="text-[9px] text-slate-600 uppercase tracking-[0.25em] font-bold">Operations Hub</span>
           </div>}
         </Link>
           <button
             type="button"
             onClick={() => setRailMode(prev => !prev)}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-slate-400 transition-colors hover:border-brand-lime/40 hover:text-brand-lime"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.035] text-slate-400 transition-colors hover:border-brand-lime/40 hover:text-brand-lime"
             aria-label={railMode ? 'Expand sidebar' : 'Collapse sidebar'}
             title={railMode ? 'Expand sidebar' : 'Collapse sidebar'}
           >
@@ -167,7 +167,7 @@ export default function LeftSidebar() {
         {/* Search */}
         <button
           onClick={() => setSearchOpen(true)}
-          className={`flex items-center gap-2.5 w-full px-3 py-2.5 bg-kaf-card border border-kaf-border text-slate-500 hover:text-slate-300 hover:border-kaf-border-strong text-xs transition-all group shrink-0 ${railMode ? 'justify-center rounded-lg' : 'rounded-xl'}`}
+          className={`flex items-center gap-2.5 w-full px-3 py-2.5 bg-white/[0.035] border border-white/[0.08] text-slate-500 hover:text-slate-200 hover:border-brand-lime/30 text-xs transition-all group shrink-0 ${railMode ? 'justify-center rounded-xl' : 'rounded-xl'}`}
           title="Search"
         >
           <Search size={13} className="shrink-0" />
@@ -211,8 +211,8 @@ export default function LeftSidebar() {
                           title={railMode ? item.name : undefined}
                           className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-150 ${railMode ? 'justify-center' : ''}
                             ${active
-                              ? 'bg-gradient-to-r from-brand-cyan/18 to-brand-cyan/4 text-white'
-                              : 'text-slate-400 hover:bg-kaf-card hover:text-slate-100'
+                              ? 'bg-brand-lime/10 text-white ring-1 ring-brand-lime/20'
+                              : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100'
                             }`}
                         >
                           {/* Active left bar */}
@@ -253,8 +253,8 @@ export default function LeftSidebar() {
                     title={railMode ? item.name : undefined}
                     className={`relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-bold transition-all duration-150 ${railMode ? 'justify-center' : ''}
                       ${active
-                        ? 'bg-gradient-to-r from-brand-cyan/18 to-brand-cyan/4 text-white'
-                        : 'text-slate-400 hover:bg-kaf-card hover:text-slate-100'
+                        ? 'bg-brand-lime/10 text-white ring-1 ring-brand-lime/20'
+                        : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100'
                       }`}
                   >
                     {active && (
@@ -275,7 +275,7 @@ export default function LeftSidebar() {
             <Link
               href={`/profile/${userProfile.username}`}
               title={railMode ? userProfile.username : undefined}
-              className={`group flex items-center gap-3 rounded-xl p-3 border border-kaf-border hover:border-brand-cyan/30 hover:bg-kaf-card transition-all ${railMode ? 'justify-center' : ''}`}
+              className={`group flex items-center gap-3 rounded-2xl p-3 border border-white/[0.08] bg-white/[0.025] hover:border-brand-lime/30 hover:bg-white/[0.05] transition-all ${railMode ? 'justify-center' : ''}`}
             >
               {/* Avatar with gradient ring */}
               <div className="relative shrink-0">
@@ -299,7 +299,7 @@ export default function LeftSidebar() {
             <Link
               href="/auth/login"
               title={railMode ? 'Sign in' : undefined}
-              className={`group flex items-center gap-3 rounded-xl p-3 border border-kaf-border hover:border-brand-cyan/30 hover:bg-kaf-card transition-all ${railMode ? 'justify-center' : ''}`}
+              className={`group flex items-center gap-3 rounded-2xl p-3 border border-white/[0.08] bg-white/[0.025] hover:border-brand-lime/30 hover:bg-white/[0.05] transition-all ${railMode ? 'justify-center' : ''}`}
             >
               <div className="w-9 h-9 rounded-full bg-kaf-elevated border border-kaf-border flex items-center justify-center shrink-0">
                 <Users size={16} className="text-slate-500" />

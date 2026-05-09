@@ -43,7 +43,7 @@ export default async function RightSidebar() {
   const unread = notifications || []
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-72 flex-col overflow-y-auto border-l border-white/[0.06] bg-[#050706]/96 p-4 no-scrollbar xl:flex">
+    <aside className="sticky top-0 hidden h-screen w-[19rem] flex-col overflow-y-auto border-l border-white/[0.07] bg-[#070908]/94 p-4 no-scrollbar backdrop-blur-2xl xl:flex">
       <div className="mb-8">
         <h3 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-300">
           <Bell size={16} className="text-brand-lime" />

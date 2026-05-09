@@ -11,12 +11,12 @@ export default async function PublicHeader() {
   if (user) return null
 
   return (
-    <nav aria-label="Public navigation" className="sticky top-0 z-50 flex h-20 items-center justify-between gap-4 border-b border-white/[0.06] bg-[#050706]/90 px-4 backdrop-blur-xl sm:px-6 lg:px-14">
+    <nav aria-label="Public navigation" className="sticky top-0 z-50 flex h-20 items-center justify-between gap-4 border-b border-white/[0.07] bg-[#070908]/86 px-4 backdrop-blur-2xl sm:px-6 lg:px-14">
       <Link href="/" className="flex items-center gap-3 group">
         <Image src="/kaf-logo.png" alt="KAFConnect" width={30} height={30} className="object-contain group-hover:scale-110 transition-transform" />
         <div className="leading-none">
           <div className="text-base font-black tracking-wide text-white">KAF <span className="text-brand-lime">Connect</span></div>
-          <div className="mt-1 font-mono text-[9px] font-black uppercase tracking-[0.42em] text-slate-500">eFootball esports hub</div>
+          <div className="mt-1 font-mono text-[9px] font-black uppercase tracking-[0.34em] text-slate-500">eFootball operations</div>
         </div>
       </Link>
       <div className="hidden xl:flex items-center gap-1 text-[12px] font-black uppercase tracking-[0.14em] text-slate-500">
@@ -34,7 +34,7 @@ export default async function PublicHeader() {
         <Link href="/admin" className="hidden h-11 items-center gap-2 rounded-lg border border-white/10 bg-white/[0.02] px-4 font-mono text-[11px] font-black uppercase tracking-wider text-slate-300 transition-colors hover:border-white/20 hover:text-white md:flex">
           <Shield size={15} /> Admin
         </Link>
-        <Link href="/dashboard" className="kaf-cut-sm inline-flex h-11 items-center gap-2 border border-brand-cyan/30 bg-brand-cyan/10 px-4 font-mono text-[11px] font-black uppercase tracking-wider text-brand-lime transition-all hover:bg-brand-cyan hover:text-black">
+        <Link href="/dashboard" className="inline-flex h-11 items-center gap-2 rounded-xl border border-brand-lime/30 bg-brand-lime/10 px-4 font-mono text-[11px] font-black uppercase tracking-wider text-brand-lime transition-all hover:bg-brand-lime hover:text-[#041006]">
           <Grid2X2 size={15} /> Dashboard
         </Link>
         <Link href="/auth/login" aria-label="Account" className="hidden h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/[0.02] text-slate-300 transition-colors hover:border-brand-cyan/40 hover:text-white sm:flex">
