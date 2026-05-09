@@ -24,6 +24,9 @@ const requiredPaths = [
   'components/EmptyState.tsx',
   'lib/auth-redirect.ts',
   'proxy.ts',
+  'supabase/migrations/analytics_events.sql',
+  'supabase/migrations/flow_rls_hardening.sql',
+  'docs/manual-flow-test-checklist.md',
 ]
 
 const missing = requiredPaths.filter((path) => !existsSync(join(root, path)))

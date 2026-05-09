@@ -16,6 +16,7 @@ export default function TournamentJoinPage({ params }: { params: { id: string } 
   const [loading, setLoading] = useState(true)
   const [registering, setRegistering] = useState(false)
   const [alreadyRegistered, setAlreadyRegistered] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
     const load = async () => {
@@ -24,6 +25,7 @@ export default function TournamentJoinPage({ params }: { params: { id: string } 
         router.push(`/auth/login?redirect=/tournaments/${params.id}/join&message=Sign%20in%20to%20register%20for%20this%20tournament`)
         return
       }
+      setUserId(user.id)
 
       const [{ data: t }, { data: cm }] = await Promise.all([
         supabase.from('tournaments').select('*').eq('id', params.id).single(),
@@ -46,7 +48,11 @@ export default function TournamentJoinPage({ params }: { params: { id: string } 
     if (!myClan) return toastError('You must be in a clan to register')
     setRegistering(true)
     const { error } = await supabase.from('tournament_registrations').insert({
-      tournament_id: params.id, clan_id: myClan.id, status: 'pending',
+      tournament_id: params.id,
+      clan_id: myClan.id,
+      submitted_by: userId,
+      registration_type: 'clan',
+      status: 'pending',
     })
     setRegistering(false)
     if (error) {

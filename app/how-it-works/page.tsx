@@ -21,7 +21,7 @@ export default function HowItWorksPage() {
     },
     {
       title: 'Register for events',
-      description: 'Browse open tournaments, check the format, then register your clan before the deadline.',
+      description: 'Browse open tournaments, check the rules and format, then register your clan before the deadline.',
       Icon: Trophy,
     },
     {
@@ -50,6 +50,27 @@ export default function HowItWorksPage() {
               <p className="text-sm leading-relaxed text-slate-400">{description}</p>
             </div>
           ))}
+        </section>
+
+        <section className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="rounded-2xl border border-kaf-border bg-kaf-card p-5">
+            <h2 className="mb-2 text-lg font-black text-white">For Players</h2>
+            <p className="text-sm leading-relaxed text-slate-400">
+              Keep your profile complete, join events on time, follow match schedules, and report scores honestly.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-kaf-border bg-kaf-card p-5">
+            <h2 className="mb-2 text-lg font-black text-white">For Clan Leaders</h2>
+            <p className="text-sm leading-relaxed text-slate-400">
+              Manage roster quality, register the correct team, check approvals, and coordinate players before match time.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-kaf-border bg-kaf-card p-5">
+            <h2 className="mb-2 text-lg font-black text-white">For Staff</h2>
+            <p className="text-sm leading-relaxed text-slate-400">
+              Review pending entries, resolve disputes from evidence, and keep tournament state accurate for everyone.
+            </p>
+          </div>
         </section>
 
         <section className="mt-8 rounded-2xl border border-kaf-border bg-kaf-card p-6 text-center">

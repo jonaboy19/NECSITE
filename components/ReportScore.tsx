@@ -9,10 +9,21 @@ export default function ReportScore({id}:{id:string}){
  const [saving,setSaving]=useState(false)
  const save=async()=>{
   setSaving(true)
-  const {error}=await supabase.from('matches').update({score_a:Number(a),score_b:Number(b),status:'reported'}).eq('id',id)
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+   setSaving(false)
+   return alert('Sign in to report a score')
+  }
+  const {error}=await supabase.from('match_results').insert({
+   match_id:id,
+   submitted_by:user.id,
+   score_1:Number(a),
+   score_2:Number(b),
+   status:'pending'
+  })
   setSaving(false)
   if(error)return alert(error.message)
-  alert('score reported')
+  alert('score submitted for review')
  }
  return(
   <div className='mt-3 grid grid-cols-[1fr_1fr_auto] gap-2'>

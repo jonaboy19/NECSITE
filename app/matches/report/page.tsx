@@ -14,12 +14,21 @@ export default function ReportMatch() {
   const [scoreB, setScoreB] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [status, setStatus] = useState<'idle'|'success'|'error'>('idle')
+  const [userId, setUserId] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     // Fetch pending matches for this user. 
     // For demo purposes, we will fetch any scheduled matches.
     const fetchMatches = async () => {
-      const { data } = await supabase.from('matches').select('*, tournaments(title)').eq('status', 'scheduled').limit(5)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/auth/login?redirect=/matches/report&message=Sign%20in%20to%20report%20a%20match')
+        return
+      }
+      setUserId(user.id)
+
+      const { data } = await supabase.from('matches').select('*, tournaments(title)').in('status', ['scheduled', 'live']).limit(10)
       if (data && data.length > 0) {
         setMatches(data)
         setSelectedMatch(data[0])
@@ -33,19 +42,24 @@ export default function ReportMatch() {
 
   const report = async () => {
     setIsSubmitting(true)
+    setErrorMessage('')
     try {
       if (selectedMatch.id !== 'demo-match-id') {
-        await supabase.from('matches').update({
-          score_a: scoreA,
-          score_b: scoreB,
-          status: 'reported'
-        }).eq('id', selectedMatch.id)
+        const { error } = await supabase.from('match_results').insert({
+          match_id: selectedMatch.id,
+          submitted_by: userId,
+          score_1: scoreA,
+          score_2: scoreB,
+          notes: 'Submitted from KAFConnect match report page',
+          status: 'pending',
+        })
+        if (error) throw error
       }
 
       // Trigger the Realtime feed by inserting!
       const isWin = scoreA > scoreB;
       const resultText = isWin ? 'defeated' : scoreA === scoreB ? 'drew against' : 'lost to';
-      const tickerMessage = `🔥 Match Result: Player A ${resultText} Player B (${scoreA}-${scoreB}) in ${selectedMatch.tournaments?.title || 'a Tournament'}!`
+      const tickerMessage = `Match Result: Player A ${resultText} Player B (${scoreA}-${scoreB}) in ${selectedMatch.tournaments?.title || 'a Tournament'}!`
       
       await supabase.from('live_tickers').insert({
         message: tickerMessage,
@@ -64,6 +78,7 @@ export default function ReportMatch() {
       }, 2000)
 
     } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to submit report.')
       setStatus('error')
     }
     setIsSubmitting(false)
@@ -76,7 +91,7 @@ export default function ReportMatch() {
           <Check size={40} className="text-emerald-400" />
         </div>
         <h1 className="text-4xl font-display font-black text-white mb-4">SCORE VERIFIED</h1>
-        <p className="text-slate-400 mb-8">The match result has been recorded and broadcasted to the live feed.</p>
+        <p className="text-slate-400 mb-8">The match result has been submitted for review.</p>
       </div>
     )
   }
@@ -133,7 +148,7 @@ export default function ReportMatch() {
 
         {status === 'error' && (
           <div className="mb-6 p-4 rounded-xl bg-status-live/10 border border-status-live/30 flex items-center gap-3 text-status-live text-sm font-bold">
-            <AlertCircle size={18} /> Failed to submit report.
+            <AlertCircle size={18} /> {errorMessage || 'Failed to submit report.'}
           </div>
         )}
 

@@ -74,7 +74,7 @@ export default function SettingsPage() {
     if (!file || !profile) return
     setUploading(true)
     const ext = file.name.split('.').pop()
-    const path = `avatars/${profile.id}.${ext}`
+    const path = `${profile.id}/avatar.${ext}`
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(path, file, { upsert: true })
