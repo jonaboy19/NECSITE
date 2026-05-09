@@ -6,7 +6,7 @@ import { Star, Plus, X, Loader2, ChevronDown } from 'lucide-react'
 const RARITY_STYLE: Record<string, string> = {
   common:    'bg-slate-700/60 border-slate-600/50 text-slate-300',
   rare:      'bg-blue-500/20 border-blue-500/40 text-blue-300',
-  epic:      'bg-purple-500/20 border-purple-500/40 text-purple-300',
+  epic:      'bg-brand-cyan/20 border-brand-cyan/40 text-brand-lime',
   legendary: 'bg-amber-500/20 border-amber-500/40 text-amber-300',
 }
 

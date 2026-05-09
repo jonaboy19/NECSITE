@@ -22,7 +22,7 @@ export default async function ELeaguePage() {
   const completedSeries = series?.filter(s => s.status === 'completed') ?? []
 
   return (
-    <div className="flex flex-col w-full pb-24">
+    <div className="kaf-app-page flex w-full flex-col pb-24">
       {/* Hero */}
       <div className="kaf-stadium-bg kaf-scanlines relative border-b border-white/[0.06] px-4 sm:px-8 py-20 overflow-hidden">
         <div className="absolute inset-0 bg-dot-grid opacity-25" />
@@ -84,10 +84,13 @@ export default async function ELeaguePage() {
 
         {/* Empty state */}
         {!series?.length && (
-          <div className="text-center py-20 text-slate-500">
+          <div className="kaf-card kaf-cut border border-kaf-border px-6 py-16 text-center text-slate-500">
             <Trophy size={48} className="mx-auto mb-4 opacity-20" />
-            <h3 className="text-lg font-black text-white">No seasons yet</h3>
-            <p className="text-sm mt-1">The E-League is coming soon. Stay tuned.</p>
+            <h3 className="text-lg font-black text-white">No E-League seasons configured</h3>
+            <p className="mx-auto mt-1 max-w-xl text-sm">Create a season from the admin tournament tools when the league is ready. This page will show live seasons, upcoming seasons, and completed archives from real database records.</p>
+            <Link href="/tournaments/create" className="btn-secondary mt-6">
+              Create Competition
+            </Link>
           </div>
         )}
       </div>

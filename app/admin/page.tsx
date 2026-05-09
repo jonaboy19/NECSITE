@@ -1,12 +1,15 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { ShieldAlert, Users, Trophy, Settings, Activity, Gavel, CheckCircle, Shield, Edit2, Search } from 'lucide-react'
+import Link from 'next/link'
+import { ShieldAlert, Users, Trophy, Activity, Gavel, CheckCircle, Shield, Search } from 'lucide-react'
+import { useToast } from '@/components/Toast'
 
 export default function AdminPanel() {
   const supabase = createClient()
+  const toast = useToast()
   const [activeTab, setActiveTab] = useState('overview')
-  const [stats, setStats] = useState({ users: 0, tournaments: 0, matches: 0 })
+  const [stats, setStats] = useState({ users: 0, tournaments: 0, matches: 0, disputes: 0 })
   const [tournaments, setTournaments] = useState<any[]>([])
   const [profiles, setProfiles] = useState<any[]>([])
   const [clans, setClans] = useState<any[]>([])
@@ -18,11 +21,13 @@ export default function AdminPanel() {
     const { count: usersCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true })
     const { count: tourneyCount } = await supabase.from('tournaments').select('*', { count: 'exact', head: true })
     const { count: matchCount } = await supabase.from('matches').select('*', { count: 'exact', head: true })
+    const { count: disputeCount } = await supabase.from('disputes').select('*', { count: 'exact', head: true }).eq('status', 'open')
     
     setStats({ 
-      users: usersCount || 1248, 
-      tournaments: tourneyCount || 14, 
-      matches: matchCount || 342 
+      users: usersCount ?? 0,
+      tournaments: tourneyCount ?? 0,
+      matches: matchCount ?? 0,
+      disputes: disputeCount ?? 0,
     })
 
     // Tournaments
@@ -70,7 +75,7 @@ export default function AdminPanel() {
 
   const handleUpdateRole = async (userId: string, newRole: string) => {
     if (userRole !== 'super_admin' && userRole !== 'admin') {
-      alert('You do not have permission to change user roles.')
+      toast.error('You do not have permission to change user roles.')
       return
     }
     // Update in both tables
@@ -80,15 +85,17 @@ export default function AdminPanel() {
       { user_id: userId, role: newRole },
       { onConflict: 'user_id,role' }
     )
+    toast.success('User role updated.')
     fetchEcosystemData()
   }
 
   const handleVerifyClan = async (clanId: string, verifyStatus: boolean) => {
     const { error } = await supabase.from('clans').update({ is_verified: verifyStatus }).eq('id', clanId)
     if (!error) {
+      toast.success(verifyStatus ? 'Clan verified.' : 'Clan verification revoked.')
       fetchEcosystemData()
     } else {
-      alert('Error updating clan verification: ' + error.message)
+      toast.error(error.message)
     }
   }
 
@@ -167,7 +174,7 @@ export default function AdminPanel() {
 
             <div className="kaf-card p-6 rounded-2xl border border-kaf-border relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity"><ShieldAlert size={64} /></div>
-              <div className="text-4xl font-black text-white mb-1">0</div>
+              <div className="text-4xl font-black text-white mb-1">{stats.disputes}</div>
               <div className="text-xs text-status-draft uppercase font-bold tracking-widest flex items-center gap-2">
                 <Gavel size={14} /> Active Disputes
               </div>
@@ -284,29 +291,12 @@ export default function AdminPanel() {
         <div className="space-y-6 animate-fade-in">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold text-white">Tournament Management</h2>
-            <button 
-              onClick={async () => {
-                const title = prompt("Enter tournament title:")
-                if (!title) return
-                
-                const { data, error } = await supabase.from('tournaments').insert([{
-                  title: title,
-                  status: 'draft',
-                  format: 'single_elimination',
-                  game: 'EA FC 25',
-                  max_participants: 16
-                }]).select()
-                
-                if (error) {
-                  alert('Error creating tournament: ' + error.message)
-                } else if (data && data[0]) {
-                  window.location.href = `/tournaments/${data[0].id}/dashboard`
-                }
-              }}
-              className="bg-brand-cyan text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-brand-lime transition-colors"
+            <Link
+              href="/tournaments/create"
+              className="btn-primary px-4 py-2 text-sm"
             >
-              + Create Tournament
-            </button>
+              Create Tournament
+            </Link>
           </div>
           <div className="kaf-card rounded-2xl border border-kaf-border overflow-hidden">
             <table className="w-full text-left text-sm text-slate-400">
@@ -336,8 +326,9 @@ export default function AdminPanel() {
                             if (confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) {
                               const { error } = await supabase.from('tournaments').delete().eq('id', t.id)
                               if (error) {
-                                alert('Error deleting tournament: ' + error.message)
+                                toast.error(error.message)
                               } else {
+                                toast.success('Tournament deleted.')
                                 fetchEcosystemData()
                               }
                             }

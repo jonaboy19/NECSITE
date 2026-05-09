@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Save, Loader2, Palette, Megaphone, Wrench, Shield, Award, Star, Globe, Sparkles } from 'lucide-react'
 import { clearSiteSettingsCache } from '@/hooks/useSiteSettings'
+import { useToast } from '@/components/Toast'
 
 const supabase = createClient()
 
@@ -56,10 +57,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 // ─── Panel components ────────────────────────────────────────────────────────
 function BrandingPanel() {
+  const toast = useToast()
   const [data, setData] = useState<any>({})
   const [saving, setSaving] = useState(false)
   useEffect(() => { getSetting('branding').then(setData) }, [])
-  const save = async () => { setSaving(true); await saveSetting('branding', data); setSaving(false); alert('Saved!') }
+  const save = async () => { setSaving(true); await saveSetting('branding', data); setSaving(false); toast.success('Branding saved.') }
   return (
     <div className="space-y-4">
       <Section title="Branding & Identity">
@@ -86,10 +88,11 @@ function BrandingPanel() {
 }
 
 function AnnouncementPanel() {
+  const toast = useToast()
   const [data, setData] = useState<any>({ visible: false, message: '', level: 'info', link: '', link_label: '' })
   const [saving, setSaving] = useState(false)
   useEffect(() => { getSetting('announcement').then(setData) }, [])
-  const save = async () => { setSaving(true); await saveSetting('announcement', data); setSaving(false); alert('Saved! Shows live to all visitors.') }
+  const save = async () => { setSaving(true); await saveSetting('announcement', data); setSaving(false); toast.success('Announcement saved.') }
   return (
     <div className="space-y-4">
       <Section title="Site Announcement Bar">
@@ -117,10 +120,11 @@ function AnnouncementPanel() {
 }
 
 function SiteModePanel() {
+  const toast = useToast()
   const [data, setData] = useState<any>({ maintenance: false, clans_only: false, maintenance_message: '' })
   const [saving, setSaving] = useState(false)
   useEffect(() => { getSetting('site_mode').then(setData) }, [])
-  const save = async () => { setSaving(true); await saveSetting('site_mode', data); setSaving(false); alert('Site mode updated!') }
+  const save = async () => { setSaving(true); await saveSetting('site_mode', data); setSaving(false); toast.success('Site mode updated.') }
   return (
     <div className="space-y-4">
       <Section title="Site Mode Controls">
@@ -137,10 +141,11 @@ function SiteModePanel() {
 }
 
 function FeaturesPanel() {
+  const toast = useToast()
   const [data, setData] = useState<any>({})
   const [saving, setSaving] = useState(false)
   useEffect(() => { getSetting('features').then(setData) }, [])
-  const save = async () => { setSaving(true); await saveSetting('features', data); setSaving(false); alert('Features saved!') }
+  const save = async () => { setSaving(true); await saveSetting('features', data); setSaving(false); toast.success('Feature settings saved.') }
   const toggles = [
     { key: 'show_news', label: 'News Section', desc: 'Show news on homepage' },
     { key: 'show_sponsors', label: 'Sponsors Carousel', desc: 'Show sponsors on homepage' },
@@ -272,6 +277,7 @@ const TRANSITION_PRESETS = [
 ]
 
 function AnimationsPanel() {
+  const toast = useToast()
   const [data, setData] = useState<any>({
     page_transition: 'slide',
     card_hover: true,
@@ -285,7 +291,7 @@ function AnimationsPanel() {
   })
   const [saving, setSaving] = useState(false)
   useEffect(() => { getSetting('animations').then(setData) }, [])
-  const save = async () => { setSaving(true); await saveSetting('animations', data); setSaving(false); alert('Animation settings saved! Reload the site to see changes.') }
+  const save = async () => { setSaving(true); await saveSetting('animations', data); setSaving(false); toast.success('Animation settings saved.') }
 
   return (
     <div className="space-y-4">
