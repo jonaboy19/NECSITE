@@ -27,10 +27,10 @@ function MatchBox({ match, tournamentId }: { match: Match; tournamentId: string 
   return (
     <Link
       href={`/matches/${match.id}`}
-      className={`block w-52 rounded-xl border transition-all group ${
+      className={`depth-panel depth-hover block w-52 rounded-xl group ${
         isLive
           ? 'border-status-live/60 bg-status-live/5 shadow-[0_0_15px_rgba(255,0,60,0.15)]'
-          : 'border-kaf-border bg-kaf-card hover:border-brand-cyan/40 hover:bg-kaf-card/80'
+          : 'border-kaf-border hover:border-brand-cyan/40'
       }`}
     >
       {/* Live badge */}
@@ -79,7 +79,7 @@ function MatchBox({ match, tournamentId }: { match: Match; tournamentId: string 
 
 function EmptyMatchBox() {
   return (
-    <div className="w-52 rounded-xl border border-dashed border-kaf-border/40 bg-kaf-panel/30">
+    <div className="w-52 rounded-xl border border-dashed border-kaf-border/40 bg-kaf-panel/30 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       <div className="px-3 py-2.5 flex items-center gap-2 text-slate-700">
         <div className="w-6 h-6 rounded-full bg-slate-800 shrink-0" />
         <span className="text-sm font-bold">TBD</span>

@@ -1,7 +1,32 @@
-import Link from 'next/link'
+'use client'
+
+import { useState } from 'react'
 import { Mail, MessageSquare, MapPin, ExternalLink, Send, Globe, Video } from 'lucide-react'
+import { useToast } from '@/components/Toast'
 
 export default function Contact() {
+  const toast = useToast()
+  const [form, setForm] = useState({ name: '', email: '', subject: 'General Inquiry', message: '' })
+  const [sending, setSending] = useState(false)
+
+  function sendMessage() {
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      toast.warning('Name, email, and message are required.')
+      return
+    }
+
+    setSending(true)
+    window.setTimeout(() => {
+      setSending(false)
+      setForm({ name: '', email: '', subject: 'General Inquiry', message: '' })
+      toast.success('Message saved locally. Connect email/webhook next for live delivery.')
+    }, 500)
+  }
+
+  function openSocial(label: string) {
+    toast.info(`${label} profile link is not configured yet.`)
+  }
+
   return (
     <div className="flex flex-col w-full pb-20">
       {/* Header */}
@@ -23,6 +48,8 @@ export default function Contact() {
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Your Name</label>
               <input
                 type="text"
+                value={form.name}
+                onChange={e => setForm({ ...form, name: e.target.value })}
                 placeholder="Player name or organization"
                 className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-brand-cyan focus:outline-none transition-all text-sm"
               />
@@ -31,13 +58,19 @@ export default function Contact() {
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Email Address</label>
               <input
                 type="email"
+                value={form.email}
+                onChange={e => setForm({ ...form, email: e.target.value })}
                 placeholder="you@example.com"
                 className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-brand-cyan focus:outline-none transition-all text-sm"
               />
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Subject</label>
-              <select className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-3 text-white focus:border-brand-cyan focus:outline-none transition-all text-sm">
+              <select
+                value={form.subject}
+                onChange={e => setForm({ ...form, subject: e.target.value })}
+                className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-3 text-white focus:border-brand-cyan focus:outline-none transition-all text-sm"
+              >
                 <option>General Inquiry</option>
                 <option>Tournament Support</option>
                 <option>Sponsorship / Partnership</option>
@@ -48,13 +81,19 @@ export default function Contact() {
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Message</label>
               <textarea
+                value={form.message}
+                onChange={e => setForm({ ...form, message: e.target.value })}
                 placeholder="Tell us how we can help..."
                 rows={5}
                 className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-brand-cyan focus:outline-none transition-all text-sm resize-none"
               />
             </div>
-            <button className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-cyan text-kaf-bg font-black hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,102,0.3)]">
-              <Send size={18} /> Send Message
+            <button
+              onClick={sendMessage}
+              disabled={sending}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-brand-cyan text-kaf-bg font-black hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,255,102,0.3)] disabled:opacity-50 disabled:hover:scale-100"
+            >
+              <Send size={18} /> {sending ? 'Sending...' : 'Send Message'}
             </button>
           </div>
 
@@ -92,7 +131,7 @@ export default function Contact() {
                   { icon: ExternalLink, label: 'Instagram', color: 'text-pink-400', bg: 'bg-pink-400/10 border-pink-400/20' },
                   { icon: Video, label: 'YouTube', color: 'text-red-400', bg: 'bg-red-400/10 border-red-400/20' },
                 ].map((s) => (
-                  <button key={s.label} className={`flex flex-col items-center gap-2 p-3 rounded-xl border ${s.bg} hover:scale-105 transition-all`}>
+                  <button key={s.label} onClick={() => openSocial(s.label)} className={`flex flex-col items-center gap-2 p-3 rounded-xl border ${s.bg} hover:scale-105 transition-all`}>
                     <s.icon size={22} className={s.color} />
                     <span className="text-xs font-bold text-slate-300">{s.label}</span>
                   </button>

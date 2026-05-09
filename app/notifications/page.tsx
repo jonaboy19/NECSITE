@@ -1,4 +1,8 @@
+'use client'
+
+import { useState } from 'react'
 import { Bell, Trophy, Users, Zap } from 'lucide-react'
+import { useToast } from '@/components/Toast'
 
 const mockNotifications = [
   {
@@ -34,6 +38,19 @@ const mockNotifications = [
 ]
 
 export default function Notifications() {
+  const toast = useToast()
+  const [notifications, setNotifications] = useState(mockNotifications)
+  const unreadCount = notifications.filter(n => n.unread).length
+
+  function markAllRead() {
+    setNotifications(prev => prev.map(item => ({ ...item, unread: false })))
+    toast.success('All notifications marked as read.')
+  }
+
+  function openNotification(id: number) {
+    setNotifications(prev => prev.map(item => item.id === id ? { ...item, unread: false } : item))
+  }
+
   return (
     <div className="flex flex-col w-full pb-20">
       {/* Header */}
@@ -45,18 +62,19 @@ export default function Notifications() {
           </h1>
           <p className="text-slate-400 text-sm mt-0.5">Stay up to date with your activity</p>
         </div>
-        <button className="text-sm text-brand-cyan font-bold hover:underline transition-colors">
-          Mark all read
+        <button onClick={markAllRead} disabled={unreadCount === 0} className="text-sm text-brand-cyan font-bold hover:underline transition-colors disabled:cursor-default disabled:text-slate-600 disabled:no-underline">
+          {unreadCount > 0 ? `Mark ${unreadCount} read` : 'All read'}
         </button>
       </div>
 
       {/* Notification List */}
       <div className="p-4 space-y-2 max-w-2xl mx-auto w-full">
-        {mockNotifications.map((n) => {
+        {notifications.map((n) => {
           const Icon = n.icon
           return (
             <div
               key={n.id}
+              onClick={() => openNotification(n.id)}
               className={`flex items-start gap-4 p-4 rounded-2xl border transition-all cursor-pointer hover:-translate-y-0.5 ${
                 n.unread
                   ? 'bg-kaf-card border-kaf-border hover:border-brand-cyan/30'

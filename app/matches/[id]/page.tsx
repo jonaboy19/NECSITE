@@ -26,7 +26,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
   const isDone = match.status === 'completed' || match.status === 'finished'
 
   const ClubBox = ({ clan, score, isWinner }: { clan: any; score: any; isWinner: boolean }) => (
-    <div className={`flex-1 flex flex-col items-center gap-3 p-6 rounded-2xl border transition-all ${isWinner ? 'border-brand-cyan/40 bg-brand-cyan/5' : 'border-kaf-border bg-kaf-card/50'}`}>
+    <div className={`depth-panel flex-1 flex flex-col items-center gap-3 p-6 rounded-2xl transition-all ${isWinner ? 'border-brand-cyan/40 bg-brand-cyan/5' : ''}`}>
       {clan?.logo_url
         ? <img src={clan.logo_url} alt={clan?.name} className="w-16 h-16 rounded-2xl object-cover border border-kaf-border" />
         : <div className="w-16 h-16 rounded-2xl bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center text-2xl font-black text-brand-cyan">{clan?.name?.[0] || '?'}</div>
@@ -42,7 +42,10 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
 
   return (
     <div className="flex flex-col w-full pb-24">
-      <div className="border-b border-kaf-border px-4 sm:px-8 py-6 bg-kaf-panel">
+      <div className="relative overflow-hidden border-b border-kaf-border px-4 sm:px-8 py-6 bg-kaf-panel">
+        <div className="absolute inset-0 bg-line-grid opacity-30"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-brand-cyan/10 via-transparent to-brand-blue/10"></div>
+        <div className="relative z-10">
         {match.tournament_id && (
           <Link href={`/tournaments/${match.tournament_id}/matches`}
             className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-brand-cyan mb-3 font-mono uppercase tracking-widest transition-colors">
@@ -60,6 +63,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
             <Clock size={13} /> Scheduled: {new Date(match.scheduled_at).toLocaleString()}
           </div>
         )}
+        </div>
       </div>
 
       <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 py-8 space-y-6">
@@ -71,7 +75,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
         </div>
 
         {/* Match details */}
-        <div className="kaf-card rounded-2xl border border-kaf-border p-5 space-y-2 text-sm">
+        <div className="depth-panel rounded-2xl p-5 space-y-2 text-sm">
           {match.round && <div className="flex justify-between"><span className="text-slate-400">Round</span><span className="font-bold text-white">{match.round}</span></div>}
           {match.format && <div className="flex justify-between"><span className="text-slate-400">Format</span><span className="font-bold text-white">{match.format}</span></div>}
           {match.evidence_url && (
@@ -88,7 +92,7 @@ export default async function MatchDetailPage({ params }: { params: Promise<{ id
         {/* Submit result link */}
         {!isDone && (
           <Link href={`/matches/report?match=${id}`}
-            className="block w-full py-3 text-center bg-brand-cyan hover:bg-brand-cyan/80 text-slate-900 rounded-xl font-black transition-colors">
+            className="block w-full py-3 text-center bg-brand-cyan hover:bg-brand-lime text-white rounded-xl font-black transition-all shadow-glow-green hover:scale-[1.01]">
             Submit Match Result
           </Link>
         )}

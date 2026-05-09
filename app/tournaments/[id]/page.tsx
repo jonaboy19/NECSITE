@@ -40,7 +40,8 @@ export default async function TournamentDetailPage({ params }: { params: Promise
               <Trophy size={64} className="text-slate-700" />
             </div>
         }
-        <div className="absolute inset-0 bg-gradient-to-t from-kaf-bg via-kaf-bg/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-kaf-bg via-kaf-bg/70 to-transparent" />
+        <div className="absolute inset-0 bg-line-grid opacity-40" />
         <div className="absolute bottom-0 left-0 right-0 px-4 sm:px-8 pb-6">
           <Link href="/tournaments" className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-brand-cyan mb-3 font-mono uppercase tracking-widest transition-colors">
             <ArrowLeft size={12} /> Tournaments
@@ -48,6 +49,18 @@ export default async function TournamentDetailPage({ params }: { params: Promise
           <div className="flex flex-wrap items-center gap-3">
             <h1 className="text-3xl sm:text-4xl font-display font-black text-white uppercase">{t.title}</h1>
             <StatusBadge status={t.status} />
+          </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {[
+              { label: 'Teams', value: regs?.length ?? 0 },
+              { label: 'Matches', value: matches?.length ?? 0 },
+              { label: 'Prize', value: t.prize_pool || 'Glory' },
+            ].map(item => (
+              <div key={item.label} className="rounded-xl border border-white/10 bg-black/35 px-4 py-2 backdrop-blur">
+                <div className="text-lg font-black text-white">{item.value}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{item.label}</div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -72,7 +85,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
         {/* Main */}
         <div className="lg:col-span-2 space-y-6">
           {t.description && (
-            <div className="kaf-card rounded-2xl border border-kaf-border p-5">
+            <div className="depth-panel rounded-2xl p-5">
               <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3">About</h2>
               <p className="text-slate-400 text-sm leading-relaxed">{t.description}</p>
             </div>
@@ -80,13 +93,13 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
           {/* Recent Matches */}
           {matches && matches.length > 0 && (
-            <div className="kaf-card rounded-2xl border border-kaf-border p-5">
+            <div className="depth-panel rounded-2xl p-5">
               <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
                 <Swords size={14} className="text-brand-cyan" /> Recent Matches
               </h2>
               <div className="space-y-2">
                 {matches.slice(0, 5).map((m: any) => (
-                  <div key={m.id} className="flex items-center justify-between py-2 border-b border-kaf-border last:border-0 text-sm">
+                  <div key={m.id} className="flex items-center justify-between rounded-xl border border-white/5 bg-black/20 px-3 py-2 text-sm">
                     <span className="text-slate-400 font-mono text-xs">Round {m.round}</span>
                     <div className="flex items-center gap-3">
                       <StatusBadge status={m.status} />
@@ -105,7 +118,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
           {/* Registrations */}
           {regs && regs.length > 0 && (
-            <div className="kaf-card rounded-2xl border border-kaf-border p-5">
+            <div className="depth-panel rounded-2xl p-5">
               <h2 className="text-sm font-black text-white uppercase tracking-wide mb-3 flex items-center gap-2">
                 <Shield size={14} className="text-brand-cyan" /> Registered Teams ({regs.length})
               </h2>
@@ -113,7 +126,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
                 {regs.map((r: any) => {
                   const clan = r.clans
                   return (
-                    <div key={r.id} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/50 border border-kaf-border">
+                    <div key={r.id} className="flex items-center gap-2.5 p-2.5 rounded-xl depth-stat">
                       <div className="w-8 h-8 rounded-lg bg-brand-cyan/10 border border-brand-cyan/20 flex items-center justify-center font-black text-brand-cyan text-xs">
                         {clan ? (clan.tag || clan.name)[0] : '?'}
                       </div>
@@ -132,7 +145,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
         {/* Sidebar */}
         <div className="space-y-4">
-          <div className="kaf-card rounded-2xl border border-kaf-border p-5 space-y-3">
+          <div className="depth-panel rounded-2xl p-5 space-y-3">
             <h2 className="text-sm font-black text-white uppercase tracking-wide">Details</h2>
             {[
               { Icon: Globe, label: 'Region', value: t.region },
@@ -152,7 +165,7 @@ export default async function TournamentDetailPage({ params }: { params: Promise
 
           {(t.status === 'registration_open' || t.status === 'upcoming') && (
             <Link href={`/tournaments/${id}/join`}
-              className="block w-full py-3 bg-brand-cyan hover:bg-brand-cyan/80 text-slate-900 rounded-xl font-black text-sm text-center transition-colors">
+              className="block w-full py-3 bg-brand-cyan hover:bg-brand-lime text-white rounded-xl font-black text-sm text-center transition-all shadow-glow-green hover:scale-[1.02]">
               Register Your Clan
             </Link>
           )}

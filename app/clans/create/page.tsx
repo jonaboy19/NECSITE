@@ -58,11 +58,13 @@ export default function CreateClan() {
 
   return (
     <div className="flex flex-col w-full min-h-[80vh] items-center justify-center p-4">
-      <div className="w-full max-w-lg kaf-card p-6 md:p-10 rounded-3xl border border-kaf-border relative overflow-hidden shadow-2xl">
+      <div className="grid w-full max-w-5xl gap-6 lg:grid-cols-[1fr_380px]">
+      <div className="depth-panel p-6 md:p-10 rounded-3xl relative overflow-hidden">
+        <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-purple-500/10 blur-3xl"></div>
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-brand-cyan"></div>
         
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-kaf-panel border border-kaf-border flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 rounded-xl depth-stat flex items-center justify-center">
             <Shield size={24} className="text-purple-400" />
           </div>
           <div>
@@ -129,6 +131,34 @@ export default function CreateClan() {
             )}
           </button>
         </form>
+      </div>
+      <aside className="depth-panel rounded-3xl p-6 self-start">
+        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-500 mb-4">Live Preview</p>
+        <div className="rounded-2xl border border-purple-400/25 bg-purple-500/5 p-5">
+          <div className="mb-4 flex items-center gap-4">
+            <div className="flex h-16 w-16 items-center justify-center rounded-xl border border-white/10 bg-kaf-panel text-2xl font-black text-purple-300 shadow-[0_18px_38px_rgba(0,0,0,0.35)]">
+              {(tag || name || 'K').slice(0, 2).toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <h2 className="truncate text-xl font-black text-white">{name || 'Your Clan Name'}</h2>
+              <p className="font-mono text-sm font-bold text-slate-400">[{tag || 'TAG'}]</p>
+            </div>
+          </div>
+          <p className="min-h-16 text-sm leading-relaxed text-slate-400">
+            {bio || 'Your mission statement will appear here for players, opponents, and tournament hosts.'}
+          </p>
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <div className="depth-stat rounded-xl p-3">
+              <div className="text-lg font-black text-brand-gold">0</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Trophies</div>
+            </div>
+            <div className="depth-stat rounded-xl p-3">
+              <div className="text-lg font-black text-brand-cyan">1</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Founder</div>
+            </div>
+          </div>
+        </div>
+      </aside>
       </div>
     </div>
   )

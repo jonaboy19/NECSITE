@@ -24,7 +24,7 @@ export function StatusBadge({ status, className }: { status: string; className?:
   const isLive = status === 'live' || status === 'active'
   return (
     <span className={cn(
-      'inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider',
+      'inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 text-[10px] font-black uppercase tracking-wider shadow-[0_8px_18px_rgba(0,0,0,0.22)]',
       STYLES[status] ?? 'bg-slate-500/10 text-slate-400 border-slate-500/30',
       className
     )}>

@@ -3,12 +3,15 @@ import { useState } from 'react'
 import { Calendar, Play, CheckCircle, Settings, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useToast } from '@/components/Toast'
 
 export default function HostControlPanel({ tournamentId, initialStatus }: { tournamentId: string, initialStatus: string }) {
   const [status, setStatus] = useState(initialStatus)
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
   const router = useRouter()
+  const toast = useToast()
 
   const handleUpdateStatus = async (newStatus: string) => {
     setLoading(true)
@@ -28,7 +31,7 @@ export default function HostControlPanel({ tournamentId, initialStatus }: { tour
 
         if (!response.ok) {
           const errData = await response.json()
-          alert('Failed to generate bracket: ' + (errData.error || response.statusText))
+          toast.error('Failed to generate bracket: ' + (errData.error || response.statusText))
           setLoading(false)
           return
         }
@@ -41,9 +44,10 @@ export default function HostControlPanel({ tournamentId, initialStatus }: { tour
       .eq('id', tournamentId)
 
     if (error) {
-      alert('Failed to update tournament status: ' + error.message)
+      toast.error('Failed to update tournament status: ' + error.message)
     } else {
       setStatus(newStatus)
+      toast.success(`Tournament status updated to ${newStatus.replace('_', ' ')}.`)
       router.refresh()
     }
     setLoading(false)
@@ -113,7 +117,7 @@ export default function HostControlPanel({ tournamentId, initialStatus }: { tour
       </div>
       
       <div className="mt-4 pt-4 border-t border-brand-cyan/20 flex justify-end">
-        <button className="text-xs font-bold text-brand-cyan hover:underline uppercase tracking-widest">Edit Details (Coming Soon)</button>
+        <Link href={`/tournaments/${tournamentId}/dashboard`} className="text-xs font-bold text-brand-cyan hover:underline uppercase tracking-widest">Edit Details</Link>
       </div>
     </div>
   )

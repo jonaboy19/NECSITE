@@ -208,7 +208,8 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
           className="absolute inset-0 bg-cover bg-center opacity-50 transition-transform duration-1000 hover:scale-105"
           style={{ backgroundImage: `url(${clan.banner_url || '/hero-stadium.jpg'})` }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-kaf-panel via-kaf-panel/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-kaf-panel via-kaf-panel/70 to-transparent" />
+        <div className="absolute inset-0 bg-line-grid opacity-35" />
         <Link href="/clans" className="absolute top-6 left-6 flex items-center gap-2 text-sm text-slate-300 hover:text-white font-bold bg-kaf-panel/60 backdrop-blur px-3 py-2 rounded-xl border border-kaf-border transition-colors">
           <ArrowLeft size={16} /> All Clans
         </Link>
@@ -223,7 +224,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
         {/* Hero section */}
         <div className="flex flex-col md:flex-row gap-6 items-end">
           <div
-            className="w-32 h-32 md:w-48 md:h-48 rounded-3xl bg-kaf-panel border-4 border-kaf-bg shadow-2xl flex items-center justify-center overflow-hidden bg-cover shrink-0"
+            className="w-32 h-32 md:w-48 md:h-48 rounded-3xl bg-kaf-panel border-4 border-kaf-bg shadow-[0_28px_80px_rgba(0,0,0,0.55)] ring-1 ring-white/10 flex items-center justify-center overflow-hidden bg-cover shrink-0"
             style={{ backgroundImage: clan.logo_url ? `url(${clan.logo_url})` : undefined }}
           >
             {!clan.logo_url && <Shield size={80} className="text-brand-cyan opacity-80" />}
@@ -256,7 +257,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
           </div>
 
           <div className="flex flex-wrap gap-3 pb-2 shrink-0">
-            <div className="px-5 py-3 rounded-xl bg-kaf-card border border-kaf-border text-white text-sm font-bold flex items-center gap-2">
+            <div className="depth-stat rounded-xl px-5 py-3 text-white text-sm font-bold flex items-center gap-2">
               <Users size={18} className="text-brand-cyan" /> {roster.length} Members
             </div>
             <div className={`px-5 py-3 rounded-xl text-sm font-bold flex items-center gap-2 uppercase tracking-widest ${
@@ -279,7 +280,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             { label: 'Win Rate', value: `${winRate}%`, color: 'text-brand-cyan' },
             { label: 'Members', value: roster.length, color: 'text-white' },
           ].map(stat => (
-            <div key={stat.label} className="kaf-card p-4 rounded-xl border border-kaf-border text-center">
+            <div key={stat.label} className="depth-panel depth-hover p-4 rounded-xl text-center">
               <div className={`text-2xl font-black ${stat.color}`}>{stat.value}</div>
               <div className="text-[10px] text-slate-500 uppercase tracking-widest font-bold mt-1">{stat.label}</div>
             </div>
@@ -288,7 +289,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
 
         {/* Pending applications alert for captains */}
         {canManageRoster && joinRequests.length > 0 && (
-          <div className="kaf-card rounded-xl border border-brand-cyan/30 bg-brand-cyan/5 p-4">
+          <div className="depth-panel rounded-xl border-brand-cyan/30 bg-brand-cyan/5 p-4">
             <h3 className="font-black text-brand-cyan mb-3 flex items-center gap-2">
               <Award size={16} /> {joinRequests.length} Pending Application{joinRequests.length > 1 ? 's' : ''}
             </h3>
@@ -323,7 +324,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
 
         {/* Tabs */}
         <div className="flex overflow-x-auto gap-1 border-b border-kaf-border no-scrollbar">
-          {[...tabs, ...(canManageRoster ? ['⚙ HQ'] : [])].map((tab) => (
+          {[...tabs, ...(canManageRoster ? ['HQ'] : [])].map((tab) => (
             <button key={tab} onClick={() => setActiveTab(tab)}
               className={`px-5 py-3 font-bold text-sm tracking-wide whitespace-nowrap transition-all border-b-2 ${
                 activeTab === tab
@@ -342,12 +343,12 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             {activeTab === 'Overview' && (
               <div className="space-y-6">
                 {(clan.motd || canEditClanDetails) && (
-                  <div className="kaf-card p-6 rounded-2xl border border-brand-cyan/30 mb-6 bg-brand-cyan/5">
+                  <div className="depth-panel p-6 rounded-2xl border-brand-cyan/30 mb-6 bg-brand-cyan/5">
                     <h3 className="font-black text-brand-cyan text-sm mb-2 uppercase tracking-widest">Message of the Day</h3>
                     <p className="text-white font-bold">{clan.motd || 'No message set.'}</p>
                   </div>
                 )}
-                <div className="kaf-card p-6 rounded-2xl border border-kaf-border">
+                <div className="depth-panel p-6 rounded-2xl">
                   <h3 className="font-black text-white text-lg mb-3">About</h3>
                   <p className="text-slate-400 leading-relaxed">{clan.description || clan.bio || 'No description provided yet.'}</p>
                   {clan.coach_name && (
@@ -357,7 +358,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                     </div>
                   )}
                 </div>
-                <div className="kaf-card p-8 rounded-2xl border border-kaf-border shadow-xl relative overflow-hidden group">
+                <div className="depth-panel depth-hover p-8 rounded-2xl relative overflow-hidden group">
                   <div className="absolute -right-10 -bottom-10 opacity-5 group-hover:scale-110 transition-transform duration-700">
                     <Trophy size={200} />
                   </div>
@@ -382,7 +383,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                 ) : roster.map((member) => {
                   const role = getMemberRole(member)
                   return (
-                    <div key={member.id} className="kaf-card p-4 rounded-xl border border-kaf-border flex items-center justify-between hover:border-brand-cyan/30 transition-colors group">
+                    <div key={member.id} className="depth-panel depth-hover p-4 rounded-xl flex items-center justify-between hover:border-brand-cyan/30 group">
                       <div className="flex items-center gap-4">
                         <div
                           className="w-11 h-11 rounded-full bg-slate-800 bg-cover bg-center border-2 border-transparent group-hover:border-brand-cyan transition-colors"
@@ -437,7 +438,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
               <div className="space-y-4">
                 <h3 className="font-black text-white text-lg mb-2">Clan Wars</h3>
                 {clanWars.length === 0 ? (
-                  <div className="kaf-card p-6 rounded-2xl border border-kaf-border text-center py-8 text-slate-500">
+                  <div className="depth-panel p-6 rounded-2xl text-center py-8 text-slate-500">
                     <Shield size={40} className="mx-auto mb-3 opacity-30" />
                     No clan wars recorded yet.
                   </div>
@@ -446,7 +447,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                   const opponent = isChallenger ? war.challenged : war.challenger
                   const win = (isChallenger && war.challenger_score > war.challenged_score) || (!isChallenger && war.challenged_score > war.challenger_score)
                   return (
-                    <div key={war.id} className="kaf-card p-4 rounded-xl border border-kaf-border flex items-center justify-between">
+                    <div key={war.id} className="depth-panel depth-hover p-4 rounded-xl flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-slate-800 rounded-full border border-kaf-border overflow-hidden bg-cover bg-center" style={{ backgroundImage: opponent?.logo_url ? `url(${opponent.logo_url})` : undefined }} />
                         <div>
@@ -472,7 +473,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
 
             {/* MATCHES TAB */}
             {activeTab === 'Matches' && (
-              <div className="kaf-card p-6 rounded-2xl border border-kaf-border">
+              <div className="depth-panel p-6 rounded-2xl">
                 <h3 className="font-black text-white text-lg mb-4">Match History</h3>
                 <div className="text-center py-8 text-slate-500">
                   <Trophy size={40} className="mx-auto mb-3 opacity-30" />
@@ -483,7 +484,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
 
             {/* TROPHIES TAB */}
             {activeTab === 'Trophies' && (
-              <div className="kaf-card p-8 rounded-2xl border border-kaf-border">
+              <div className="depth-panel p-8 rounded-2xl">
                 <h3 className="font-black text-white text-xl mb-4 flex items-center gap-2">
                   <Trophy className="text-brand-gold" /> Achievements
                 </h3>
@@ -492,11 +493,11 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             )}
 
             {/* HQ / MANAGEMENT TAB */}
-            {activeTab === '⚙ HQ' && canManageRoster && (
+            {activeTab === 'HQ' && canManageRoster && (
               <div className="space-y-6">
-                <div className="kaf-card p-6 rounded-2xl border border-kaf-border">
+                <div className="depth-panel p-6 rounded-2xl">
                   <h3 className="font-black text-white mb-4">Recruitment Settings</h3>
-                  <div className="flex items-center justify-between p-4 bg-slate-900 rounded-xl border border-kaf-border">
+                  <div className="flex items-center justify-between p-4 depth-stat rounded-xl">
                     <div>
                       <div className="font-bold text-white text-sm">Recruitment Status</div>
                       <div className="text-xs text-slate-400">Allow players to apply to join the clan.</div>
@@ -508,7 +509,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
                 </div>
 
                 {userRole === 'owner' && (
-                  <div className="kaf-card p-6 rounded-2xl border border-red-500/30 bg-red-500/5">
+                  <div className="depth-panel p-6 rounded-2xl border-red-500/30 bg-red-500/5">
                     <h3 className="font-black text-red-400 mb-4">Danger Zone</h3>
                     <div className="space-y-4">
                       <div>
@@ -538,7 +539,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
           <div className="space-y-6">
             {/* Join CTA for non-members */}
             {!isMember && (
-              <div className="kaf-card p-6 rounded-2xl border border-brand-cyan/30 shadow-[0_0_20px_rgba(0,240,255,0.08)] relative overflow-hidden">
+              <div className="depth-panel p-6 rounded-2xl border-brand-cyan/30 relative overflow-hidden">
                 <div className="absolute -top-4 -right-4 opacity-10"><Shield size={100} /></div>
                 <h2 className="text-xl font-display font-black text-white uppercase tracking-wider mb-2 relative z-10">Join Organization</h2>
                 {clan.recruitment_status === 'open' || clan.is_recruiting ? (
@@ -564,7 +565,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
             )}
 
             {/* Quick Links */}
-            <div className="kaf-card p-5 rounded-2xl border border-kaf-border space-y-3">
+            <div className="depth-panel p-5 rounded-2xl space-y-3">
               <h3 className="font-black text-slate-400 text-xs uppercase tracking-widest">Quick Links</h3>
               <Link href={`/tournaments?clan=${id}`} className="flex items-center gap-2 text-sm text-slate-300 hover:text-brand-cyan transition-colors font-bold py-1">
                 <Trophy size={14} className="text-brand-gold" /> Tournament History
@@ -588,7 +589,7 @@ export default function ClanDashboard({ params }: { params: Promise<{ id: string
       {/* Edit Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="kaf-card p-6 rounded-2xl w-full max-w-lg border border-kaf-border relative">
+          <div className="depth-panel p-6 rounded-2xl w-full max-w-lg relative">
             <h2 className="text-2xl font-black text-white mb-4">Edit Clan Details</h2>
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
