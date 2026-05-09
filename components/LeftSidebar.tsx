@@ -6,7 +6,7 @@ import {
   Home, Play, Trophy, BarChart3, Users, GitMerge, Video, MessageSquare,
   Bell, Settings, UserPlus, Film, Shield, AlertTriangle, Newspaper,
   Star, Swords, ChevronDown, ChevronRight, Tv, Sliders, Users2, Search, Zap, Compass,
-  PanelLeftClose, PanelLeftOpen, Handshake, Gavel
+  PanelLeftClose, PanelLeftOpen, Handshake, Gavel, CalendarDays, Award, Eye
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -25,7 +25,10 @@ const NAV_SECTIONS: NavSection[] = [
       { name: 'E-League',     href: '/e-league',       icon: Tv,    accent: '#f59e0b' },
       { name: 'Match Center', href: '/matches/report', icon: Play },
       { name: 'Scrims',       href: '/scrims',         icon: Swords },
+      { name: 'Calendar',     href: '/calendar',       icon: CalendarDays },
       { name: 'Draft Room',   href: '/drafts',         icon: GitMerge },
+      { name: 'Seasons',      href: '/seasons',        icon: Trophy, accent: '#f59e0b' },
+      { name: 'Awards',       href: '/awards',         icon: Award,  accent: '#f59e0b' },
       { name: 'Rankings',     href: '/rankings',       icon: BarChart3 },
     ],
   },
@@ -35,6 +38,7 @@ const NAV_SECTIONS: NavSection[] = [
       { name: 'Players',      href: '/players',        icon: Users },
       { name: 'Clans',        href: '/clans',          icon: Shield },
       { name: 'Free Agents',  href: '/free-agents',    icon: UserPlus },
+      { name: 'Scouting',     href: '/scouting',       icon: Eye, accent: '#22c55e' },
       { name: 'Transfers',    href: '/transfers',      icon: Handshake, accent: '#f59e0b' },
       { name: 'Friends',      href: '/friends',        icon: Users2 },
       { name: 'Community',    href: '/community',      icon: Star },

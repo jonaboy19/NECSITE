@@ -13,7 +13,11 @@ const ACTIONS: Hit[] = [
   { id: 'messages', type: 'action', label: 'Open messages', sub: 'Communication hub', href: '/messages' },
   { id: 'notifications', type: 'action', label: 'Open notifications', sub: 'Command queue', href: '/notifications' },
   { id: 'free-agents', type: 'action', label: 'Scout free agents', sub: 'Transfer market', href: '/free-agents' },
+  { id: 'scouting', type: 'action', label: 'Open scouting hub', sub: 'Player reports valuation contracts', href: '/scouting' },
   { id: 'transfers', type: 'action', label: 'Open transfer market', sub: 'Contracts and negotiations', href: '/transfers' },
+  { id: 'calendar', type: 'action', label: 'Open operations calendar', sub: 'Matches broadcasts deadlines', href: '/calendar' },
+  { id: 'seasons', type: 'action', label: 'Open seasons archive', sub: 'Season ecosystem history', href: '/seasons' },
+  { id: 'awards', type: 'action', label: 'Open awards hall', sub: 'Trophies titles recognition', href: '/awards' },
   { id: 'moderation', type: 'action', label: 'Open moderation queue', sub: 'Disputes evidence penalties', href: '/moderation' },
   { id: 'admin', type: 'action', label: 'Open admin panel', sub: 'Moderation and operations', href: '/admin' },
 ]
