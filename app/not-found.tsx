@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen bg-kaf-bg flex flex-col items-center justify-center px-6 text-center relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,255,102,0.05)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(25,133,59,0.08)_0%,transparent_70%)] pointer-events-none" />
       <div className="absolute inset-0 opacity-[0.025]" style={{
         backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
         backgroundSize: '60px 60px'
@@ -31,7 +31,7 @@ export default function NotFound() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/"
-            className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-brand-cyan text-kaf-bg font-black hover:bg-white hover:scale-105 transition-all shadow-[0_0_30px_rgba(0,255,102,0.3)]"
+            className="flex items-center gap-2 px-8 py-3.5 rounded-xl bg-brand-cyan text-white font-black hover:bg-brand-lime hover:scale-105 transition-all shadow-glow-green"
           >
             <Home size={18} /> Go Home
           </Link>

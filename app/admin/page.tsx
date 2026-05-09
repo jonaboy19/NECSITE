@@ -136,7 +136,7 @@ export default function AdminPanel() {
             onClick={() => setActiveTab(tab)}
             className={`px-6 py-3 rounded-xl font-bold text-sm transition-all whitespace-nowrap capitalize ${
               activeTab === tab 
-                ? 'bg-brand-cyan text-kaf-bg shadow-[0_0_15px_rgba(0,240,255,0.4)]' 
+                ? 'bg-brand-cyan text-white shadow-glow-green-sm' 
                 : 'bg-kaf-card border border-kaf-border text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -303,7 +303,7 @@ export default function AdminPanel() {
                   window.location.href = `/tournaments/${data[0].id}/dashboard`
                 }
               }}
-              className="bg-brand-cyan text-kaf-bg px-4 py-2 rounded-lg font-bold text-sm hover:bg-white transition-colors"
+              className="bg-brand-cyan text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-brand-lime transition-colors"
             >
               + Create Tournament
             </button>

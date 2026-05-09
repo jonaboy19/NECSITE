@@ -121,7 +121,7 @@ export function BracketViewer({ matches, participants, label = 'Bracket', onMatc
                 return (
                   <path key={`${rn}-${i}`}
                     d={`M ${fromX} ${fromY} H ${midX} V ${toY} H ${toX}`}
-                    stroke="rgba(0,255,102,0.2)" strokeWidth="1.5" fill="none" />
+                    stroke="rgba(25,133,59,0.25)" strokeWidth="1.5" fill="none" />
                 )
               })
             })}

@@ -1,7 +1,8 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Shield, Trophy, Map, CheckCircle2, Circle } from 'lucide-react'
+import { Shield, Trophy, Map, CheckCircle2, Circle, Swords, Users, Settings } from 'lucide-react'
+import { FeatureHub } from '@/components/FeatureHub'
 
 export default async function PlayerDashboard() {
   const supabase = await createServerSupabaseClient()
@@ -49,16 +50,41 @@ export default async function PlayerDashboard() {
     t.tournaments?.status === 'live' || t.tournaments?.status === 'in_progress' || t.tournaments?.status === 'registration_open'
   ) || []
 
+  const nextActions = [
+    { label: 'Join a tournament', href: '/tournaments', Icon: Trophy },
+    { label: 'Report a score', href: '/matches/report', Icon: Swords },
+    { label: 'Find a clan', href: '/clans', Icon: Users },
+    { label: 'Complete profile', href: '/settings', Icon: Settings },
+  ]
+
   return (
     <div className="flex flex-col w-full pb-20 p-6 max-w-7xl mx-auto space-y-8">
 
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-display font-black text-white">Player Dashboard</h1>
+      <div className="flex flex-col gap-5 rounded-2xl border border-kaf-border bg-[linear-gradient(135deg,rgba(25,133,59,0.16),rgba(19,19,24,0.92)_55%,rgba(59,130,246,0.12))] p-6 sm:p-8">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="mb-2 text-xs font-black uppercase tracking-[0.22em] text-brand-lime">Welcome back</p>
+            <h1 className="text-3xl font-display font-black text-white sm:text-4xl">Player Dashboard</h1>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-300">
+              Manage your profile, join competitions, follow clan activity, and handle match tasks from one place.
+            </p>
+          </div>
         {profile?.role === 'admin' && (
           <Link href="/admin" className="px-4 py-2 bg-brand-gold text-black font-bold rounded-lg hover:scale-105 transition">
             Admin Hub
           </Link>
         )}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {nextActions.map(({ label, href, Icon }) => (
+            <Link key={href} href={href} className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/20 p-4 text-sm font-black text-white transition-all hover:border-brand-cyan/40 hover:bg-brand-cyan/10">
+              <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-brand-cyan/15 text-brand-lime">
+                <Icon size={18} />
+              </span>
+              {label}
+            </Link>
+          ))}
+        </div>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
@@ -161,6 +187,13 @@ export default async function PlayerDashboard() {
           </div>
         </div>
       </div>
+
+      <FeatureHub
+        compact
+        limit={6}
+        title="More tools"
+        subtitle="Every major feature is available here if you are not sure where to go next."
+      />
     </div>
   )
 }

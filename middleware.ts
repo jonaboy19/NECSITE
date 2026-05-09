@@ -1,5 +1,6 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { getSafeNext } from '@/lib/auth-redirect'
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
@@ -27,20 +28,27 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Protected routes - redirect to login if not authenticated
-  const protectedPaths = ['/dashboard', '/profile', '/settings', '/admin', '/tournaments/create']
-  const isProtected = protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))
+  const protectedPrefixes = ['/dashboard', '/settings', '/admin', '/tournaments/create']
+  const isProtected =
+    request.nextUrl.pathname === '/profile' ||
+    protectedPrefixes.some(path => request.nextUrl.pathname.startsWith(path))
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
     url.pathname = '/auth/login'
-    url.searchParams.set('redirect', request.nextUrl.pathname)
+    url.searchParams.set('redirect', getSafeNext(`${request.nextUrl.pathname}${request.nextUrl.search}`))
     return NextResponse.redirect(url)
   }
 
   // If logged-in user tries to visit auth pages, redirect to dashboard
-  if (user && request.nextUrl.pathname.startsWith('/auth/')) {
+  const isAuthExchangeRoute =
+    request.nextUrl.pathname.startsWith('/auth/callback') ||
+    request.nextUrl.pathname.startsWith('/auth/confirm')
+
+  if (user && request.nextUrl.pathname.startsWith('/auth/') && !isAuthExchangeRoute) {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = getSafeNext(request.nextUrl.searchParams.get('redirect') || request.nextUrl.searchParams.get('next'))
+    url.search = ''
     return NextResponse.redirect(url)
   }
 

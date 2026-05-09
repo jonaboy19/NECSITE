@@ -55,14 +55,14 @@ export default function RealtimeFeed({ initialActivities = [] }: { initialActivi
                 <button className="p-2 hover:bg-brand-cyan/10 rounded-full transition-colors"><Video size={20} /></button>
                 <button className="p-2 hover:bg-brand-cyan/10 rounded-full transition-colors"><Star size={20} /></button>
               </div>
-              <button className="bg-gradient-to-r from-cyan-500 to-blue-500 shadow-[0_0_15px_rgba(0,240,255,0.3)] text-white px-6 py-2 rounded-full font-bold hover:scale-105 hover:shadow-[0_0_25px_rgba(0,240,255,0.5)] transition-all">Post</button>
+              <button className="bg-gradient-to-r from-brand-cyan to-brand-blue shadow-glow-green-sm text-white px-6 py-2 rounded-full font-bold hover:scale-105 hover:shadow-glow-green transition-all">Post</button>
             </div>
           </div>
         </div>
       </div>
 
       {activities.map((activity: any) => (
-        <div key={activity.id} className="kaf-card rounded-2xl p-0 border border-kaf-border/50 bg-kaf-card/80 backdrop-blur-md flex flex-col hover:border-brand-cyan/40 transition-all overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_30px_rgba(0,240,255,0.1)]">
+        <div key={activity.id} className="kaf-card rounded-2xl p-0 border border-kaf-border/50 bg-kaf-card/80 backdrop-blur-md flex flex-col hover:border-brand-cyan/40 transition-all overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:shadow-[0_4px_30px_rgba(25,133,59,0.14)]">
           <div className="p-5 flex gap-4">
             <div className={`w-12 h-12 rounded-xl flex-shrink-0 flex items-center justify-center bg-cover shadow-inner ${
               activity.activity_type === 'transfer' ? 'bg-purple-500/10 border border-purple-500/30' :
@@ -94,7 +94,7 @@ export default function RealtimeFeed({ initialActivities = [] }: { initialActivi
                 >
                   {activity.activity_type === 'media' && (
                     <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                      <div className="w-16 h-16 rounded-full bg-brand-cyan/90 text-kaf-bg flex items-center justify-center pl-1 shadow-[0_0_20px_rgba(0,240,255,0.5)] transform group-hover:scale-110 transition-transform backdrop-blur">
+                      <div className="w-16 h-16 rounded-full bg-brand-cyan/90 text-white flex items-center justify-center pl-1 shadow-[0_0_20px_rgba(25,133,59,0.5)] transform group-hover:scale-110 transition-transform backdrop-blur">
                         <Play size={24} className="fill-current" />
                       </div>
                     </div>
@@ -108,7 +108,7 @@ export default function RealtimeFeed({ initialActivities = [] }: { initialActivi
                     <div className="font-bold text-brand-gold text-sm uppercase tracking-widest mb-1">Live Event</div>
                     <div className="font-bold text-white">Match Day Ongoing</div>
                   </div>
-                  <button className="px-4 py-2 bg-brand-cyan text-kaf-bg rounded-lg font-bold text-sm">Follow</button>
+                  <button className="px-4 py-2 bg-brand-cyan text-white rounded-lg font-bold text-sm hover:bg-brand-lime transition-colors">Follow</button>
                 </div>
               )}
 

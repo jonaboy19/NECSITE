@@ -24,7 +24,7 @@ export default function DraftRoom() {
           <button className="bg-kaf-panel border border-kaf-border text-white px-6 py-3 rounded-xl font-bold hover:bg-white/5 transition-colors">
             My Watchlist
           </button>
-          <button className="bg-brand-cyan text-kaf-bg px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-[0_0_15px_rgba(0,240,255,0.3)]">
+          <button className="bg-brand-cyan text-white px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform shadow-glow-green-sm">
             Declare for Draft
           </button>
         </div>

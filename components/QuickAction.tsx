@@ -18,10 +18,11 @@ interface QuickActionProps {
   className?: string
 }
 
-export function QuickAction({ href, label, icon, color = 'cyan', className = '' }: QuickActionProps) {
+export function QuickAction({ href, label, icon, color = 'brand', className = '' }: QuickActionProps) {
   const IconComponent = iconMap[icon] || Plus
   const colorClasses = {
-    cyan: 'bg-cyan-400 hover:bg-cyan-300 text-slate-950',
+    brand: 'bg-brand-cyan hover:bg-brand-lime text-white',
+    cyan: 'bg-brand-cyan hover:bg-brand-lime text-white',
     slate: 'bg-slate-700 hover:bg-slate-600 text-white',
     emerald: 'bg-emerald-400 hover:bg-emerald-300 text-slate-950',
   }
@@ -53,7 +54,7 @@ export function QuickActionButton({
   href,
   label,
   icon = 'Plus',
-  color = 'cyan',
+  color = 'brand',
   size = 'md'
 }: QuickActionProps & { size?: 'sm' | 'md' | 'lg' }) {
   const IconComponent = iconMap[icon] || Plus
@@ -64,9 +65,10 @@ export function QuickActionButton({
   }
 
   const colorClasses = {
-    cyan: 'bg-cyan-400 hover:bg-cyan-300 text-slate-950',
+    brand: 'bg-brand-cyan hover:bg-brand-lime text-white',
+    cyan: 'bg-brand-cyan hover:bg-brand-lime text-white',
     slate: 'bg-slate-700 hover:bg-slate-600 text-white',
-    emerald: 'bg-emerald-400 hover:emerald-300 text-slate-950',
+    emerald: 'bg-emerald-400 hover:bg-emerald-300 text-slate-950',
   }
 
   const baseColor = colorClasses[color as keyof typeof colorClasses] || colorClasses.cyan

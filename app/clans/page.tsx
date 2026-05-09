@@ -23,7 +23,7 @@ export default async function Clans() {
               <Shield size={14} className="text-purple-400" /> Clan HQ
             </div>
             <h1 className="text-4xl md:text-5xl font-display font-black tracking-tight text-white mb-2 leading-tight">
-              FORGE YOUR <span className="text-brand-cyan drop-shadow-[0_0_15px_rgba(0,240,255,0.3)]">LEGACY</span>
+              FORGE YOUR <span className="text-brand-cyan drop-shadow-[0_0_15px_rgba(25,133,59,0.35)]">LEGACY</span>
             </h1>
             <p className="text-slate-400 font-medium max-w-md">
               Join elite organizations, recruit top talent, and dominate the global leaderboards together.
@@ -34,7 +34,7 @@ export default async function Clans() {
             <button className="rounded-xl bg-kaf-card border border-kaf-border p-4 text-white hover:bg-white/5 transition-colors flex items-center gap-2">
               <Search size={20} className="text-slate-400" />
             </button>
-            <Link href="/clans/create" className="rounded-xl bg-brand-cyan px-6 py-4 font-bold text-kaf-bg transition-all hover:bg-white hover:scale-105 shadow-[0_0_20px_rgba(0,240,255,0.4)] flex items-center gap-2">
+            <Link href="/clans/create" className="rounded-xl bg-brand-cyan px-6 py-4 font-bold text-white transition-all hover:bg-brand-lime hover:scale-105 shadow-glow-green flex items-center gap-2">
               <Plus size={20} /> Create Clan
             </Link>
           </div>
@@ -107,7 +107,7 @@ export default async function Clans() {
             <Shield size={48} className="text-slate-600 mb-4" />
             <h3 className="text-xl font-bold text-white mb-2">No Clans Found</h3>
             <p className="text-slate-400 text-sm mb-6 max-w-md text-center">There are currently no esports organizations registered. Be the first to forge a legacy.</p>
-            <Link href="/clans/create" className="rounded-xl bg-brand-cyan px-6 py-3 font-bold text-kaf-bg hover:bg-white hover:scale-105 transition-all">
+            <Link href="/clans/create" className="rounded-xl bg-brand-cyan px-6 py-3 font-bold text-white hover:bg-brand-lime hover:scale-105 transition-all">
               Create the First Clan
             </Link>
           </div>

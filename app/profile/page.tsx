@@ -9,12 +9,12 @@ export default async function Profile() {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[70vh] p-6 text-center">
-        <div className="w-24 h-24 bg-brand-cyan/10 border-2 border-brand-cyan/50 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(0,240,255,0.2)]">
+        <div className="w-24 h-24 bg-brand-cyan/10 border-2 border-brand-cyan/50 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(25,133,59,0.24)]">
           <Shield size={40} className="text-brand-cyan" />
         </div>
         <h1 className="text-4xl font-display font-black text-white mb-4">ACCESS DENIED</h1>
         <p className="text-slate-400 max-w-md mb-8">You must be logged in to view your player profile and access the competitive ecosystem.</p>
-        <Link href="/auth/login" className="rounded-xl bg-brand-cyan px-8 py-4 font-bold text-kaf-bg hover:bg-white hover:scale-105 transition-all shadow-[0_0_20px_rgba(0,240,255,0.4)]">
+        <Link href="/auth/login" className="rounded-xl bg-brand-cyan px-8 py-4 font-bold text-white hover:bg-brand-lime hover:scale-105 transition-all shadow-glow-green">
           Login / Register
         </Link>
       </div>

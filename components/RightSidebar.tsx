@@ -82,7 +82,7 @@ export default async function RightSidebar() {
           <div className="flex items-center justify-between rounded-xl bg-kaf-card p-3 border border-kaf-border hover:border-brand-teal/40 transition-colors cursor-pointer">
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
-                <div className="h-6 w-6 rounded-full bg-cyan-500 border border-kaf-card z-20"></div>
+                <div className="h-6 w-6 rounded-full bg-brand-cyan border border-kaf-card z-20"></div>
                 <div className="h-6 w-6 rounded-full bg-purple-500 border border-kaf-card z-10"></div>
                 <div className="h-6 w-6 rounded-full bg-emerald-500 border border-kaf-card"></div>
               </div>

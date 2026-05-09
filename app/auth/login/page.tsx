@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Mail, ArrowLeft, Loader2, CheckCircle } from 'lucide-react'
 
 export default function Login() {
@@ -11,6 +12,18 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [sent, setSent] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const callbackError = params.get('error')
+    if (callbackError) setError(callbackError)
+  }, [])
+
+  const getRedirectTo = () => {
+    const params = new URLSearchParams(window.location.search)
+    const next = params.get('redirect') || params.get('next') || '/dashboard'
+    return `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -21,7 +34,8 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOtp({ 
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: getRedirectTo(),
+        shouldCreateUser: false,
       }
     })
 
@@ -37,7 +51,7 @@ export default function Login() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: getRedirectTo(),
       },
     })
     if (error) setError(error.message)
@@ -48,8 +62,8 @@ export default function Login() {
       {/* Nav */}
       <nav className="flex items-center justify-between px-6 py-4 border-b border-kaf-border/50">
         <Link href="/" className="flex items-center gap-3 group">
-          <img src="/kaf-logo.png" alt="KAFConnect" className="w-8 h-8 object-contain" />
-          <span className="text-lg font-black tracking-widest text-brand-cyan">KAFCONNECT</span>
+          <Image src="/kaf-logo.png" alt="KAFConnect" width={32} height={32} className="object-contain" />
+          <span className="text-lg font-black tracking-widest text-white">KAF<span className="text-brand-lime">CONNECT</span></span>
         </Link>
         <Link href="/" className="text-sm text-slate-400 hover:text-white transition-colors flex items-center gap-2">
           <ArrowLeft size={16} /> Back
@@ -62,7 +76,7 @@ export default function Login() {
           {sent ? (
             /* Success State */
             <div className="text-center">
-              <div className="w-20 h-20 bg-brand-cyan/10 border-2 border-brand-cyan/50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(0,255,102,0.2)]">
+              <div className="w-20 h-20 bg-brand-cyan/10 border-2 border-brand-cyan/50 rounded-full flex items-center justify-center mx-auto mb-6 shadow-[0_0_30px_rgba(25,133,59,0.24)]">
                 <CheckCircle size={36} className="text-brand-cyan" />
               </div>
               <h1 className="text-3xl font-black text-white mb-3">Check Your Email</h1>
@@ -88,7 +102,7 @@ export default function Login() {
                     <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
                     <input
                       type="email"
-                      className="w-full bg-kaf-card border border-kaf-border rounded-xl pl-12 pr-4 py-4 text-white placeholder-slate-500 focus:border-brand-cyan focus:outline-none focus:shadow-[0_0_20px_rgba(0,255,102,0.1)] transition-all text-sm"
+                      className="w-full bg-kaf-card border border-kaf-border rounded-xl pl-12 pr-4 py-4 text-white placeholder-slate-500 focus:border-brand-cyan focus:outline-none focus:shadow-[0_0_20px_rgba(25,133,59,0.12)] transition-all text-sm"
                       placeholder="player@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -106,7 +120,7 @@ export default function Login() {
                 <button
                   type="submit"
                   disabled={loading || !email}
-                  className="w-full rounded-xl bg-brand-cyan px-4 py-4 font-black text-kaf-bg hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-[0_0_20px_rgba(0,255,102,0.3)]"
+                  className="w-full rounded-xl bg-brand-cyan px-4 py-4 font-black text-white hover:bg-brand-lime transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm shadow-glow-green"
                 >
                   {loading ? <><Loader2 size={18} className="animate-spin" /> Sending...</> : 'Send Magic Link'}
                 </button>

@@ -3,7 +3,6 @@ import { Inter, Outfit } from 'next/font/google'
 import { createServerSupabaseClient } from '@/lib/supabase/server'
 import LeftSidebar from '@/components/LeftSidebar'
 import RightSidebar from '@/components/RightSidebar'
-import MobileNav from '@/components/MobileNav'
 import { ToastProvider } from '@/components/Toast'
 import { AnnouncementBar } from '@/components/AnnouncementBar'
 import { MobileTabBar } from '@/components/MobileTabBar'
@@ -13,7 +12,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const outfit = Outfit({ subsets: ['latin'], variable: '--font-outfit' })
 
 export const metadata = {
-  title: 'KAFConnect — The Home of eFootball Esports',
+  title: 'KAFConnect - The Home of eFootball Esports',
   description: 'The ultimate esports platform for competitive eFootball. Tournaments, clans, rankings, and live match coverage.',
   keywords: 'esports, eFootball, tournament, clans, competitive gaming, KAF',
 }
@@ -69,7 +68,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 {children}
               </main>
               <RightSidebar />
-              <MobileNav />
               <MobileTabBar />
               <OnboardingWizard userId={user!.id} username={username} />
             </div>

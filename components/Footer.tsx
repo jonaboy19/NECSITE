@@ -11,7 +11,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-slate-400">
               {section.links.map(link => (
                 <li key={link.href}>
-                  <Link href={link.href} className="hover:text-cyan-200 transition">
+                  <Link href={link.href} className="hover:text-brand-lime transition">
                     {link.label}
                   </Link>
                 </li>
@@ -24,11 +24,11 @@ export function Footer() {
           <p className="text-sm text-slate-400 mb-4">
             International esports hub for tournaments, clans, rankings and live match coverage. Powered by KAF E-League.
           </p>
-          <p className="text-xs text-slate-500">© 2026 KAFCONNECT • ALL RIGHTS RESERVED</p>
+          <p className="text-xs text-slate-500">(c) 2026 KAFCONNECT - ALL RIGHTS RESERVED</p>
         </div>
       </div>
       <div className="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-500">
-        {REGIONS.join(' • ')}
+        {REGIONS.join(' - ')}
       </div>
     </footer>
   )

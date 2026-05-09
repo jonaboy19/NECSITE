@@ -22,7 +22,7 @@ export default async function Tournaments() {
               <Trophy size={14} className="text-brand-cyan" /> Competitions
             </div>
             <h1 className="text-4xl md:text-5xl font-display font-black tracking-tight text-white mb-2 leading-tight">
-              PROVING <span className="text-brand-cyan drop-shadow-[0_0_15px_rgba(0,240,255,0.3)]">GROUNDS</span>
+              PROVING <span className="text-brand-cyan drop-shadow-[0_0_15px_rgba(25,133,59,0.35)]">GROUNDS</span>
             </h1>
             <p className="text-slate-400 font-medium max-w-md">
               Compete in official KAFConnect leagues, weekend cups, and draft tournaments.

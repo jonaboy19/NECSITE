@@ -1,4 +1,6 @@
 import React from 'react'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 interface CardProps {
   children: React.ReactNode
@@ -8,12 +10,12 @@ interface CardProps {
 }
 
 export function Card({ children, className = '', hover = true, clickable = false }: CardProps) {
-  const baseClass = 'kaf-card rounded-2xl p-6'
-  const interactiveClass = hover ? 'hover:border-cyan-300/40 transition' : ''
+  const baseClass = 'kaf-card rounded-xl p-6'
+  const interactiveClass = hover ? 'hover:border-brand-cyan/35 transition-colors' : ''
   const cursorClass = clickable ? 'cursor-pointer' : ''
 
   return (
-    <div className={`${baseClass} ${interactiveClass} ${cursorClass} ${className}`}>
+    <div className={cn(baseClass, interactiveClass, cursorClass, className)}>
       {children}
     </div>
   )
@@ -27,10 +29,10 @@ interface CardHeadingProps {
 
 export function CardHeading({ title, subtitle, action }: CardHeadingProps) {
   return (
-    <div className="flex items-center justify-between mb-4">
+    <div className="mb-4 flex items-start justify-between gap-4">
       <div>
-        <h3 className="text-xl font-semibold">{title}</h3>
-        {subtitle && <p className="text-sm text-slate-400 uppercase tracking-wide">{subtitle}</p>}
+        <h3 className="text-lg font-black text-white">{title}</h3>
+        {subtitle && <p className="mt-1 text-xs font-bold uppercase tracking-wider text-slate-500">{subtitle}</p>}
       </div>
       {action}
     </div>
@@ -53,7 +55,7 @@ interface CardFooterProps {
 
 export function CardFooter({ children, className = '' }: CardFooterProps) {
   return (
-    <div className={`mt-4 pt-4 border-t border-slate-700 ${className}`}>
+    <div className={cn('mt-4 border-t border-kaf-border pt-4', className)}>
       {children}
     </div>
   )
@@ -68,13 +70,13 @@ interface SectionCardProps {
 
 export function SectionCard({ title, viewAllHref, children, className = '' }: SectionCardProps) {
   return (
-    <section className={`py-16 ${className}`}>
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-3xl font-black">{title}</h2>
+    <section className={cn('py-12 sm:py-16', className)}>
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <h2 className="kaf-section-title text-xl sm:text-2xl">{title}</h2>
         {viewAllHref && (
-          <a href={viewAllHref} className="text-cyan-200 hover:text-cyan-100 transition">
+          <Link href={viewAllHref} className="text-xs font-black uppercase tracking-wider text-brand-cyan transition hover:text-brand-lime">
             View All
-          </a>
+          </Link>
         )}
       </div>
       {children}

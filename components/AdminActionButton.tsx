@@ -13,5 +13,5 @@ export default function AdminActionButton({label, rpc, args, danger=false}:{labe
   alert('Done')
   window.location.reload()
  }
- return <button onClick={run} disabled={loading} className={`rounded-lg px-3 py-2 text-xs font-black ${danger?'bg-red-500 text-white':'bg-cyan-400 text-slate-950'} disabled:opacity-60`}>{loading?'...':label}</button>
+ return <button onClick={run} disabled={loading} className={`rounded-lg px-3 py-2 text-xs font-black ${danger?'bg-red-500 text-white':'bg-brand-cyan text-white hover:bg-brand-lime'} disabled:opacity-60`}>{loading?'...':label}</button>
 }

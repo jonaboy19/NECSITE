@@ -1,14 +1,14 @@
 'use client'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Trophy, Users, LayoutDashboard, User } from 'lucide-react'
+import { Home, Trophy, Users, LayoutDashboard, Compass } from 'lucide-react'
 
 const tabs = [
   { href: '/',           label: 'Home',        Icon: Home },
   { href: '/tournaments',label: 'Tournaments', Icon: Trophy },
+  { href: '/features',   label: 'Start',       Icon: Compass },
   { href: '/clans',      label: 'Clans',       Icon: Users },
   { href: '/dashboard',  label: 'Dashboard',   Icon: LayoutDashboard },
-  { href: '/profile',    label: 'Profile',     Icon: User },
 ]
 
 export function MobileTabBar() {

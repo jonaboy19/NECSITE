@@ -22,7 +22,9 @@ export default function SettingsPage() {
     bio: '',
     region: '',
     discord_id: '',
+    discord_username: '',
     twitch_username: '',
+    efootball_id: '',
   })
 
   useEffect(() => {
@@ -39,7 +41,9 @@ export default function SettingsPage() {
           bio: p.bio || '',
           region: p.region || '',
           discord_id: p.discord_id || '',
+          discord_username: p.discord_username || '',
           twitch_username: p.twitch_username || '',
+          efootball_id: p.efootball_id || '',
         })
       }
       setLoading(false)
@@ -165,6 +169,16 @@ export default function SettingsPage() {
               placeholder="Public display name"
             />
           </div>
+          <div className="md:col-span-2">
+            <label className="block text-xs font-bold text-brand-cyan uppercase tracking-widest mb-2">Konami eFootball ID</label>
+            <input
+              className="w-full bg-kaf-bg border border-brand-cyan/30 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-brand-cyan focus:outline-none transition-all text-sm shadow-[inset_0_0_10px_rgba(25,133,59,0.1)]"
+              value={form.efootball_id}
+              onChange={(e) => setForm({ ...form, efootball_id: e.target.value })}
+              placeholder="e.g., 123-456-789"
+            />
+            <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">Required for Official KAF E-League Matches</p>
+          </div>
         </div>
 
         <div>
@@ -205,13 +219,14 @@ export default function SettingsPage() {
 
         <div className="grid md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Discord ID</label>
+            <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Discord Username</label>
             <input
               className="w-full bg-kaf-bg border border-kaf-border rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:border-[#5865F2] focus:outline-none transition-all text-sm"
-              value={form.discord_id}
-              onChange={(e) => setForm({ ...form, discord_id: e.target.value })}
-              placeholder="username#1234"
+              value={form.discord_username}
+              onChange={(e) => setForm({ ...form, discord_username: e.target.value })}
+              placeholder="username"
             />
+            <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest">We use this to verify tournament sign-ups.</p>
           </div>
           <div>
             <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Twitch Username</label>

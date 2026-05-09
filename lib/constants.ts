@@ -1,10 +1,10 @@
 // Color and styling constants
 export const COLORS = {
-  primary: '#020617',
-  secondary: '#0f172a',
-  accent: 'cyan',
-  accentLight: '#06b6d4',
-  accentDark: '#0891b2',
+  primary: '#030604',
+  secondary: '#07110a',
+  accent: 'green',
+  accentLight: '#7CFF6B',
+  accentDark: '#16a34a',
   success: '#10b981',
   warning: '#f59e0b',
   danger: '#ef4444',
@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
 
 // Navigation links
 export const NAV_LINKS = [
+  { href: '/features', label: 'Start Here', icon: 'Compass' },
   { href: '/tournaments', label: 'Tournaments', icon: 'Trophy' },
   { href: '/clans', label: 'Clans', icon: 'Users' },
   { href: '/rankings', label: 'Rankings', icon: 'BarChart3' },
@@ -35,8 +36,9 @@ export const NAV_LINKS = [
 
 // Quick action links
 export const QUICK_ACTIONS = [
-  { href: '/tournaments/create', label: 'Create Tournament', icon: 'Plus', color: 'cyan' },
-  { href: '/clans/create', label: 'Create Clan', icon: 'Plus', color: 'cyan' },
+  { href: '/features', label: 'Start Here', icon: 'Compass', color: 'green' },
+  { href: '/tournaments/create', label: 'Create Tournament', icon: 'Plus', color: 'green' },
+  { href: '/clans/create', label: 'Create Clan', icon: 'Plus', color: 'green' },
   { href: '/profile', label: 'View Profile', icon: 'User', color: 'slate' },
 ]
 
@@ -45,6 +47,7 @@ export const FOOTER_SECTIONS = {
   compete: {
     title: 'Compete',
     links: [
+      { href: '/features', label: 'Start Here' },
       { href: '/tournaments', label: 'Tournaments' },
       { href: '/tournaments', label: 'KAF E-League' },
       { href: '/matches', label: 'Match Center' },

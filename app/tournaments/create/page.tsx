@@ -122,7 +122,7 @@ export default function CreateTournament(){
           <button
             type="submit"
             disabled={isSubmitting || !title.trim()}
-            className="w-full rounded-2xl bg-brand-cyan py-5 font-black text-lg text-kaf-bg transition-all hover:bg-white hover:scale-105 shadow-[0_0_20px_rgba(0,240,255,0.4)] disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 mt-8"
+            className="w-full rounded-2xl bg-brand-cyan py-5 font-black text-lg text-white transition-all hover:bg-brand-lime hover:scale-105 shadow-glow-green disabled:opacity-50 disabled:hover:scale-100 flex items-center justify-center gap-2 mt-8"
           >
             {isSubmitting ? (
               <><Loader2 size={20} className="animate-spin" /> Initializing...</>

@@ -104,7 +104,7 @@ export function formatRating(rating: number): string {
 
 export function getStatusColor(status: string): string {
   const statusColors: { [key: string]: string } = {
-    'registration_open': 'bg-cyan-400 text-slate-950',
+    'registration_open': 'bg-brand-cyan text-white',
     'in_progress': 'bg-emerald-400 text-slate-950',
     'completed': 'bg-slate-400 text-slate-950',
     'live': 'bg-emerald-400 text-slate-950',
